@@ -10,20 +10,13 @@ namespace KeePassEntrySearcherWpf.Views.Windows
         public MainWindowViewModel ViewModel { get; }
 
         public MainWindow(
-            MainWindowViewModel viewModel,
-            INavigationService navigationService,
-            IServiceProvider serviceProvider,
-            ISnackbarService snackbarService,
-            IContentDialogService contentDialogService
+            MainWindowViewModel viewModel
         )
         {
             Wpf.Ui.Appearance.Watcher.Watch(this);
 
             ViewModel = viewModel;
             DataContext = this;
-
-            HotKeyManager.RegisterHotKey(System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D);
-            HotKeyManager.HotKeyPressed += HotKeyManager_HotKeyPressed;
 
             KeyUp += MainWindow_KeyUp;
             Deactivated += MainWindow_Deactivated;
@@ -47,12 +40,6 @@ namespace KeePassEntrySearcherWpf.Views.Windows
         {
             base.OnActivated(e);
             AutoSuggestBox.Focus();
-        }
-
-        private void HotKeyManager_HotKeyPressed(object? sender, HotKeyEventArgs e)
-        {
-            Show();
-            Activate();
         }
     }
 }

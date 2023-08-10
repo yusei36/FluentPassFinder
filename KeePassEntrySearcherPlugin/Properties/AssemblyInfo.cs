@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("KeePassEntrySearcherPlugin")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("EntrySearcher Plugin")]
+[assembly: AssemblyDescription("KeePassEntrySearcher")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("KeePassEntrySearcherPlugin")]
+[assembly: AssemblyCompany("Yusei36")]
+[assembly: AssemblyProduct("KeePass Plugin")]
 [assembly: AssemblyCopyright("Copyright ©  2023")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

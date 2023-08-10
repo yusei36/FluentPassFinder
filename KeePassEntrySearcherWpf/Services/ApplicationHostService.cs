@@ -21,6 +21,8 @@ namespace KeePassEntrySearcherWpf.Services
             _serviceProvider = serviceProvider;
         }
 
+        private MainWindow mainWindow;
+
         /// <summary>
         /// Triggered when the application host is ready to start the service.
         /// </summary>
@@ -48,8 +50,16 @@ namespace KeePassEntrySearcherWpf.Services
 
             if (!System.Windows.Application.Current.Windows.OfType<MainWindow>().Any())
             {
-                var navigationWindow = _serviceProvider.GetRequiredService<MainWindow>();
-                navigationWindow.Show();
+                mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
+            }
+        }
+
+        public void OnHotkeyTriggered()
+        {
+            if (mainWindow != null)
+            {
+                mainWindow.Show();
+                mainWindow.Activate();
             }
         }
     }
