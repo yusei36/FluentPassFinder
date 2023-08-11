@@ -12,7 +12,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\KeePass\KeePass.exe</HintPath>
     </Reference>
-    <Reference Include="Wpf.Ui, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\KeePassEntrySearcherWpf\KeePassEntrySearcherWpf.csproj" />
