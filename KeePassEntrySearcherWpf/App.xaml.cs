@@ -3,6 +3,7 @@ using KeePassEntrySearcherWpf.ViewModels;
 using NHotkey.Wpf;
 using System.Windows.Input;
 using NHotkey;
+using System.Windows;
 
 namespace KeePassEntrySearcherWpf
 {

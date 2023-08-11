@@ -1,4 +1,6 @@
-﻿namespace KeePassEntrySearcherWpf.ViewModels
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+
+namespace KeePassEntrySearcherWpf.ViewModels
 {
     public partial class MainWindowViewModel : ObservableObject
     {
