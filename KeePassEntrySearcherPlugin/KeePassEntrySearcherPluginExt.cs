@@ -17,14 +17,12 @@ namespace KeePassEntrySearcherPlugin
             if (host == null) return false;
             m_host = host;
 
-            HotKeyManager.RegisterHotKey(Keys.Control | Keys.Alt | Keys.F);
-            HotKeyManager.HotKeyPressed += HotKeyManager_HotKeyPressed;
-
             StartAppAsSeperateThread();
+
             return true;
         }
 
-        private void HotKeyManager_HotKeyPressed(object sender, HotKeyEventArgs e)
+        private void HotKeyManager_HotKeyPressed()
         {
             try
             {
