@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "Profile 1": {
+    "Start KeePass with Plugin": {
       "commandName": "Executable",
       "executablePath": "./KeePass.exe"
     }
