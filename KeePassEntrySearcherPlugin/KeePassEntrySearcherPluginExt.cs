@@ -1,4 +1,5 @@
 ﻿using KeePass.Plugins;
+using KeePassEntrySearcherContracts;
 using KeePassEntrySearcherWpf;
 using System;
 using System.Threading;
@@ -7,7 +8,7 @@ using System.Windows.Forms;
 
 namespace KeePassEntrySearcherPlugin
 {
-    public sealed class KeePassEntrySearcherPluginExt : Plugin
+    public sealed class KeePassEntrySearcherPluginExt : Plugin, IKeePassDataProvider
     {
         private IPluginHost m_host = null;
         private Thread wpfAppThread;
@@ -51,6 +52,9 @@ namespace KeePassEntrySearcherPlugin
             {
                 Task.Delay(100).Wait();
             }
+
+
+            App.Current?.Dispatcher.Invoke(() => ((App)App.Current).Init(this));
         }
 
         private void StartAppInternal()

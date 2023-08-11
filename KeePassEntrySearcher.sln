@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KeePassEntrySearcherPlugin"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KeePassEntrySearcherWpf", "KeePassEntrySearcherWpf\KeePassEntrySearcherWpf.csproj", "{185AA238-2C34-4147-9FF2-825A95B8FA53}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeePassEntrySearcherContracts", "KeePassEntrySearcherContracts\KeePassEntrySearcherContracts.csproj", "{9872AD7D-83FD-47BD-AA64-E259F434DAEE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{185AA238-2C34-4147-9FF2-825A95B8FA53}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{185AA238-2C34-4147-9FF2-825A95B8FA53}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{185AA238-2C34-4147-9FF2-825A95B8FA53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9872AD7D-83FD-47BD-AA64-E259F434DAEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9872AD7D-83FD-47BD-AA64-E259F434DAEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9872AD7D-83FD-47BD-AA64-E259F434DAEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9872AD7D-83FD-47BD-AA64-E259F434DAEE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

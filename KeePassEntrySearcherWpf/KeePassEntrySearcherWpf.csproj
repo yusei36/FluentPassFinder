@@ -7,13 +7,17 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
-	<LangVersion>preview</LangVersion>
+	<LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="NHotkey.Wpf" Version="2.1.1" />
     <PackageReference Include="WPF-UI" Version="3.0.0-preview.4" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1 " />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\KeePassEntrySearcherContracts\KeePassEntrySearcherContracts.csproj" />
   </ItemGroup>
 
 </Project>
