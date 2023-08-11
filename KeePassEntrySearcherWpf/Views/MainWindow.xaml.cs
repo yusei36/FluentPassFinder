@@ -1,9 +1,8 @@
-﻿using KeePassEntrySearcher;
-using KeePassEntrySearcherWpf.ViewModels.Windows;
+﻿using KeePassEntrySearcherWpf.ViewModels;
 using System.Windows.Input;
 using Wpf.Ui.Controls;
 
-namespace KeePassEntrySearcherWpf.Views.Windows
+namespace KeePassEntrySearcherWpf.Views
 {
     public partial class MainWindow
     {

@@ -2,9 +2,9 @@
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace EntrySearcher
+namespace KeePassEntrySearcherPlugin
 {
-    // This class and comments below was taken from AutoTypeSearch Version 1.1.2
+    // This class and the comments below was taken from AutoTypeSearch Version 1.1.2
     //
     // This class taken from: http://stackoverflow.com/questions/3568513/how-to-create-keyboard-shortcut-in-windows-that-call-function-in-my-app/3569097#3569097
     // And tweaked with answers in: http://stackoverflow.com/questions/15434505/key-capture-using-global-hotkey-in-c-sharp

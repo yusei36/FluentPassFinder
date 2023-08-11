@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KeePassEntrySearcher", "Kee
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeePassEntrySearcherPlugin", "KeePassEntrySearcherPlugin\KeePassEntrySearcherPlugin.csproj", "{EAF16377-EB62-4EE3-9C1B-F9E6658CC7AF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeePassEntrySearcherWpf", "KeePassEntrySearcherWpf\KeePassEntrySearcherWpf.csproj", "{185AA238-2C34-4147-9FF2-825A95B8FA53}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KeePassEntrySearcherWpf", "KeePassEntrySearcherWpf\KeePassEntrySearcherWpf.csproj", "{185AA238-2C34-4147-9FF2-825A95B8FA53}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
