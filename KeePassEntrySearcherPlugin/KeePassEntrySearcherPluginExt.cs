@@ -23,18 +23,6 @@ namespace KeePassEntrySearcherPlugin
             return true;
         }
 
-        private void HotKeyManager_HotKeyPressed()
-        {
-            try
-            {
-                App.Current?.Dispatcher.Invoke(() => App.Current.MainWindow.Show());
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
-
         public override void Terminate()
         {
             wpfAppThread?.Abort();
@@ -53,8 +41,12 @@ namespace KeePassEntrySearcherPlugin
                 Task.Delay(100).Wait();
             }
 
+            InvokeOnWpfApp((app) => app.Init(this));
+        }
 
-            App.Current?.Dispatcher.Invoke(() => ((App)App.Current).Init(this));
+        private void InvokeOnWpfApp(Action<App> action)
+        {
+            App.Current?.Dispatcher.Invoke(() => action((App)App.Current));
         }
 
         private void StartAppInternal()

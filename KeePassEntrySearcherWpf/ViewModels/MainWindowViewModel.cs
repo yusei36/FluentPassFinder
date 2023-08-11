@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using KeePassEntrySearcherContracts;
 
 namespace KeePassEntrySearcherWpf.ViewModels
 {
@@ -9,5 +10,10 @@ namespace KeePassEntrySearcherWpf.ViewModels
 
         [ObservableProperty]
         private string _searchText = string.Empty;
+
+        public MainWindowViewModel(IKeePassDataProvider dataProvider)
+        {
+            
+        }
     }
 }

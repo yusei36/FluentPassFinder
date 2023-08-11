@@ -16,15 +16,13 @@ namespace KeePassEntrySearcherWpf
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-            
-            MainWindow = new MainWindow(new MainWindowViewModel());
-
-            HotkeyManager.Current.AddOrReplace(nameof(ShowSearchWindow), Key.F, ModifierKeys.Control | ModifierKeys.Alt, ShowSearchWindow);
         }
 
         public void Init(IKeePassDataProvider dataProvider)
         {
+            MainWindow = new MainWindow(new MainWindowViewModel(dataProvider));
 
+            HotkeyManager.Current.AddOrReplace(nameof(ShowSearchWindow), Key.F, ModifierKeys.Control | ModifierKeys.Alt, ShowSearchWindow);
         }
 
         private void ShowSearchWindow(object sender, HotkeyEventArgs e)
