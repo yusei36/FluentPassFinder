@@ -1,6 +1,5 @@
 ﻿using KeePassEntrySearcherWpf.ViewModels;
 using System.Windows.Input;
-using Wpf.Ui.Controls;
 
 namespace KeePassEntrySearcherWpf.Views
 {

@@ -13,10 +13,10 @@ namespace KeePassEntrySearcherWpf.ViewModels
 
         
         [ObservableProperty]
-        private string _applicationTitle = "KeePassEntrySearcherWpf";
+        private string applicationTitle = "KeePassEntrySearcherWpf";
 
         [ObservableProperty]
-        private string _searchText = string.Empty;
+        private string searchText = string.Empty;
 
         [ObservableProperty]
         private ObservableCollection<EntryViewModel> _entries = new ObservableCollection<EntryViewModel>();

@@ -6,19 +6,19 @@ namespace KeePassEntrySearcherWpf.ViewModels
     public partial class EntryViewModel : ObservableObject
     {
         [ObservableProperty]
-        private string _title;
+        private string title;
 
         [ObservableProperty]
-        private string _userName;
+        private string userName;
 
         [ObservableProperty]
-        private string _url;
+        private string url;
 
         public EntryViewModel(PwEntry pwEntry)
         {
-            _title = pwEntry.Strings.ReadSafe(PwDefs.TitleField);
-            _userName = pwEntry.Strings.ReadSafe(PwDefs.UserNameField);
-            _url = pwEntry.Strings.ReadSafe(PwDefs.UrlField);
+            title = pwEntry.Strings.ReadSafe(PwDefs.TitleField);
+            userName = pwEntry.Strings.ReadSafe(PwDefs.UserNameField);
+            url = pwEntry.Strings.ReadSafe(PwDefs.UrlField);
         }
     }
 }
