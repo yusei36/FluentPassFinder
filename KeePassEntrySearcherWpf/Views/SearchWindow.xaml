@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:KeePassEntrySearcherWpf.Views"
+    xmlns:models="clr-namespace:KeePassEntrySearcherWpf.ViewModels"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     Title="{Binding ViewModel.ApplicationTitle, Mode=OneWay}"
@@ -33,23 +34,25 @@
     <StackPanel>
         <ui:AutoSuggestBox VerticalAlignment="Top"
                            x:Name="AutoSuggestBox"
-                           PlaceholderText="Search"
-                           OriginalItemsSource="{Binding ViewModel.Results}"                           
-                           Text="{Binding ViewModel.SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                           PlaceholderText="Search"                        
+                           Text="{Binding ViewModel.SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           IsSuggestionListOpen="False" >
             <ui:AutoSuggestBox.Icon>
                 <ui:IconSourceElement>
                     <ui:SymbolIconSource Symbol="Search24" />
                 </ui:IconSourceElement>
             </ui:AutoSuggestBox.Icon>
-
-            <ui:AutoSuggestBox.ItemTemplate>
-                <DataTemplate>
+        </ui:AutoSuggestBox>
+        <ListView ItemsSource="{Binding ViewModel.Entries}">
+            <ListView.ItemTemplate>
+                <DataTemplate DataType="models:EntryViewModel">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding Uuid}"></TextBlock>
-                        <Label Content="1337"></Label>
+                        <TextBlock Text="{Binding Title}"></TextBlock>
+                        <Label Content="{Binding UserName}"></Label>
+                        <ui:Hyperlink NavigateUri="{Binding Url}" Content="{Binding Url}"></ui:Hyperlink>
                     </StackPanel>
                 </DataTemplate>
-            </ui:AutoSuggestBox.ItemTemplate>
-        </ui:AutoSuggestBox>
+            </ListView.ItemTemplate>
+        </ListView>
     </StackPanel>
 </ui:FluentWindow>

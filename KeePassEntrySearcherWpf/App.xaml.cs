@@ -5,6 +5,7 @@ using System.Windows.Input;
 using NHotkey;
 using System.Windows;
 using KeePassEntrySearcherContracts;
+using KeePassEntrySearcherWpf.Services;
 
 namespace KeePassEntrySearcherWpf
 {
@@ -20,7 +21,7 @@ namespace KeePassEntrySearcherWpf
 
         public void Init(IKeePassDataProvider dataProvider)
         {
-            MainWindow = new SearchWindow(new SearchWindowViewModel(dataProvider));
+            MainWindow = new SearchWindow(new SearchWindowViewModel(dataProvider, new EntrySearchService()));
 
             HotkeyManager.Current.AddOrReplace(nameof(ShowSearchWindow), Key.F, ModifierKeys.Control | ModifierKeys.Alt, ShowSearchWindow);
         }
