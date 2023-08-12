@@ -1,24 +1,27 @@
-﻿using KeePass.Plugins;
+﻿using KeePass.Forms;
+using KeePass.Plugins;
 using KeePassEntrySearcherContracts;
 using KeePassEntrySearcherWpf;
+using KeePassLib;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace KeePassEntrySearcherPlugin
 {
     public sealed class KeePassEntrySearcherPluginExt : Plugin, IKeePassDataProvider
     {
-        private IPluginHost m_host = null;
+        private IPluginHost _host = null;
         private Thread wpfAppThread;
 
         public override bool Initialize(IPluginHost host)
         {
             if (host == null) return false;
-            m_host = host;
+            _host = host;
 
             StartAppAsSeperateThread();
+
+            _host.MainWindow.DocumentManager.GetOpenDatabases();
 
             return true;
         }
@@ -52,6 +55,11 @@ namespace KeePassEntrySearcherPlugin
         private void StartAppInternal()
         {
             App.Main();
+        }
+
+        public PwDatabase[] GetPwDatabases()
+        {
+            return _host?.MainWindow?.DocumentManager?.GetOpenDatabases().ToArray();
         }
     }
 }

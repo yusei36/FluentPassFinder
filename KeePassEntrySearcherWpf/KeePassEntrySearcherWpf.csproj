@@ -20,4 +20,10 @@
     <ProjectReference Include="..\KeePassEntrySearcherContracts\KeePassEntrySearcherContracts.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="KeePass">
+      <HintPath>..\..\KeePass\KeePass.exe</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

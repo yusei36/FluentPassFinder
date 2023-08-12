@@ -31,19 +31,25 @@
     </ui:FluentWindow.InputBindings>
 
     <StackPanel>
-        <ui:AutoSuggestBox VerticalAlignment="Top" x:Name="AutoSuggestBox" PlaceholderText="Search" Text="{Binding ViewModel.SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+        <ui:AutoSuggestBox VerticalAlignment="Top"
+                           x:Name="AutoSuggestBox"
+                           PlaceholderText="Search"
+                           OriginalItemsSource="{Binding ViewModel.Results}"                           
+                           Text="{Binding ViewModel.SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
             <ui:AutoSuggestBox.Icon>
                 <ui:IconSourceElement>
                     <ui:SymbolIconSource Symbol="Search24" />
                 </ui:IconSourceElement>
             </ui:AutoSuggestBox.Icon>
-        </ui:AutoSuggestBox>
-        <ui:AutoSuggestBox VerticalAlignment="Top" x:Name="AutoSuggestBox2" PlaceholderText="Search" Text="{Binding ViewModel.SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-            <ui:AutoSuggestBox.Icon>
-                <ui:IconSourceElement>
-                    <ui:SymbolIconSource Symbol="Search24" />
-                </ui:IconSourceElement>
-            </ui:AutoSuggestBox.Icon>
+
+            <ui:AutoSuggestBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Uuid}"></TextBlock>
+                        <Label Content="1337"></Label>
+                    </StackPanel>
+                </DataTemplate>
+            </ui:AutoSuggestBox.ItemTemplate>
         </ui:AutoSuggestBox>
     </StackPanel>
 </ui:FluentWindow>

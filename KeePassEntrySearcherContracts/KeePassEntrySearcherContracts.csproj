@@ -1,8 +1,13 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
 	<LangVersion>latest</LangVersion>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Reference Include="KeePass">
+      <HintPath>..\..\KeePass\KeePass.exe</HintPath>
+    </Reference>
+  </ItemGroup>
 </Project>
