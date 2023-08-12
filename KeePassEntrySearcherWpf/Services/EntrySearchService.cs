@@ -1,5 +1,4 @@
 ﻿using KeePassEntrySearcherContracts.Services;
-using KeePassLib;
 
 namespace KeePassEntrySearcherWpf.Services
 {

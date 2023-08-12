@@ -1,7 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using KeePassLib;
-
-namespace KeePassEntrySearcherWpf.ViewModels
+﻿namespace KeePassEntrySearcherWpf.ViewModels
 {
     public partial class EntryViewModel : ObservableObject
     {
