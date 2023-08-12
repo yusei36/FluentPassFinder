@@ -40,7 +40,13 @@ namespace KeePassEntrySearcherWpf.ViewModels
 
             if (dbs != null)
             {
-                var pwEntryResults = entrySearchService.GetPwEntries(dbs, searchQuery);
+                var defaultOptions = new SearchOptions() {
+                    IncludeTitleFiled = true,
+                    IncludeNotesField = true,
+                    IncludeUrlField = true,
+                    IncludeCustomFields = true 
+                };
+                var pwEntryResults = entrySearchService.GetPwEntries(dbs, searchQuery, defaultOptions);
                 foreach (var pwEntry in pwEntryResults)
                 {
                     Entries.Add(new EntryViewModel(pwEntry));

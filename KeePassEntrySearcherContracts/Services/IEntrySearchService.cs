@@ -5,6 +5,6 @@ namespace KeePassEntrySearcherContracts.Services
 {
     public interface IEntrySearchService
     {
-        IEnumerable<PwEntry> GetPwEntries(IEnumerable<PwDatabase> pwDatabases, string searchQuery);
+        IEnumerable<PwEntry> GetPwEntries(IEnumerable<PwDatabase> pwDatabases, string searchQuery, SearchOptions searchOptions);
     }
 }
