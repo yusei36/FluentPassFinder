@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using KeePassEntrySearcherContracts;
 using KeePassEntrySearcherContracts.Services;
 using System.Collections.ObjectModel;
@@ -24,6 +25,13 @@ namespace KeePassEntrySearcherWpf.ViewModels
         {
             this.dataProvider = dataProvider;
             this.entrySearchService = entrySearchService;
+        }
+
+        [RelayCommand]
+        public void OnEscape(object sender)
+        {
+            SearchText = string.Empty;
+            Entries.Clear();
         }
 
         partial void OnSearchTextChanged(string searchQuery)

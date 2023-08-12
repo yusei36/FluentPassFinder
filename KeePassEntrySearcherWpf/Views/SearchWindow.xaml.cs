@@ -17,15 +17,13 @@ namespace KeePassEntrySearcherWpf.Views
             ViewModel = viewModel;
             DataContext = this;
 
-            KeyUp += MainWindow_KeyUp;
-            Deactivated += MainWindow_Deactivated;
-
             InitializeComponent();
         }
 
         private void MainWindow_Deactivated(object? sender, EventArgs e)
         {
             Hide();
+            ViewModel.EscapeCommand.Execute(this);
         }
 
         private void MainWindow_KeyUp(object sender, KeyEventArgs e)
@@ -38,7 +36,7 @@ namespace KeePassEntrySearcherWpf.Views
         protected override void OnActivated(EventArgs e)
         {
             base.OnActivated(e);
-            AutoSuggestBox.Focus();
+            SearchBox.Focus();
         }
     }
 }
