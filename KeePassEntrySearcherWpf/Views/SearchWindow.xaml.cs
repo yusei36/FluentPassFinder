@@ -4,12 +4,12 @@ using Wpf.Ui.Controls;
 
 namespace KeePassEntrySearcherWpf.Views
 {
-    public partial class MainWindow
+    public partial class SearchWindow
     {
-        public MainWindowViewModel ViewModel { get; }
+        public SearchWindowViewModel ViewModel { get; }
 
-        public MainWindow(
-            MainWindowViewModel viewModel
+        public SearchWindow(
+            SearchWindowViewModel viewModel
         )
         {
             Wpf.Ui.Appearance.Watcher.Watch(this);
@@ -28,7 +28,7 @@ namespace KeePassEntrySearcherWpf.Views
             Hide();
         }
 
-        private void MainWindow_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+        private void MainWindow_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape)
             {

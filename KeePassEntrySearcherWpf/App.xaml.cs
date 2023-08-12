@@ -20,7 +20,7 @@ namespace KeePassEntrySearcherWpf
 
         public void Init(IKeePassDataProvider dataProvider)
         {
-            MainWindow = new MainWindow(new MainWindowViewModel(dataProvider));
+            MainWindow = new SearchWindow(new SearchWindowViewModel(dataProvider));
 
             HotkeyManager.Current.AddOrReplace(nameof(ShowSearchWindow), Key.F, ModifierKeys.Control | ModifierKeys.Alt, ShowSearchWindow);
         }

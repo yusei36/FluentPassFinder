@@ -4,12 +4,12 @@ using KeePassLib;
 
 namespace KeePassEntrySearcherWpf.ViewModels
 {
-    public partial class MainWindowViewModel : ObservableObject
+    public partial class SearchWindowViewModel : ObservableObject
     {
         private readonly IKeePassDataProvider dataProvider;
 
         [ObservableProperty]
-        private string _applicationTitle = "WPF UI - KeePassEntrySearcherWpf";
+        private string _applicationTitle = "KeePassEntrySearcherWpf";
 
         [ObservableProperty]
         private string _searchText = string.Empty;
@@ -17,7 +17,7 @@ namespace KeePassEntrySearcherWpf.ViewModels
         [ObservableProperty]
         private PwEntry[] _results = new PwEntry[0];
 
-        public MainWindowViewModel(IKeePassDataProvider dataProvider)
+        public SearchWindowViewModel(IKeePassDataProvider dataProvider)
         {
             this.dataProvider = dataProvider;
         }
