@@ -1,27 +1,32 @@
 ﻿using KeePass.Forms;
 using KeePass.Plugins;
+using KeePass.Util;
 using KeePassEntrySearcherContracts;
 using KeePassEntrySearcherWpf;
 using KeePassLib;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 
 namespace KeePassEntrySearcherPlugin
 {
-    public sealed class KeePassEntrySearcherPluginExt : Plugin, IKeePassDataProvider
+    public sealed class KeePassEntrySearcherPluginExt : Plugin, IKeePassDataProvider, IKeePassInteractionManager
     {
-        private IPluginHost _host = null;
+        private IPluginHost pluginHost = null;
         private Thread wpfAppThread;
+        private Dispatcher winFormsDispatcher;
+
 
         public override bool Initialize(IPluginHost host)
         {
             if (host == null) return false;
-            _host = host;
+            pluginHost = host;
+            winFormsDispatcher = Dispatcher.CurrentDispatcher;
 
             StartAppAsSeperateThread();
 
-            _host.MainWindow.DocumentManager.GetOpenDatabases();
+            pluginHost.MainWindow.DocumentManager.GetOpenDatabases();
 
             return true;
         }
@@ -44,7 +49,7 @@ namespace KeePassEntrySearcherPlugin
                 Task.Delay(100).Wait();
             }
 
-            InvokeOnWpfApp((app) => app.Init(this));
+            InvokeOnWpfApp((app) => app.Init(this, this));
         }
 
         private void InvokeOnWpfApp(Action<App> action)
@@ -59,7 +64,28 @@ namespace KeePassEntrySearcherPlugin
 
         public PwDatabase[] GetPwDatabases()
         {
-            return _host?.MainWindow?.DocumentManager?.GetOpenDatabases().ToArray();
+            return pluginHost?.MainWindow?.DocumentManager?.GetOpenDatabases().ToArray();
         }
+
+        public void StartClipboardCountdown()
+        {
+            pluginHost?.MainWindow?.StartClipboardCountdown();
+        }
+
+        public void CopyToClipboard(string strToCopy, bool bSprCompile, bool bIsEntryInfo, PwEntry peEntryInfo)
+        {
+            PluginHostDispatcher.Invoke(() =>
+            {
+                if (ClipboardUtil.Copy(strToCopy, bSprCompile, bIsEntryInfo, peEntryInfo,
+                                        MainForm.DocumentManager.SafeFindContainerOf(peEntryInfo),
+                                        IntPtr.Zero))
+                {
+                    MainForm.StartClipboardCountdown();
+                }
+            });
+        }
+
+        public MainForm MainForm => pluginHost?.MainWindow;
+        public Dispatcher PluginHostDispatcher => winFormsDispatcher;
     }
 }

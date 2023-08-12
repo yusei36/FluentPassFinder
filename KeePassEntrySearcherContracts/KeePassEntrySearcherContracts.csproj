@@ -9,5 +9,6 @@
     <Reference Include="KeePass">
       <HintPath>..\..\KeePass\KeePass.exe</HintPath>
     </Reference>
+    <Reference Include="WindowsBase" />
   </ItemGroup>
 </Project>

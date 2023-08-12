@@ -33,8 +33,13 @@
             Command="{Binding ViewModel.EscapeCommand}"  />
     </ui:FluentWindow.InputBindings>
 
-    <StackPanel>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="*" MaxHeight="500"/>
+        </Grid.RowDefinitions>
         <ui:TextBox x:Name="SearchBox"
+                    Grid.Row="0"
                     PlaceholderText="Search"
                     IconPlacement="Right"
                     Text="{Binding ViewModel.SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
@@ -42,18 +47,18 @@
                 <ui:SymbolIcon Symbol="Search24" />
             </ui:TextBox.Icon>
         </ui:TextBox>
-        <ScrollViewer VerticalScrollBarVisibility="Hidden" MaxHeight="500">
-            <ListView ItemsSource="{Binding ViewModel.Entries}">
+        <ScrollViewer Grid.Row="1">
+            <ListView ItemsSource="{Binding ViewModel.Entries}" ScrollViewer.CanContentScroll="True">
                 <ListView.ItemTemplate>
                     <DataTemplate DataType="models:EntryViewModel">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="{Binding Title}"></TextBlock>
-                            <Label Content="{Binding UserName}"></Label>
+                            <Button Content="{Binding UserName}" Command="{Binding CopyUserNameCommand}"></Button>
                             <ui:Hyperlink NavigateUri="{Binding Url}" Content="{Binding Url}"></ui:Hyperlink>
                         </StackPanel>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
          </ScrollViewer>
-    </StackPanel>
+    </Grid>
 </ui:FluentWindow>

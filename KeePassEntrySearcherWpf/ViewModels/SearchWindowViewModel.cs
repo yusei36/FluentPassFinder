@@ -7,6 +7,7 @@ namespace KeePassEntrySearcherWpf.ViewModels
     public partial class SearchWindowViewModel : ObservableObject
     {
         private readonly IKeePassDataProvider dataProvider;
+        private readonly IKeePassInteractionManager interactionManager;
         private readonly IEntrySearchService entrySearchService;
 
         
@@ -19,9 +20,10 @@ namespace KeePassEntrySearcherWpf.ViewModels
         [ObservableProperty]
         private ObservableCollection<EntryViewModel> _entries = new ObservableCollection<EntryViewModel>();
 
-        public SearchWindowViewModel(IKeePassDataProvider dataProvider, IEntrySearchService entrySearchService)
+        public SearchWindowViewModel(IKeePassDataProvider dataProvider, IKeePassInteractionManager interactionManager, IEntrySearchService entrySearchService)
         {
             this.dataProvider = dataProvider;
+            this.interactionManager = interactionManager;
             this.entrySearchService = entrySearchService;
         }
 
@@ -49,7 +51,7 @@ namespace KeePassEntrySearcherWpf.ViewModels
                 var pwEntryResults = entrySearchService.GetPwEntries(dbs, searchQuery, defaultOptions);
                 foreach (var pwEntry in pwEntryResults)
                 {
-                    Entries.Add(new EntryViewModel(pwEntry));
+                    Entries.Add(new EntryViewModel(pwEntry, interactionManager));
                 }
             }
         }

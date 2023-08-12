@@ -1,7 +1,12 @@
-﻿namespace KeePassEntrySearcherWpf.ViewModels
+﻿using KeePassEntrySearcherContracts;
+
+namespace KeePassEntrySearcherWpf.ViewModels
 {
     public partial class EntryViewModel : ObservableObject
     {
+        private PwEntry entry;
+        private readonly IKeePassInteractionManager interactionManager;
+
         [ObservableProperty]
         private string title;
 
@@ -11,11 +16,19 @@
         [ObservableProperty]
         private string url;
 
-        public EntryViewModel(PwEntry pwEntry)
+        public EntryViewModel(PwEntry entry, IKeePassInteractionManager interactionManager)
         {
-            title = pwEntry.Strings.ReadSafe(PwDefs.TitleField);
-            userName = pwEntry.Strings.ReadSafe(PwDefs.UserNameField);
-            url = pwEntry.Strings.ReadSafe(PwDefs.UrlField);
+            this.entry = entry;
+            this.interactionManager = interactionManager;
+            title = entry.Strings.ReadSafe(PwDefs.TitleField);
+            userName = entry.Strings.ReadSafe(PwDefs.UserNameField);
+            url = entry.Strings.ReadSafe(PwDefs.UrlField);
+        }
+
+        [RelayCommand]
+        private void OnCopyUserName()
+        {
+            interactionManager.CopyToClipboard(UserName, true, true, entry);
         }
     }
 }
