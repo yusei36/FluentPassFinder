@@ -41,8 +41,56 @@ namespace KeePassEntrySearcherWpf.ViewModels
                 return;
             }
 
+            //SelectedEntry.CopyUserName();
+            //HideSearchWindow?.Invoke();
+        }
+
+        [RelayCommand]
+        public void ShiftEnterAction()
+        {
+            if (SelectedEntry == null)
+            {
+                return;
+            }
+
             SelectedEntry.CopyUserName();
             HideSearchWindow?.Invoke();
+        }
+
+        [RelayCommand]
+        public void ControlEnterAction()
+        {
+            if (SelectedEntry == null)
+            {
+                return;
+            }
+
+            SelectedEntry.CopyPassword();
+            HideSearchWindow?.Invoke();
+        }
+
+        [RelayCommand]
+        public void AltEnterAction()
+        {
+            if (SelectedEntry == null)
+            {
+                return;
+            }
+
+            //SelectedEntry.CopyUserName();
+            //HideSearchWindow?.Invoke();
+        }
+
+        [RelayCommand]
+        public void WindowsEnterAction()
+        {
+            if (SelectedEntry == null)
+            {
+                return;
+            }
+
+            //SelectedEntry.CopyUserName();
+            //HideSearchWindow?.Invoke();
         }
 
         [RelayCommand]

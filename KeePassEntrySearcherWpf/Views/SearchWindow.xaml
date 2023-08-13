@@ -33,6 +33,22 @@
         <KeyBinding
             Key="Enter"
             Command="{Binding ViewModel.EnterActionCommand}"  />
+        <KeyBinding
+            Key="Enter"
+            Modifiers="Shift"
+            Command="{Binding ViewModel.ShiftEnterActionCommand}"  />
+        <KeyBinding
+            Key="Enter"
+            Modifiers="Ctrl"
+            Command="{Binding ViewModel.ControlEnterActionCommand}"  />
+        <KeyBinding
+            Key="Enter"
+            Modifiers="Alt"
+            Command="{Binding ViewModel.AltEnterActionCommand}"  />
+        <KeyBinding
+            Key="Enter"
+            Modifiers="Windows"
+            Command="{Binding ViewModel.WindowsEnterActionCommand}"  />
     </ui:FluentWindow.InputBindings>
 
     <Grid>

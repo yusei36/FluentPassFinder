@@ -30,5 +30,11 @@ namespace KeePassEntrySearcherWpf.ViewModels
         {
             interactionManager.CopyToClipboard(UserName, true, true, entry);
         }
+
+        [RelayCommand]
+        public void CopyPassword()
+        {
+            interactionManager.CopyToClipboard(entry.Strings.ReadSafe(PwDefs.PasswordField), true, true, entry);
+        }
     }
 }
