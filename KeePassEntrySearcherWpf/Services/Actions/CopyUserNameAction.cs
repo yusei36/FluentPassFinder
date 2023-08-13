@@ -5,11 +5,11 @@ namespace KeePassEntrySearcherWpf.Services.Actions
 {
     internal class CopyUserNameAction : IAction
     {
-        private readonly IKeePassInteractionManager interactionManager;
+        private readonly IPluginInteractionManager interactionManager;
 
         public ActionType ActionType => ActionType.CopyUserName;
 
-        public CopyUserNameAction(IKeePassInteractionManager interactionManager)
+        public CopyUserNameAction(IPluginInteractionManager interactionManager)
         {
             this.interactionManager = interactionManager;
         }

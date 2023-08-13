@@ -2,7 +2,7 @@
 
 namespace KeePassEntrySearcherContracts
 {
-    public interface IKeePassDataProvider
+    public interface IPluginDataProvider
     {
         PwDatabase[] GetPwDatabases();
     }

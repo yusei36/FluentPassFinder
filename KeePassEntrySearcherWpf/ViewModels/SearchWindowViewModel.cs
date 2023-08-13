@@ -6,8 +6,8 @@ namespace KeePassEntrySearcherWpf.ViewModels
 {
     public partial class SearchWindowViewModel : ObservableObject
     {
-        private readonly IKeePassDataProvider dataProvider;
-        private readonly IKeePassInteractionManager interactionManager;
+        private readonly IPluginDataProvider dataProvider;
+        private readonly IPluginInteractionManager interactionManager;
         private readonly IEntrySearchService entrySearchService;
         private readonly IEntryActionService entryActionService;
         [ObservableProperty]
@@ -25,7 +25,7 @@ namespace KeePassEntrySearcherWpf.ViewModels
         public Action? HideSearchWindow;
         public Boolean IsAnyDatabaseOpen => dataProvider.GetPwDatabases().Any();
 
-        public SearchWindowViewModel(IKeePassDataProvider dataProvider, IKeePassInteractionManager interactionManager, IEntrySearchService entrySearchService, IEntryActionService entryActionService)
+        public SearchWindowViewModel(IPluginDataProvider dataProvider, IPluginInteractionManager interactionManager, IEntrySearchService entrySearchService, IEntryActionService entryActionService)
         {
             this.dataProvider = dataProvider;
             this.interactionManager = interactionManager;

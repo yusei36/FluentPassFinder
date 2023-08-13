@@ -14,7 +14,7 @@ using System.Windows.Threading;
 
 namespace KeePassEntrySearcherPlugin
 {
-    public sealed class KeePassEntrySearcherPluginExt : Plugin, IKeePassDataProvider, IKeePassInteractionManager
+    public sealed class KeePassEntrySearcherPluginExt : Plugin, IPluginDataProvider, IPluginInteractionManager
     {
         private IPluginHost pluginHost = null;
         private Thread wpfAppThread;

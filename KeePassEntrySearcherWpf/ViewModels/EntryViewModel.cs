@@ -6,7 +6,7 @@ namespace KeePassEntrySearcherWpf.ViewModels
 {
     public partial class EntryViewModel : ObservableObject
     {
-        private readonly IKeePassInteractionManager interactionManager;
+        private readonly IPluginInteractionManager interactionManager;
 
         [ObservableProperty]
         private string title;
@@ -22,7 +22,7 @@ namespace KeePassEntrySearcherWpf.ViewModels
 
         public EntrySearchResult SearchResult { get; }
 
-        public EntryViewModel(EntrySearchResult searchResult, IKeePassInteractionManager interactionManager)
+        public EntryViewModel(EntrySearchResult searchResult, IPluginInteractionManager interactionManager)
         {
             SearchResult = searchResult;
             this.interactionManager = interactionManager;

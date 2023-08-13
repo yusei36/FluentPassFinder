@@ -33,7 +33,7 @@ namespace KeePassEntrySearcherWpf
             Container.Collection.Register<IAction>(Assembly.GetAssembly(typeof(App)));
         }
 
-        public void Init(IKeePassDataProvider dataProvider, IKeePassInteractionManager interactionManager)
+        public void Init(IPluginDataProvider dataProvider, IPluginInteractionManager interactionManager)
         {
             if (dataProvider == null)
             {
