@@ -42,7 +42,7 @@ namespace KeePassEntrySearcherWpf.ViewModels
             }
 
             //SelectedEntry.CopyUserName();
-            //HideSearchWindow?.Invoke();
+            HideSearchWindow?.Invoke();
         }
 
         [RelayCommand]
@@ -78,19 +78,7 @@ namespace KeePassEntrySearcherWpf.ViewModels
             }
 
             //SelectedEntry.CopyUserName();
-            //HideSearchWindow?.Invoke();
-        }
-
-        [RelayCommand]
-        public void WindowsEnterAction()
-        {
-            if (SelectedEntry == null)
-            {
-                return;
-            }
-
-            //SelectedEntry.CopyUserName();
-            //HideSearchWindow?.Invoke();
+            HideSearchWindow?.Invoke();
         }
 
         [RelayCommand]

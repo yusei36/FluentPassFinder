@@ -28,27 +28,20 @@
     mc:Ignorable="d">
     <ui:FluentWindow.InputBindings>
         <KeyBinding
-            Key="Esc"
+            Gesture="Escape"
             Command="{Binding HideSearchWindowCommand}" />
         <KeyBinding
-            Key="Enter"
+            Gesture="Enter"
             Command="{Binding ViewModel.EnterActionCommand}"  />
         <KeyBinding
-            Key="Enter"
-            Modifiers="Shift"
+            Gesture="Shift+Enter"
             Command="{Binding ViewModel.ShiftEnterActionCommand}"  />
         <KeyBinding
-            Key="Enter"
-            Modifiers="Ctrl"
+            Gesture="Ctrl+Enter"
             Command="{Binding ViewModel.ControlEnterActionCommand}"  />
         <KeyBinding
-            Key="Enter"
-            Modifiers="Alt"
+            Gesture="Alt+Enter"
             Command="{Binding ViewModel.AltEnterActionCommand}"  />
-        <KeyBinding
-            Key="Enter"
-            Modifiers="Windows"
-            Command="{Binding ViewModel.WindowsEnterActionCommand}"  />
     </ui:FluentWindow.InputBindings>
 
     <Grid>
@@ -62,9 +55,9 @@
                     IconPlacement="Right"
                     Text="{Binding ViewModel.SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
             <ui:TextBox.InputBindings>
-                <KeyBinding Key="Down"
+                <KeyBinding Gesture="Down"
                             Command="{Binding ViewModel.NavigateListDownCommand}"  />
-                <KeyBinding Key="Up"
+                <KeyBinding Gesture="Up"
                             Command="{Binding ViewModel.NavigateListUpCommand}"  />
             </ui:TextBox.InputBindings>
             <ui:TextBox.Icon>
