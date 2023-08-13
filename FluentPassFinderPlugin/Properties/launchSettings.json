@@ -2,7 +2,8 @@
   "profiles": {
     "Start KeePass with Plugin": {
       "commandName": "Executable",
-      "executablePath": "./KeePass.exe"
+      "executablePath": "./KeePass.exe",
+      "commandLineArgs": "./../../../../../KeePass/test.kdbx -pw:\"\""
     }
   }
 }
