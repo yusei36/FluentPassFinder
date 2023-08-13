@@ -28,7 +28,14 @@ namespace FluentPassFinderPlugin
 
         public override void Terminate()
         {
-            wpfAppThread?.Abort();
+            try
+            {
+                InvokeOnWpfApp((app) => app.Shutdown());
+                wpfAppThread?.Abort();
+            }
+            catch (Exception)
+            {
+            }
             base.Terminate();
         }
 
