@@ -6,12 +6,12 @@ namespace KeePassEntrySearcherWpf.Services
     internal class EntryActionService : IEntryActionService
     {
         private readonly IKeePassInteractionManager interactionManager;
-        private readonly IKeePassDataProvider keePassDataProvider;
+        private readonly IKeePassDataProvider dataProvider;
 
-        public EntryActionService(IKeePassInteractionManager interactionManager, IKeePassDataProvider keePassDataProvider)
+        public EntryActionService(IKeePassInteractionManager interactionManager, IKeePassDataProvider dataProvider)
         {
             this.interactionManager = interactionManager;
-            this.keePassDataProvider = keePassDataProvider;
+            this.dataProvider = dataProvider;
         }
 
 

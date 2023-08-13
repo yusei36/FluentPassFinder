@@ -1,4 +1,4 @@
-﻿namespace KeePassEntrySearcherContracts
+﻿namespace KeePassEntrySearcherContracts.Services
 {
     public class SearchOptions
     {

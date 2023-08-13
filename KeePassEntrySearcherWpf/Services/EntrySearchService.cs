@@ -1,5 +1,4 @@
-﻿using KeePassEntrySearcherContracts;
-using KeePassEntrySearcherContracts.Services;
+﻿using KeePassEntrySearcherContracts.Services;
 namespace KeePassEntrySearcherWpf.Services
 {
     class EntrySearchService : IEntrySearchService

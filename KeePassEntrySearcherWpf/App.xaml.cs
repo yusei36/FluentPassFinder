@@ -17,17 +17,17 @@ namespace KeePassEntrySearcherWpf
     public partial class App
     {
         private SearchWindow? searchWindow;
-        private Container? container;
+
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
 
-            container = new Container();
-            container.Register<SearchWindow, SearchWindow>();
-            container.Register<SearchWindowViewModel, SearchWindowViewModel>();
+            Container = new Container();
+            Container.Register<SearchWindow, SearchWindow>();
+            Container.Register<SearchWindowViewModel, SearchWindowViewModel>();
 
-            container.Register<IEntryActionService, EntryActionService>();
-            container.Register<IEntrySearchService, EntrySearchService>();
+            Container.Register<IEntryActionService, EntryActionService>();
+            Container.Register<IEntrySearchService, EntrySearchService>();
         }
 
         public void Init(IKeePassDataProvider dataProvider, IKeePassInteractionManager interactionManager)
@@ -40,19 +40,21 @@ namespace KeePassEntrySearcherWpf
             {
                 throw new ArgumentNullException(nameof(interactionManager));
             }
-            if (container == null)
+            if (Container == null)
             {
                 throw new NullReferenceException("Container shouldn't be null while initializing");
             }
 
-            container.RegisterInstance(dataProvider);
-            container.RegisterInstance(interactionManager);
+            Container.RegisterInstance(dataProvider);
+            Container.RegisterInstance(interactionManager);
 
-            searchWindow = container.GetInstance<SearchWindow>();
+            searchWindow = Container.GetInstance<SearchWindow>();
             MainWindow = searchWindow;
 
             HotkeyManager.Current.AddOrReplace(nameof(ShowSearchWindow), Key.F, ModifierKeys.Control | ModifierKeys.Alt, ShowSearchWindow);
         }
+
+        public static Container? Container { get; private set; }
 
         private void ShowSearchWindow(object sender, HotkeyEventArgs e)
         {
