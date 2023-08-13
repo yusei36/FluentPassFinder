@@ -34,7 +34,7 @@ namespace KeePassEntrySearcherWpf.ViewModels
         }
 
         [RelayCommand]
-        public void EnterAction()
+        private void EnterAction()
         {
             if (SelectedEntry == null)
             {
@@ -46,7 +46,7 @@ namespace KeePassEntrySearcherWpf.ViewModels
         }
 
         [RelayCommand]
-        public void ShiftEnterAction()
+        private void ShiftEnterAction()
         {
             if (SelectedEntry == null)
             {
@@ -58,7 +58,7 @@ namespace KeePassEntrySearcherWpf.ViewModels
         }
 
         [RelayCommand]
-        public void ControlEnterAction()
+        private void ControlEnterAction()
         {
             if (SelectedEntry == null)
             {
@@ -70,7 +70,7 @@ namespace KeePassEntrySearcherWpf.ViewModels
         }
 
         [RelayCommand]
-        public void AltEnterAction()
+        private void AltEnterAction()
         {
             if (SelectedEntry == null)
             {
@@ -82,7 +82,7 @@ namespace KeePassEntrySearcherWpf.ViewModels
         }
 
         [RelayCommand]
-        public void NavigateListDown()
+        private void NavigateListDown()
         {
             if (SelectedEntry == null) 
             { 
@@ -98,7 +98,7 @@ namespace KeePassEntrySearcherWpf.ViewModels
         }
 
         [RelayCommand]
-        public void NavigateListUp()
+        private void NavigateListUp()
         {
             if (SelectedEntry == null)
             {
