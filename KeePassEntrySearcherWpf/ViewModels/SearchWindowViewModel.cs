@@ -128,10 +128,10 @@ namespace KeePassEntrySearcherWpf.ViewModels
                     IncludeUrlField = true,
                     IncludeCustomFields = true 
                 };
-                var pwEntryResults = entrySearchService.GetPwEntries(dbs, searchQuery, defaultOptions);
-                foreach (var pwEntry in pwEntryResults)
+                var entrySearchResults = entrySearchService.SearchEntries(dbs, searchQuery, defaultOptions);
+                foreach (var entrySearchResult in entrySearchResults)
                 {
-                    Entries.Add(new EntryViewModel(pwEntry, interactionManager));
+                    Entries.Add(new EntryViewModel(entrySearchResult, interactionManager));
                 }
 
                 SelectedEntry = Entries.FirstOrDefault();

@@ -1,19 +1,16 @@
 ﻿using KeePassEntrySearcherContracts;
 using KeePassEntrySearcherContracts.Services;
-using System.IO;
-
 namespace KeePassEntrySearcherWpf.Services
 {
     class EntrySearchService : IEntrySearchService
     {
-        public IEnumerable<PwEntry> GetPwEntries(IEnumerable<PwDatabase> pwDatabases, string searchQuery, SearchOptions searchOptions)
+        public IEnumerable<EntrySearchResult> SearchEntries(IEnumerable<PwDatabase> databases, string searchQuery, SearchOptions searchOptions)
         {
             searchQuery = searchQuery.ToLower();
-
-            if (pwDatabases.Any())
+            foreach (PwDatabase db in databases)
             {
-                var allEntries = pwDatabases.SelectMany(db => db.RootGroup.GetEntries(true));
-                foreach (var entry in allEntries)
+                var allEntriesInDb = db.RootGroup.GetEntries(true);
+                foreach (var entry in allEntriesInDb)
                 {
                     var fieldNamesToSearch = GetFieldNamesToSearch(entry, searchOptions);
                     foreach (var fieldName in fieldNamesToSearch)
@@ -21,7 +18,7 @@ namespace KeePassEntrySearcherWpf.Services
                         var fieldValue = entry.Strings.ReadSafe(fieldName);
                         if (fieldValue.Contains(searchQuery, StringComparison.InvariantCultureIgnoreCase))
                         {
-                            yield return entry;
+                            yield return new EntrySearchResult { Entry = entry, Database = db};
                             break;
                         }
                     }

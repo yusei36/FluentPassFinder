@@ -1,10 +1,13 @@
 ﻿using KeePass.Forms;
 using KeePass.Plugins;
+using KeePass.UI;
 using KeePass.Util;
 using KeePassEntrySearcherContracts;
 using KeePassEntrySearcherWpf;
 using KeePassLib;
 using System;
+using System.Diagnostics;
+using System.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
@@ -83,6 +86,11 @@ namespace KeePassEntrySearcherPlugin
                     MainForm.StartClipboardCountdown();
                 }
             });
+        }
+
+        public Image GetBuildInIcon(PwIcon nuildInIconId)
+        {
+            return PluginHostDispatcher.Invoke(() => MainForm.ClientIcons.Images[(int)nuildInIconId]);
         }
 
         public MainForm MainForm => pluginHost?.MainWindow;

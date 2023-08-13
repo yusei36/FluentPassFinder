@@ -1,4 +1,10 @@
-﻿using KeePassEntrySearcherContracts;
+﻿using KeePass.Forms;
+using KeePass.UI;
+using KeePassEntrySearcherContracts;
+using KeePassEntrySearcherContracts.Services;
+using KeePassLib;
+using System.Diagnostics;
+using System.Drawing;
 
 namespace KeePassEntrySearcherWpf.ViewModels
 {
@@ -16,13 +22,31 @@ namespace KeePassEntrySearcherWpf.ViewModels
         [ObservableProperty]
         private string url;
 
-        public EntryViewModel(PwEntry entry, IKeePassInteractionManager interactionManager)
+        [ObservableProperty]
+        private Image? icon;
+
+        public EntryViewModel(EntrySearchResult searchResult, IKeePassInteractionManager interactionManager)
         {
-            this.entry = entry;
             this.interactionManager = interactionManager;
+            entry = searchResult.Entry;
             title = entry.Strings.ReadSafe(PwDefs.TitleField);
             userName = entry.Strings.ReadSafe(PwDefs.UserNameField);
             url = entry.Strings.ReadSafe(PwDefs.UrlField);
+            icon = GetEntryIcon(searchResult);
+        }
+
+        private Image? GetEntryIcon(EntrySearchResult searchResult)
+        {
+            Image? entryIcon = null;
+            if (!searchResult.Entry.CustomIconUuid.Equals(PwUuid.Zero))
+            {
+                entryIcon = searchResult.Database.GetCustomIcon(searchResult.Entry.CustomIconUuid, 24, 24);
+            }
+            if (entryIcon == null)
+            {
+                entryIcon = interactionManager.GetBuildInIcon(searchResult.Entry.IconId);
+            }
+            return entryIcon;
         }
 
         [RelayCommand]

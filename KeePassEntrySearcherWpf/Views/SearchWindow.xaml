@@ -6,7 +6,8 @@
     xmlns:local="clr-namespace:KeePassEntrySearcherWpf.Views"
     xmlns:models="clr-namespace:KeePassEntrySearcherWpf.ViewModels"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml" 
+    xmlns:converters="clr-namespace:KeePassEntrySearcherWpf.Converters"
     Title="{Binding ViewModel.ApplicationTitle, Mode=OneWay}"
     d:DataContext="{d:DesignInstance local:SearchWindow,
                                      IsDesignTimeCreatable=True}"
@@ -26,6 +27,9 @@
     Deactivated="MainWindow_Deactivated"
     
     mc:Ignorable="d">
+    <ui:FluentWindow.Resources>
+        <converters:ImageToBitmapSourceConverter x:Key="ImageToBitmapSourceConverter" />
+    </ui:FluentWindow.Resources>
     <ui:FluentWindow.InputBindings>
         <KeyBinding
             Gesture="Escape"
@@ -70,11 +74,31 @@
                   SelectedItem="{Binding ViewModel.SelectedEntry}">
             <ListView.ItemTemplate>
                 <DataTemplate DataType="models:EntryViewModel">
-                    <StackPanel Margin="4,0" 
-                                Orientation="Vertical">
-                        <ui:TextBlock FontTypography="Subtitle" Text="{Binding Title}"></ui:TextBlock>
-                        <ui:TextBlock FontTypography="Body" Text="{Binding UserName}"></ui:TextBlock>
-                    </StackPanel>
+                    <Grid Margin="4,0" >
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="24"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <ui:Image Grid.Column="0"
+                                  Grid.Row="0"
+                                  Grid.RowSpan="2"
+                                  Width="24"
+                                  Height="24"
+                               Source="{Binding Icon, Converter={StaticResource ImageToBitmapSourceConverter}}"/>
+                        <ui:TextBlock Grid.Column="1"
+                                      Grid.Row="0"
+                                      Margin="4,0"
+                                      FontTypography="Subtitle" 
+                                      Text="{Binding Title}"/>
+                        <ui:TextBlock Grid.Column="1"
+                                      Grid.Row="1"
+                                      FontTypography="Body" 
+                                      Text="{Binding UserName}"/>
+                    </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
