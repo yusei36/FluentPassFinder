@@ -1,16 +1,11 @@
-﻿using KeePass.Forms;
-using KeePass.UI;
-using KeePassEntrySearcherContracts;
+﻿using KeePassEntrySearcherContracts;
 using KeePassEntrySearcherContracts.Services;
-using KeePassLib;
-using System.Diagnostics;
 using System.Drawing;
 
 namespace KeePassEntrySearcherWpf.ViewModels
 {
     public partial class EntryViewModel : ObservableObject
     {
-        private PwEntry entry;
         private readonly IKeePassInteractionManager interactionManager;
 
         [ObservableProperty]
@@ -25,13 +20,15 @@ namespace KeePassEntrySearcherWpf.ViewModels
         [ObservableProperty]
         private Image? icon;
 
+        public EntrySearchResult SearchResult { get; }
+
         public EntryViewModel(EntrySearchResult searchResult, IKeePassInteractionManager interactionManager)
         {
+            SearchResult = searchResult;
             this.interactionManager = interactionManager;
-            entry = searchResult.Entry;
-            title = entry.Strings.ReadSafe(PwDefs.TitleField);
-            userName = entry.Strings.ReadSafe(PwDefs.UserNameField);
-            url = entry.Strings.ReadSafe(PwDefs.UrlField);
+            title = searchResult.Entry.Strings.ReadSafe(PwDefs.TitleField);
+            userName = searchResult.Entry.Strings.ReadSafe(PwDefs.UserNameField);
+            url = searchResult.Entry.Strings.ReadSafe(PwDefs.UrlField);
             icon = GetEntryIcon(searchResult);
         }
 
@@ -47,18 +44,6 @@ namespace KeePassEntrySearcherWpf.ViewModels
                 entryIcon = interactionManager.GetBuildInIcon(searchResult.Entry.IconId);
             }
             return entryIcon;
-        }
-
-        [RelayCommand]
-        public void CopyUserName()
-        {
-            interactionManager.CopyToClipboard(UserName, true, true, entry);
-        }
-
-        [RelayCommand]
-        public void CopyPassword()
-        {
-            interactionManager.CopyToClipboard(entry.Strings.ReadSafe(PwDefs.PasswordField), true, true, entry);
         }
     }
 }

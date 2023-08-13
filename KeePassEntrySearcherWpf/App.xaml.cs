@@ -22,7 +22,8 @@ namespace KeePassEntrySearcherWpf
 
         public void Init(IKeePassDataProvider dataProvider, IKeePassInteractionManager interactionManager)
         {
-            searchWindow = new SearchWindow(new SearchWindowViewModel(dataProvider, interactionManager, new EntrySearchService()));
+            var entryActionSerivce = new EntryActionService(interactionManager, dataProvider);
+            searchWindow = new SearchWindow(new SearchWindowViewModel(dataProvider, interactionManager, new EntrySearchService(), entryActionSerivce));
             MainWindow = searchWindow;
 
             HotkeyManager.Current.AddOrReplace(nameof(ShowSearchWindow), Key.F, ModifierKeys.Control | ModifierKeys.Alt, ShowSearchWindow);

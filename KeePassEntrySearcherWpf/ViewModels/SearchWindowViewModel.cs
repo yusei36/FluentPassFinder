@@ -9,8 +9,7 @@ namespace KeePassEntrySearcherWpf.ViewModels
         private readonly IKeePassDataProvider dataProvider;
         private readonly IKeePassInteractionManager interactionManager;
         private readonly IEntrySearchService entrySearchService;
-
-        
+        private readonly IEntryActionService entryActionService;
         [ObservableProperty]
         private string applicationTitle = "KeePassEntrySearcherWpf";
 
@@ -26,11 +25,12 @@ namespace KeePassEntrySearcherWpf.ViewModels
         public Action? HideSearchWindow;
         public Boolean IsAnyDatabaseOpen => dataProvider.GetPwDatabases().Any();
 
-        public SearchWindowViewModel(IKeePassDataProvider dataProvider, IKeePassInteractionManager interactionManager, IEntrySearchService entrySearchService)
+        public SearchWindowViewModel(IKeePassDataProvider dataProvider, IKeePassInteractionManager interactionManager, IEntrySearchService entrySearchService, IEntryActionService entryActionService)
         {
             this.dataProvider = dataProvider;
             this.interactionManager = interactionManager;
             this.entrySearchService = entrySearchService;
+            this.entryActionService = entryActionService;
         }
 
         [RelayCommand]
@@ -53,7 +53,7 @@ namespace KeePassEntrySearcherWpf.ViewModels
                 return;
             }
 
-            SelectedEntry.CopyUserName();
+            entryActionService.CopyUserName(SelectedEntry.SearchResult);
             HideSearchWindow?.Invoke();
         }
 
@@ -65,7 +65,7 @@ namespace KeePassEntrySearcherWpf.ViewModels
                 return;
             }
 
-            SelectedEntry.CopyPassword();
+            entryActionService.CopyUserName(SelectedEntry.SearchResult);
             HideSearchWindow?.Invoke();
         }
 
