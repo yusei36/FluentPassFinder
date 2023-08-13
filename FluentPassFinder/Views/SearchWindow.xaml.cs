@@ -1,5 +1,4 @@
 ﻿using FluentPassFinder.ViewModels;
-using System.Windows;
 using System.Windows.Controls;
 
 namespace FluentPassFinder.Views

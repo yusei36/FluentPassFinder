@@ -31,12 +31,8 @@ namespace FluentPassFinder
             Container.Collection.Register<IAction>(Assembly.GetAssembly(typeof(App)));
         }
 
-        public void Init(IPluginDataProvider dataProvider, IPluginInteractionManager interactionManager)
+        public void Init(IPluginHostProxy interactionManager)
         {
-            if (dataProvider == null)
-            {
-                throw new ArgumentNullException(nameof(dataProvider));
-            }
             if (interactionManager == null)
             {
                 throw new ArgumentNullException(nameof(interactionManager));
@@ -46,7 +42,6 @@ namespace FluentPassFinder
                 throw new NullReferenceException("Container shouldn't be null while initializing");
             }
 
-            Container.RegisterInstance(dataProvider);
             Container.RegisterInstance(interactionManager);
 
             HotkeyManager.Current.AddOrReplace(nameof(ShowSearchWindow), Key.F, ModifierKeys.Control | ModifierKeys.Alt, ShowSearchWindow);

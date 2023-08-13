@@ -5,18 +5,18 @@ namespace FluentPassFinder.Services.Actions
 {
     internal class CopyPasswordAction : IAction
     {
-        private readonly IPluginInteractionManager interactionManager;
+        private readonly IPluginHostProxy hostProxy;
 
         public ActionType ActionType => ActionType.CopyPassword;
 
-        public CopyPasswordAction(IPluginInteractionManager interactionManager)
+        public CopyPasswordAction(IPluginHostProxy hostProxy)
         {
-            this.interactionManager = interactionManager;
+            this.hostProxy = hostProxy;
         }
 
         public void RunAction(EntrySearchResult searchResult)
         {
-            interactionManager.CopyToClipboard(searchResult.Entry.Strings.ReadSafe(PwDefs.PasswordField), true, true, searchResult.Entry);
+            hostProxy.CopyToClipboard(searchResult.Entry.Strings.ReadSafe(PwDefs.PasswordField), true, true, searchResult.Entry);
         }
     }
 }

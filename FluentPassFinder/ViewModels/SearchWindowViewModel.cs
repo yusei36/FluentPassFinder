@@ -6,10 +6,10 @@ namespace FluentPassFinder.ViewModels
 {
     public partial class SearchWindowViewModel : ObservableObject
     {
-        private readonly IPluginDataProvider dataProvider;
-        private readonly IPluginInteractionManager interactionManager;
+        private readonly IPluginHostProxy hostProxy;
         private readonly IEntrySearchService entrySearchService;
         private readonly IEntryActionService entryActionService;
+
         [ObservableProperty]
         private string applicationTitle = "FluentPassFinder";
 
@@ -23,12 +23,11 @@ namespace FluentPassFinder.ViewModels
         private EntryViewModel? selectedEntry;
 
         public Action? HideSearchWindow;
-        public Boolean IsAnyDatabaseOpen => dataProvider.GetPwDatabases().Any();
+        public Boolean IsAnyDatabaseOpen => hostProxy.GetPwDatabases().Any();
 
-        public SearchWindowViewModel(IPluginDataProvider dataProvider, IPluginInteractionManager interactionManager, IEntrySearchService entrySearchService, IEntryActionService entryActionService)
+        public SearchWindowViewModel(IPluginHostProxy hostProxy, IEntrySearchService entrySearchService, IEntryActionService entryActionService)
         {
-            this.dataProvider = dataProvider;
-            this.interactionManager = interactionManager;
+            this.hostProxy = hostProxy;
             this.entrySearchService = entrySearchService;
             this.entryActionService = entryActionService;
         }
@@ -115,7 +114,7 @@ namespace FluentPassFinder.ViewModels
 
         partial void OnSearchTextChanged(string searchQuery)
         {
-            var dbs = dataProvider.GetPwDatabases();
+            var dbs = hostProxy.GetPwDatabases();
 
             SelectedEntry = null;
             Entries.Clear();
@@ -132,7 +131,7 @@ namespace FluentPassFinder.ViewModels
                 var entrySearchResults = entrySearchService.SearchEntries(dbs, searchQuery, defaultOptions);
                 foreach (var entrySearchResult in entrySearchResults)
                 {
-                    Entries.Add(new EntryViewModel(entrySearchResult, interactionManager));
+                    Entries.Add(new EntryViewModel(entrySearchResult, hostProxy));
                 }
 
                 SelectedEntry = Entries.FirstOrDefault();

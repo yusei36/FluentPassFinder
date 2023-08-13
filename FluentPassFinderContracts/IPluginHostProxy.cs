@@ -1,13 +1,12 @@
 ﻿using KeePassLib;
 using System.Drawing;
-using System.Windows.Threading;
 
 namespace FluentPassFinderContracts
 {
-    public interface IPluginInteractionManager
+    public interface IPluginHostProxy
     {
-        Dispatcher PluginHostDispatcher { get; }
         void CopyToClipboard(string strToCopy, bool bSprCompile, bool bIsEntryInfo, PwEntry peEntryInfo);
-        Image GetBuildInIcon(PwIcon nuildInIconId);
+        Image GetBuildInIcon(PwIcon nuildInIconId); 
+        PwDatabase[] GetPwDatabases();
     }
 }
