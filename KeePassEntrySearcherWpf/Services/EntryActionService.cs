@@ -5,24 +5,35 @@ namespace KeePassEntrySearcherWpf.Services
 {
     internal class EntryActionService : IEntryActionService
     {
-        private readonly IKeePassInteractionManager interactionManager;
-        private readonly IKeePassDataProvider dataProvider;
+        private readonly IEnumerable<IAction> actions;
 
-        public EntryActionService(IKeePassInteractionManager interactionManager, IKeePassDataProvider dataProvider)
+        public EntryActionService(IEnumerable<IAction> actions)
         {
-            this.interactionManager = interactionManager;
-            this.dataProvider = dataProvider;
+            this.actions = actions;
         }
 
 
         public void CopyUserName(EntrySearchResult searchResult)
         {
-            interactionManager.CopyToClipboard(searchResult.Entry.Strings.ReadSafe(PwDefs.UserNameField), true, true, searchResult.Entry);
+            RunAction(searchResult, ActionType.CopyUserName);
         }
 
         public void CopyPassword(EntrySearchResult searchResult)
         {
-            interactionManager.CopyToClipboard(searchResult.Entry.Strings.ReadSafe(PwDefs.PasswordField), true, true, searchResult.Entry);
+            RunAction(searchResult, ActionType.CopyPassword);
+        }
+
+        public void RunAction(EntrySearchResult searchResult, ActionType actionType)
+        {
+            var action = actions.FirstOrDefault(a => a.ActionType == actionType);
+            if (action != null)
+            {
+                action.RunAction(searchResult);
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException(nameof(actionType), actionType.ToString());
+            }
         }
     }
 }

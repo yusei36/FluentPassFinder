@@ -8,6 +8,7 @@ using KeePassEntrySearcherWpf.ViewModels;
 using KeePassEntrySearcherContracts;
 using KeePassEntrySearcherContracts.Services;
 using KeePassEntrySearcherWpf.Services;
+using System.Reflection;
 
 namespace KeePassEntrySearcherWpf
 {
@@ -26,8 +27,9 @@ namespace KeePassEntrySearcherWpf
             Container.Register<SearchWindow, SearchWindow>();
             Container.Register<SearchWindowViewModel, SearchWindowViewModel>();
 
-            Container.Register<IEntryActionService, EntryActionService>();
-            Container.Register<IEntrySearchService, EntrySearchService>();
+            Container.Register<IEntryActionService, EntryActionService>(Lifestyle.Singleton);
+            Container.Register<IEntrySearchService, EntrySearchService>(Lifestyle.Singleton);
+            Container.Collection.Register<IAction>(Assembly.GetAssembly(typeof(App)));
         }
 
         public void Init(IKeePassDataProvider dataProvider, IKeePassInteractionManager interactionManager)
