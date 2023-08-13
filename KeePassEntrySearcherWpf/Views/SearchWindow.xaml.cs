@@ -1,4 +1,5 @@
 ﻿using KeePassEntrySearcherWpf.ViewModels;
+using System.Windows.Controls;
 
 namespace KeePassEntrySearcherWpf.Views
 {
@@ -43,6 +44,15 @@ namespace KeePassEntrySearcherWpf.Views
         {
             base.OnActivated(e);
             SearchBox.Focus();
+        }
+
+        private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var listView = (ListView)sender;
+            if (listView.SelectedItem != null)
+            {
+                listView.ScrollIntoView(listView.SelectedItem);
+            }
         }
     }
 }

@@ -71,7 +71,8 @@
         <ListView Grid.Row="1"  
                   Margin="4,0"
                   ItemsSource="{Binding ViewModel.Entries}" 
-                  SelectedItem="{Binding ViewModel.SelectedEntry}">
+                  SelectedItem="{Binding ViewModel.SelectedEntry}"
+                  SelectionChanged="ListView_SelectionChanged">
             <ListView.ItemTemplate>
                 <DataTemplate DataType="models:EntryViewModel">
                     <Grid Margin="4,0" >
@@ -86,8 +87,10 @@
                         <ui:Image Grid.Column="0"
                                   Grid.Row="0"
                                   Grid.RowSpan="2"
-                                  Width="24"
-                                  Height="24"
+                                  VerticalAlignment="Top"
+                                  Margin="0,8"
+                                  Width="16"
+                                  Height="16"
                                Source="{Binding Icon, Converter={StaticResource ImageToBitmapSourceConverter}}"/>
                         <ui:TextBlock Grid.Column="1"
                                       Grid.Row="0"
