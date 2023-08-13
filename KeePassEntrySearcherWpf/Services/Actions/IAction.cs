@@ -1,6 +1,6 @@
 ﻿using KeePassEntrySearcherContracts.Services;
 
-namespace KeePassEntrySearcherWpf.Services
+namespace KeePassEntrySearcherWpf.Services.Actions
 {
     internal interface IAction
     {

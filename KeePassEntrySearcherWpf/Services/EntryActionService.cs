@@ -1,5 +1,5 @@
-﻿using KeePassEntrySearcherContracts;
-using KeePassEntrySearcherContracts.Services;
+﻿using KeePassEntrySearcherContracts.Services;
+using KeePassEntrySearcherWpf.Services.Actions;
 
 namespace KeePassEntrySearcherWpf.Services
 {
@@ -10,17 +10,6 @@ namespace KeePassEntrySearcherWpf.Services
         public EntryActionService(IEnumerable<IAction> actions)
         {
             this.actions = actions;
-        }
-
-
-        public void CopyUserName(EntrySearchResult searchResult)
-        {
-            RunAction(searchResult, ActionType.CopyUserName);
-        }
-
-        public void CopyPassword(EntrySearchResult searchResult)
-        {
-            RunAction(searchResult, ActionType.CopyPassword);
         }
 
         public void RunAction(EntrySearchResult searchResult, ActionType actionType)

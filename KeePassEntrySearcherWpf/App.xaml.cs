@@ -9,6 +9,7 @@ using KeePassEntrySearcherContracts;
 using KeePassEntrySearcherContracts.Services;
 using KeePassEntrySearcherWpf.Services;
 using System.Reflection;
+using KeePassEntrySearcherWpf.Services.Actions;
 
 namespace KeePassEntrySearcherWpf
 {

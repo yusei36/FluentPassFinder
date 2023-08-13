@@ -41,7 +41,7 @@ namespace KeePassEntrySearcherWpf.ViewModels
                 return;
             }
 
-            //SelectedEntry.CopyUserName();
+            entryActionService.RunAction(SelectedEntry.SearchResult, ActionType.CopyUserName);
             HideSearchWindow?.Invoke();
         }
 
@@ -53,7 +53,7 @@ namespace KeePassEntrySearcherWpf.ViewModels
                 return;
             }
 
-            entryActionService.CopyUserName(SelectedEntry.SearchResult);
+            entryActionService.RunAction(SelectedEntry.SearchResult, ActionType.CopyUserName);
             HideSearchWindow?.Invoke();
         }
 
@@ -65,7 +65,7 @@ namespace KeePassEntrySearcherWpf.ViewModels
                 return;
             }
 
-            entryActionService.CopyUserName(SelectedEntry.SearchResult);
+            entryActionService.RunAction(SelectedEntry.SearchResult, ActionType.CopyPassword);
             HideSearchWindow?.Invoke();
         }
 
@@ -77,7 +77,7 @@ namespace KeePassEntrySearcherWpf.ViewModels
                 return;
             }
 
-            //SelectedEntry.CopyUserName();
+            entryActionService.RunAction(SelectedEntry.SearchResult, ActionType.CopyUserName);
             HideSearchWindow?.Invoke();
         }
 
