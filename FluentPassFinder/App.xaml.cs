@@ -18,8 +18,6 @@ namespace FluentPassFinder
     /// </summary>
     public partial class App
     {
-        private SearchWindow? searchWindow;
-
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
@@ -51,9 +49,6 @@ namespace FluentPassFinder
             Container.RegisterInstance(dataProvider);
             Container.RegisterInstance(interactionManager);
 
-            searchWindow = Container.GetInstance<SearchWindow>();
-            MainWindow = searchWindow;
-
             HotkeyManager.Current.AddOrReplace(nameof(ShowSearchWindow), Key.F, ModifierKeys.Control | ModifierKeys.Alt, ShowSearchWindow);
         }
 
@@ -61,6 +56,13 @@ namespace FluentPassFinder
 
         private void ShowSearchWindow(object sender, HotkeyEventArgs e)
         {
+            if (Container == null)
+            {
+                throw new NullReferenceException("Container is null");
+            }
+
+            var searchWindow = Container.GetInstance<SearchWindow>();
+            MainWindow = searchWindow;
             searchWindow?.ShowSearchWindow();
         }
     }

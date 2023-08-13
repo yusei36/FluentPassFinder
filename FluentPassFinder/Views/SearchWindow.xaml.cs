@@ -1,4 +1,5 @@
 ﻿using FluentPassFinder.ViewModels;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace FluentPassFinder.Views
@@ -6,6 +7,7 @@ namespace FluentPassFinder.Views
     public partial class SearchWindow
     {
         public SearchWindowViewModel ViewModel { get; }
+        private bool isClosing = false;
 
         public SearchWindow(SearchWindowViewModel viewModel)
         {
@@ -20,15 +22,25 @@ namespace FluentPassFinder.Views
 
         private void MainWindow_Deactivated(object? sender, EventArgs e)
         {
+        }
+
+        protected override void OnDeactivated(EventArgs e)
+        {
+            base.OnDeactivated(e);
             HideSearchWindow();
         }
 
         [RelayCommand]
         public void HideSearchWindow()
         {
-            Hide();
-            ViewModel.SearchText = string.Empty;
-            ViewModel.Entries.Clear();
+            if (!isClosing)
+            {
+                isClosing = true;
+                Close();
+
+                ViewModel.SearchText = string.Empty;
+                ViewModel.Entries.Clear();
+            }
         }
 
         public void ShowSearchWindow()
