@@ -14,6 +14,7 @@ namespace KeePassEntrySearcherWpf
     /// </summary>
     public partial class App
     {
+        private SearchWindow searchWindow;
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
@@ -21,15 +22,15 @@ namespace KeePassEntrySearcherWpf
 
         public void Init(IKeePassDataProvider dataProvider, IKeePassInteractionManager interactionManager)
         {
-            MainWindow = new SearchWindow(new SearchWindowViewModel(dataProvider, interactionManager, new EntrySearchService()));
+            searchWindow = new SearchWindow(new SearchWindowViewModel(dataProvider, interactionManager, new EntrySearchService()));
+            MainWindow = searchWindow;
 
             HotkeyManager.Current.AddOrReplace(nameof(ShowSearchWindow), Key.F, ModifierKeys.Control | ModifierKeys.Alt, ShowSearchWindow);
         }
 
         private void ShowSearchWindow(object sender, HotkeyEventArgs e)
         {
-            MainWindow.Show();
-            MainWindow.Activate();
+            searchWindow?.ShowSearchWindow();
         }
     }
 }

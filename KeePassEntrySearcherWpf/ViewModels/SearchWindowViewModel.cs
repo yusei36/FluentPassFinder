@@ -18,7 +18,10 @@ namespace KeePassEntrySearcherWpf.ViewModels
         private string searchText = string.Empty;
 
         [ObservableProperty]
-        private ObservableCollection<EntryViewModel> _entries = new ObservableCollection<EntryViewModel>();
+        private ObservableCollection<EntryViewModel> entries = new ObservableCollection<EntryViewModel>();
+
+        [ObservableProperty]
+        private EntryViewModel? selectedEntry;
 
         public SearchWindowViewModel(IKeePassDataProvider dataProvider, IKeePassInteractionManager interactionManager, IEntrySearchService entrySearchService)
         {
@@ -28,16 +31,53 @@ namespace KeePassEntrySearcherWpf.ViewModels
         }
 
         [RelayCommand]
-        public void OnEscape(object sender)
+        public void OnEnter()
         {
-            SearchText = string.Empty;
-            Entries.Clear();
+            if (SelectedEntry == null)
+            {
+                return;
+            }
+
+            SelectedEntry.CopyUserName();
+        }
+
+        [RelayCommand]
+        public void OnDown()
+        {
+            if (SelectedEntry == null) 
+            { 
+                return; 
+            }
+
+            var selectedIndex = Entries.IndexOf(SelectedEntry);
+            var nextItemIndex = selectedIndex+1;
+            if (nextItemIndex < Entries.Count)
+            {
+                SelectedEntry = Entries[nextItemIndex];
+            }
+        }
+
+        [RelayCommand]
+        public void OnUp()
+        {
+            if (SelectedEntry == null)
+            {
+                return;
+            }
+
+            var selectedIndex = Entries.IndexOf(SelectedEntry);
+            var previousItemIndex = selectedIndex - 1;
+            if (previousItemIndex >= 0)
+            {
+                SelectedEntry = Entries[previousItemIndex];
+            }
         }
 
         partial void OnSearchTextChanged(string searchQuery)
         {
             var dbs = dataProvider.GetPwDatabases();
 
+            SelectedEntry = null;
             Entries.Clear();
 
             if (dbs != null)
@@ -53,6 +93,8 @@ namespace KeePassEntrySearcherWpf.ViewModels
                 {
                     Entries.Add(new EntryViewModel(pwEntry, interactionManager));
                 }
+
+                SelectedEntry = Entries.FirstOrDefault();
             }
         }
     }

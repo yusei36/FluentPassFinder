@@ -23,14 +23,16 @@
     MinHeight="40"
     SizeToContent="Height"
     
-    KeyUp="MainWindow_KeyUp"
     Deactivated="MainWindow_Deactivated"
     
     mc:Ignorable="d">
     <ui:FluentWindow.InputBindings>
         <KeyBinding
             Key="Esc"
-            Command="{Binding ViewModel.EscapeCommand}"  />
+            Command="{Binding HideSearchWindowCommand}" />
+        <KeyBinding
+            Key="Enter"
+            Command="{Binding ViewModel.EnterCommand}"  />
     </ui:FluentWindow.InputBindings>
 
     <Grid>
@@ -43,12 +45,18 @@
                     PlaceholderText="Search"
                     IconPlacement="Right"
                     Text="{Binding ViewModel.SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+            <ui:TextBox.InputBindings>
+                <KeyBinding Key="Down"
+                            Command="{Binding ViewModel.DownCommand}"  />
+                <KeyBinding Key="Up"
+                            Command="{Binding ViewModel.UpCommand}"  />
+            </ui:TextBox.InputBindings>
             <ui:TextBox.Icon>
                 <ui:SymbolIcon Symbol="Search24" />
             </ui:TextBox.Icon>
         </ui:TextBox>
         <ScrollViewer Grid.Row="1">
-            <ListView ItemsSource="{Binding ViewModel.Entries}" ScrollViewer.CanContentScroll="True">
+            <ListView ItemsSource="{Binding ViewModel.Entries}" SelectedItem="{Binding ViewModel.SelectedEntry}">
                 <ListView.ItemTemplate>
                     <DataTemplate DataType="models:EntryViewModel">
                         <StackPanel Orientation="Horizontal">

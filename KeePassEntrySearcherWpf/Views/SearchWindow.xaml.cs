@@ -1,5 +1,4 @@
 ﻿using KeePassEntrySearcherWpf.ViewModels;
-using System.Windows.Input;
 
 namespace KeePassEntrySearcherWpf.Views
 {
@@ -7,9 +6,7 @@ namespace KeePassEntrySearcherWpf.Views
     {
         public SearchWindowViewModel ViewModel { get; }
 
-        public SearchWindow(
-            SearchWindowViewModel viewModel
-        )
+        public SearchWindow(SearchWindowViewModel viewModel)
         {
             Wpf.Ui.Appearance.Watcher.Watch(this);
 
@@ -21,17 +18,23 @@ namespace KeePassEntrySearcherWpf.Views
 
         private void MainWindow_Deactivated(object? sender, EventArgs e)
         {
-            Hide();
-            ViewModel.EscapeCommand.Execute(this);
+            HideSearchWindow();
         }
 
-        private void MainWindow_KeyUp(object sender, KeyEventArgs e)
+        [RelayCommand]
+        public void HideSearchWindow()
         {
-            if (e.Key == Key.Escape)
-            {
-                Hide();
-            }
+            Hide();
+            ViewModel.SearchText = string.Empty;
+            ViewModel.Entries.Clear();
         }
+
+        public void ShowSearchWindow()
+        {
+            Show();
+            Activate();
+        }
+
         protected override void OnActivated(EventArgs e)
         {
             base.OnActivated(e);

@@ -26,7 +26,7 @@ namespace KeePassEntrySearcherWpf.ViewModels
         }
 
         [RelayCommand]
-        private void OnCopyUserName()
+        public void CopyUserName()
         {
             interactionManager.CopyToClipboard(UserName, true, true, entry);
         }
