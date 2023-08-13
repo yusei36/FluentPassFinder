@@ -23,6 +23,9 @@ namespace KeePassEntrySearcherWpf.ViewModels
         [ObservableProperty]
         private EntryViewModel? selectedEntry;
 
+        public Action? HideSearchWindow;
+        public Boolean IsAnyDatabaseOpen => dataProvider.GetPwDatabases().Any();
+
         public SearchWindowViewModel(IKeePassDataProvider dataProvider, IKeePassInteractionManager interactionManager, IEntrySearchService entrySearchService)
         {
             this.dataProvider = dataProvider;
@@ -31,7 +34,7 @@ namespace KeePassEntrySearcherWpf.ViewModels
         }
 
         [RelayCommand]
-        public void OnEnter()
+        public void EnterAction()
         {
             if (SelectedEntry == null)
             {
@@ -39,10 +42,11 @@ namespace KeePassEntrySearcherWpf.ViewModels
             }
 
             SelectedEntry.CopyUserName();
+            HideSearchWindow?.Invoke();
         }
 
         [RelayCommand]
-        public void OnDown()
+        public void NavigateListDown()
         {
             if (SelectedEntry == null) 
             { 
@@ -58,7 +62,7 @@ namespace KeePassEntrySearcherWpf.ViewModels
         }
 
         [RelayCommand]
-        public void OnUp()
+        public void NavigateListUp()
         {
             if (SelectedEntry == null)
             {

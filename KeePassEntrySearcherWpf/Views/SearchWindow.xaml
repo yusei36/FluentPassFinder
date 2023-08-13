@@ -32,7 +32,7 @@
             Command="{Binding HideSearchWindowCommand}" />
         <KeyBinding
             Key="Enter"
-            Command="{Binding ViewModel.EnterCommand}"  />
+            Command="{Binding ViewModel.EnterActionCommand}"  />
     </ui:FluentWindow.InputBindings>
 
     <Grid>
@@ -47,9 +47,9 @@
                     Text="{Binding ViewModel.SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
             <ui:TextBox.InputBindings>
                 <KeyBinding Key="Down"
-                            Command="{Binding ViewModel.DownCommand}"  />
+                            Command="{Binding ViewModel.NavigateListDownCommand}"  />
                 <KeyBinding Key="Up"
-                            Command="{Binding ViewModel.UpCommand}"  />
+                            Command="{Binding ViewModel.NavigateListUpCommand}"  />
             </ui:TextBox.InputBindings>
             <ui:TextBox.Icon>
                 <ui:SymbolIcon Symbol="Search24" />

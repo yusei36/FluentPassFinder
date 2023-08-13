@@ -12,6 +12,7 @@ namespace KeePassEntrySearcherWpf.Views
 
             ViewModel = viewModel;
             DataContext = this;
+            ViewModel.HideSearchWindow = HideSearchWindow;
 
             InitializeComponent();
         }
@@ -31,8 +32,11 @@ namespace KeePassEntrySearcherWpf.Views
 
         public void ShowSearchWindow()
         {
-            Show();
-            Activate();
+            if (ViewModel.IsAnyDatabaseOpen)
+            {
+                Show();
+                Activate();
+            }
         }
 
         protected override void OnActivated(EventArgs e)
