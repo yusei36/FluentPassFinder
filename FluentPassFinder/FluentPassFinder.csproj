@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net48</TargetFramework>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+	<LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NHotkey.Wpf" Version="2.1.1" />
+    <PackageReference Include="SimpleInjector" Version="5.4.1" />
+    <PackageReference Include="WPF-UI" Version="3.0.0-preview.4" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1 " />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FluentPassFinderContracts\FluentPassFinderContracts.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="KeePass">
+      <HintPath>..\..\KeePass\KeePass.exe</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
