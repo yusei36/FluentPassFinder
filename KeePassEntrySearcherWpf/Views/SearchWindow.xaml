@@ -71,18 +71,19 @@
                 <ui:SymbolIcon Symbol="Search24" />
             </ui:TextBox.Icon>
         </ui:TextBox>
-        <ScrollViewer Grid.Row="1">
-            <ListView ItemsSource="{Binding ViewModel.Entries}" SelectedItem="{Binding ViewModel.SelectedEntry}">
-                <ListView.ItemTemplate>
-                    <DataTemplate DataType="models:EntryViewModel">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding Title}"></TextBlock>
-                            <Button Content="{Binding UserName}" Command="{Binding CopyUserNameCommand}"></Button>
-                            <ui:Hyperlink NavigateUri="{Binding Url}" Content="{Binding Url}"></ui:Hyperlink>
-                        </StackPanel>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-         </ScrollViewer>
+        <ListView Grid.Row="1"  
+                  Margin="4,0"
+                  ItemsSource="{Binding ViewModel.Entries}" 
+                  SelectedItem="{Binding ViewModel.SelectedEntry}">
+            <ListView.ItemTemplate>
+                <DataTemplate DataType="models:EntryViewModel">
+                    <StackPanel Margin="4,0" 
+                                Orientation="Vertical">
+                        <ui:TextBlock FontTypography="Subtitle" Text="{Binding Title}"></ui:TextBlock>
+                        <ui:TextBlock FontTypography="Body" Text="{Binding UserName}"></ui:TextBlock>
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
     </Grid>
 </ui:FluentWindow>
