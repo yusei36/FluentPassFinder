@@ -84,13 +84,13 @@ namespace FluentPassFinder.ViewModels
         [RelayCommand]
         private void NavigateListDown()
         {
-            if (SelectedEntry == null) 
-            { 
-                return; 
+            if (SelectedEntry == null)
+            {
+                return;
             }
 
             var selectedIndex = Entries.IndexOf(SelectedEntry);
-            var nextItemIndex = selectedIndex+1;
+            var nextItemIndex = selectedIndex + 1;
             if (nextItemIndex < Entries.Count)
             {
                 SelectedEntry = Entries[nextItemIndex];
@@ -122,11 +122,12 @@ namespace FluentPassFinder.ViewModels
 
             if (dbs != null)
             {
-                var defaultOptions = new SearchOptions() {
+                var defaultOptions = new SearchOptions()
+                {
                     IncludeTitleFiled = true,
                     IncludeNotesField = true,
                     IncludeUrlField = true,
-                    IncludeCustomFields = true 
+                    IncludeCustomFields = true
                 };
                 var entrySearchResults = entrySearchService.SearchEntries(dbs, searchQuery, defaultOptions);
                 foreach (var entrySearchResult in entrySearchResults)

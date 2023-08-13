@@ -1,15 +1,15 @@
-﻿using System.Windows;
-using System.Windows.Input;
+﻿using FluentPassFinder.Services;
+using FluentPassFinder.Services.Actions;
+using FluentPassFinder.ViewModels;
+using FluentPassFinder.Views;
+using FluentPassFinderContracts;
+using FluentPassFinderContracts.Services;
 using NHotkey;
 using NHotkey.Wpf;
 using SimpleInjector;
-using FluentPassFinder.Views;
-using FluentPassFinder.ViewModels;
-using FluentPassFinderContracts;
-using FluentPassFinderContracts.Services;
-using FluentPassFinder.Services;
 using System.Reflection;
-using FluentPassFinder.Services.Actions;
+using System.Windows;
+using System.Windows.Input;
 
 namespace FluentPassFinder
 {

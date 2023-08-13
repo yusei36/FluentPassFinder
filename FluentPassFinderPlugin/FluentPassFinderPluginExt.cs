@@ -1,8 +1,8 @@
-﻿using KeePass.Forms;
+﻿using FluentPassFinder;
+using FluentPassFinderContracts;
+using KeePass.Forms;
 using KeePass.Plugins;
 using KeePass.Util;
-using FluentPassFinderContracts;
-using FluentPassFinder;
 using KeePassLib;
 using System;
 using System.Drawing;

@@ -18,7 +18,7 @@ namespace FluentPassFinder.Services
                         var fieldValue = entry.Strings.ReadSafe(fieldName);
                         if (fieldValue.Contains(searchQuery, StringComparison.InvariantCultureIgnoreCase))
                         {
-                            yield return new EntrySearchResult { Entry = entry, Database = db};
+                            yield return new EntrySearchResult { Entry = entry, Database = db };
                             break;
                         }
                     }

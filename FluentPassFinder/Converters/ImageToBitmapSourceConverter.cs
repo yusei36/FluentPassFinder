@@ -1,8 +1,8 @@
 ﻿using System.Drawing;
 using System.Runtime.InteropServices;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media.Imaging;
-using System.Windows;
 
 namespace FluentPassFinder.Converters
 {
@@ -16,7 +16,7 @@ namespace FluentPassFinder.Converters
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool DeleteObject(IntPtr value);
 
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object? Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if (value is null || !(value is Image myImage))
             {//ensure provided value is valid image.
