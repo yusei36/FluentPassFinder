@@ -110,8 +110,8 @@
         </ListView>
         <ListView Grid.Row="1"  
           Margin="4,0"
-          ItemsSource="{Binding ViewModel.Actions}" 
-          SelectedItem="{Binding ViewModel.SelectedAction}" 
+          ItemsSource="{Binding ViewModel.ContextActions}" 
+          SelectedItem="{Binding ViewModel.SelectedContextAction}" 
           SelectionChanged="ListView_SelectionChanged"
           Visibility="{Binding ViewModel.IsContextMenuOpen, Converter={StaticResource BoolToVisibilityConverter}}">
             <ListView.ItemTemplate>

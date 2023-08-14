@@ -26,10 +26,10 @@ namespace FluentPassFinder.ViewModels
         private bool isContextMenuOpen = false;
 
         [ObservableProperty]
-        private ObservableCollection<IAction> actions;
+        private ObservableCollection<IAction> contextActions;
 
         [ObservableProperty]
-        private IAction selectedAction;
+        private IAction selectedContextAction;
 
         public Action HideSearchWindow;
         public Boolean IsAnyDatabaseOpen => hostProxy.GetPwDatabases().Any();
@@ -39,8 +39,8 @@ namespace FluentPassFinder.ViewModels
             this.hostProxy = hostProxy;
             this.entrySearchService = entrySearchService;
             this.entryActionService = entryActionService;
-            actions = new ObservableCollection<IAction>(entryActionService.Actions);
-            selectedAction = actions.First();
+            contextActions = new ObservableCollection<IAction>(entryActionService.Actions.Where(a => a.ActionType != ActionType.OpenContextMenu));
+            selectedContextAction = contextActions.First();
         }
 
         [RelayCommand]
@@ -53,12 +53,12 @@ namespace FluentPassFinder.ViewModels
 
             if (IsContextMenuOpen)
             {
-                if (SelectedAction == null)
+                if (SelectedContextAction == null)
                 {
                     return;
                 }
 
-                entryActionService.RunAction(SelectedEntry.SearchResult, SelectedAction);
+                entryActionService.RunAction(SelectedEntry.SearchResult, SelectedContextAction);
                 HideSearchWindow?.Invoke();
             }
             else 
@@ -109,7 +109,7 @@ namespace FluentPassFinder.ViewModels
         {
             if (IsContextMenuOpen)
             {
-                NavigateCollcetionDown(Actions, SelectedAction, (x) => SelectedAction = x);
+                NavigateCollcetionDown(ContextActions, SelectedContextAction, (x) => SelectedContextAction = x);
             }
             else
             {
@@ -122,7 +122,7 @@ namespace FluentPassFinder.ViewModels
         {
             if(IsContextMenuOpen)
             {
-                NavigateCollcetionUp(Actions, SelectedAction, (x) => SelectedAction = x);
+                NavigateCollcetionUp(ContextActions, SelectedContextAction, (x) => SelectedContextAction = x);
             }
             else
             {
