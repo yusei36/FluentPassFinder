@@ -45,7 +45,6 @@ namespace FluentPassFinder
             }
 
             Container = new Container();
-            Container.Register<SearchWindow, SearchWindow>();
             Container.Register<SearchWindowViewModel, SearchWindowViewModel>();
             Container.Register(() => new Lazy<SearchWindowViewModel>(() => searchWindow?.ViewModel ?? throw new ArgumentNullException("Current search window view model is null.")));
             Container.Register(() => new Lazy<SearchWindow>(() => searchWindow ?? throw new ArgumentNullException("Current search window view model is null.")));
@@ -56,6 +55,10 @@ namespace FluentPassFinder
             Container.Collection.Register<IAction>(Assembly.GetAssembly(typeof(App)));
 
             Container.RegisterInstance(interactionManager);
+
+            var viewModel = Container.GetInstance<SearchWindowViewModel>();
+            searchWindow = new SearchWindow(viewModel);
+            MainWindow = searchWindow;
 
             HotkeyManager.Current.AddOrReplace(nameof(ShowSearchWindow)+ nameof(Key.F), Key.F, ModifierKeys.Control | ModifierKeys.Alt, ShowSearchWindow);
             HotkeyManager.Current.AddOrReplace(nameof(ShowSearchWindow)+ nameof(Key.S), Key.S, ModifierKeys.Control | ModifierKeys.Alt, ShowSearchWindow);
@@ -71,13 +74,8 @@ namespace FluentPassFinder
             {
                 throw new NullReferenceException("Container is null");
             }
-
-            if (MainWindow == null)
-            {
-                searchWindow = Container.GetInstance<SearchWindow>();
-                MainWindow = searchWindow;
-                searchWindow?.ShowSearchWindow();
-            }
+            
+            Dispatcher.BeginInvoke(()=> searchWindow?.ShowSearchWindow());
         }
     }
 }

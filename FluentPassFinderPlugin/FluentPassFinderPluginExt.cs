@@ -79,7 +79,7 @@ namespace FluentPassFinderPlugin
         {
             var appThread = new Thread(appHost.Main);
             appThread.SetApartmentState(ApartmentState.STA);
-            appThread.IsBackground = true;
+            appThread.Priority = ThreadPriority.Highest;
             appThread.Start();
 
             appHost.WaitForAppCreation();

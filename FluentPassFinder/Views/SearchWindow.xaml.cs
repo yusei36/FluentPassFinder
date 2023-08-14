@@ -31,10 +31,11 @@ namespace FluentPassFinder.Views
             if (!isClosing && !isOpening)
             {
                 isClosing = true;
-                Close();
+                Hide();
 
                 ViewModel.SearchText = string.Empty;
                 ViewModel.Entries.Clear();
+                isClosing = false;
             }
         }
 
@@ -45,14 +46,9 @@ namespace FluentPassFinder.Views
                 isOpening = true;
                 Show();
                 Activate();
+                SearchBox.Focus();
                 isOpening = false;
             }
-        }
-
-        protected override void OnActivated(EventArgs e)
-        {
-            base.OnActivated(e);
-            SearchBox.Focus();
         }
 
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
