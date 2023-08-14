@@ -60,6 +60,7 @@ namespace FluentPassFinder
             Container.RegisterInstance(interactionManager);
 
             HotkeyManager.Current.AddOrReplace(nameof(ShowSearchWindow), Key.F, ModifierKeys.Control | ModifierKeys.Alt, ShowSearchWindow);
+            HotkeyManager.Current.AddOrReplace(nameof(ShowSearchWindow), Key.S, ModifierKeys.Control | ModifierKeys.Alt, ShowSearchWindow);
         }
 
         public static Container? Container { get; private set; }
@@ -72,9 +73,12 @@ namespace FluentPassFinder
                 throw new NullReferenceException("Container is null");
             }
 
-            searchWindow = Container.GetInstance<SearchWindow>();
-            MainWindow = searchWindow;
-            searchWindow?.ShowSearchWindow();
+            if (MainWindow == null)
+            {
+                searchWindow = Container.GetInstance<SearchWindow>();
+                MainWindow = searchWindow;
+                searchWindow?.ShowSearchWindow();
+            }
         }
     }
 }
