@@ -1,6 +1,5 @@
 ﻿using FluentPassFinder.Contracts;
 using FluentPassFinderContracts;
-using KeePass.Util.Spr;
 
 namespace FluentPassFinder.Services.Actions
 {
@@ -14,11 +13,11 @@ namespace FluentPassFinder.Services.Actions
         {
             searchWindowInteractionService.Close();
             var pluginTotpPlaceholder = SearchOptions.PluginTotpPlaceholder;
-            var totp = pluginProxy.GetPlaceholderValue(pluginTotpPlaceholder, new SprContext(searchResult.Entry, searchResult.Database, SprCompileFlags.All, true, false));
+            var totp = pluginProxy.GetPlaceholderValue(pluginTotpPlaceholder, searchResult.Entry, searchResult.Database);
 
             if (String.IsNullOrEmpty(totp) || totp == pluginTotpPlaceholder)
             {
-                totp = pluginProxy.GetPlaceholderValue(NativeTotpPlacholder, new SprContext(searchResult.Entry, searchResult.Database, SprCompileFlags.All, true, false));
+                totp = pluginProxy.GetPlaceholderValue(NativeTotpPlacholder, searchResult.Entry, searchResult.Database);
             }
 
             pluginProxy.CopyToClipboard(totp, true, true, searchResult.Entry);
