@@ -16,16 +16,19 @@ namespace FluentPassFinder
         public void Main()
         {
             App.Main();
-
-            while (App.Current == null)
-            {
-                Task.Delay(100).Wait();
-            }
         }
 
         private void InvokeOnWpfApp(Action<App> action)
         {
             App.Current?.Dispatcher.Invoke(() => action((App)App.Current));
+        }
+
+        public void WaitForAppCreation()
+        {
+            while (App.Current == null)
+            {
+                Task.Delay(100).Wait();
+            }
         }
     }
 }

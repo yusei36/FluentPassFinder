@@ -62,6 +62,7 @@ namespace FluentPassFinder
         }
 
         public static Container Container { get; private set; }
+
         private SearchWindow searchWindow;
 
         private void ShowSearchWindow(object sender, HotkeyEventArgs e)

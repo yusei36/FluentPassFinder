@@ -75,14 +75,16 @@ namespace FluentPassFinderPlugin
             base.Terminate();
         }
 
-        private static Thread StartAppAsSeperateThread(IPluginProxy pluginHostProxy, IAppProxy wpfAppHost)
+        private static Thread StartAppAsSeperateThread(IPluginProxy pluginHostProxy, IAppProxy appHost)
         {
-            var wpfAppThread = new Thread(wpfAppHost.Main);
-            wpfAppThread.SetApartmentState(ApartmentState.STA);
-            wpfAppThread.Start();
+            var appThread = new Thread(appHost.Main);
+            appThread.SetApartmentState(ApartmentState.STA);
+            appThread.IsBackground = true;
+            appThread.Start();
 
-            wpfAppHost.Init(pluginHostProxy);
-            return wpfAppThread;
+            appHost.WaitForAppCreation();
+            appHost.Init(pluginHostProxy);
+            return appThread;
         }
     }
 }
