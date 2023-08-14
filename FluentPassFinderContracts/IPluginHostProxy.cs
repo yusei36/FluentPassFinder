@@ -10,7 +10,7 @@ namespace FluentPassFinderContracts
         string GetPlaceholderValue(string placeholder, SprContext context);
         Image GetBuildInIcon(PwIcon nuildInIconId); 
         PwDatabase[] GetPwDatabases();
-        SearchOptions GetSearchOptions();
+        SearchOptions SearchOptions { get; }
         void PerformAutoType(PwEntry entry, PwDatabase database, string sequence = null);
     }
 }

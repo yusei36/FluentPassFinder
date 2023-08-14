@@ -8,7 +8,7 @@ namespace FluentPassFinder.Services.Actions
     {
         private IPluginHostProxy hostProxy;
         private readonly ISearchWindowInteractionService searchWindowInteractionService;
-
+        private const string NativeTotpPlacholder = "{TIMEOTP}";
         public CopyTotpAction(IPluginHostProxy hostProxy, ISearchWindowInteractionService searchWindowInteractionService)
         {
             this.hostProxy = hostProxy;
@@ -20,11 +20,12 @@ namespace FluentPassFinder.Services.Actions
         public override void RunAction(EntrySearchResult searchResult)
         {
             searchWindowInteractionService.Close();
-            var totp = hostProxy.GetPlaceholderValue("{TIMEOTP}", new SprContext(searchResult.Entry, searchResult.Database, SprCompileFlags.All, true, false));
-            if (string.IsNullOrWhiteSpace(totp))
+            var pluginTotpPlaceholder = hostProxy.SearchOptions.PluginTotpPlaceholder;
+            var totp = hostProxy.GetPlaceholderValue(pluginTotpPlaceholder, new SprContext(searchResult.Entry, searchResult.Database, SprCompileFlags.All, true, false));
+
+            if (String.IsNullOrEmpty(totp) || totp == pluginTotpPlaceholder)
             {
-                hostProxy.CopyToClipboard(string.Empty, true, true, searchResult.Entry);
-                return;
+                totp = hostProxy.GetPlaceholderValue(NativeTotpPlacholder, new SprContext(searchResult.Entry, searchResult.Database, SprCompileFlags.All, true, false));
             }
 
             hostProxy.CopyToClipboard(totp, true, true, searchResult.Entry);

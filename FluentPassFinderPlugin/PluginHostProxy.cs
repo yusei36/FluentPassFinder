@@ -49,16 +49,20 @@ namespace FluentPassFinderPlugin
             return mainWindow?.DocumentManager?.GetOpenDatabases().ToArray();
         }
 
-        public SearchOptions GetSearchOptions()
+        public SearchOptions SearchOptions
         {
-            var defaultOptions = new SearchOptions()
+            get
             {
-                IncludeTitleFiled = true,
-                IncludeNotesField = true,
-                IncludeUrlField = true,
-                IncludeCustomFields = true
-            };
-            return defaultOptions;
+                var defaultOptions = new SearchOptions()
+                {
+                    IncludeTitleFiled = true,
+                    IncludeNotesField = true,
+                    IncludeUrlField = true,
+                    IncludeCustomFields = true,
+                    PluginTotpPlaceholder = "{TOTP}"
+                };
+                return defaultOptions;
+            }
         }
 
         public void PerformAutoType(PwEntry entry, PwDatabase database, string sequence = null)
