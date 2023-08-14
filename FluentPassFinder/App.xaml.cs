@@ -61,8 +61,8 @@ namespace FluentPassFinder
 
             Container.RegisterInstance(interactionManager);
 
-            HotkeyManager.Current.AddOrReplace(nameof(ShowSearchWindow), Key.F, ModifierKeys.Control | ModifierKeys.Alt, ShowSearchWindow);
-            HotkeyManager.Current.AddOrReplace(nameof(ShowSearchWindow), Key.S, ModifierKeys.Control | ModifierKeys.Alt, ShowSearchWindow);
+            HotkeyManager.Current.AddOrReplace(nameof(ShowSearchWindow)+ nameof(Key.F), Key.F, ModifierKeys.Control | ModifierKeys.Alt, ShowSearchWindow);
+            HotkeyManager.Current.AddOrReplace(nameof(ShowSearchWindow)+ nameof(Key.S), Key.S, ModifierKeys.Control | ModifierKeys.Alt, ShowSearchWindow);
         }
 
         public static Container Container { get; private set; }
