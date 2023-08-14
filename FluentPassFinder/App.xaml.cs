@@ -35,17 +35,6 @@ namespace FluentPassFinder
             }
 
             base.OnStartup(e);
-
-            Container = new Container();
-            Container.Register<SearchWindow, SearchWindow>();
-            Container.Register<SearchWindowViewModel, SearchWindowViewModel>();
-            Container.Register(() => new Lazy<SearchWindowViewModel>(()=> searchWindow?.ViewModel ?? throw new ArgumentNullException("Current search window view model is null.")));
-            Container.Register(() => new Lazy<SearchWindow>(() => searchWindow ?? throw new ArgumentNullException("Current search window view model is null.")));
-            Container.Register<ISearchWindowInteractionService, SearchWindowInteractionService>();
-
-            Container.Register<IEntryActionService, EntryActionService>();
-            Container.Register<IEntrySearchService, EntrySearchService>();
-            Container.Collection.Register<IAction>(Assembly.GetAssembly(typeof(App)));
         }
 
         public void Init(IPluginProxy interactionManager)
@@ -54,10 +43,17 @@ namespace FluentPassFinder
             {
                 throw new ArgumentNullException(nameof(interactionManager));
             }
-            if (Container == null)
-            {
-                throw new NullReferenceException("Container shouldn't be null while initializing");
-            }
+
+            Container = new Container();
+            Container.Register<SearchWindow, SearchWindow>();
+            Container.Register<SearchWindowViewModel, SearchWindowViewModel>();
+            Container.Register(() => new Lazy<SearchWindowViewModel>(() => searchWindow?.ViewModel ?? throw new ArgumentNullException("Current search window view model is null.")));
+            Container.Register(() => new Lazy<SearchWindow>(() => searchWindow ?? throw new ArgumentNullException("Current search window view model is null.")));
+            Container.Register<ISearchWindowInteractionService, SearchWindowInteractionService>();
+
+            Container.Register<IEntryActionService, EntryActionService>();
+            Container.Register<IEntrySearchService, EntrySearchService>();
+            Container.Collection.Register<IAction>(Assembly.GetAssembly(typeof(App)));
 
             Container.RegisterInstance(interactionManager);
 
