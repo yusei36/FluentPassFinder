@@ -1,12 +1,31 @@
 ﻿using FluentPassFinder.Contracts;
+using FluentPassFinderContracts;
 
 namespace FluentPassFinder.Services.Actions
 {
     internal abstract class ActionBase : IAction
     {
+        protected IPluginHostProxy hostProxy;
+        protected ISearchWindowInteractionService searchWindowInteractionService;
+
+        public abstract void RunAction(EntrySearchResult searchResult);
+
+        public virtual bool CanRunAction(EntrySearchResult searchResult)
+        {
+            return true;
+        }
+
+        public virtual void Initialize(IPluginHostProxy hostProxy, ISearchWindowInteractionService searchWindowInteractionService)
+        {
+            this.hostProxy = hostProxy;
+            this.searchWindowInteractionService = searchWindowInteractionService;
+        }
+
+        protected SearchOptions SearchOptions => hostProxy.SearchOptions;
+
         public abstract ActionType ActionType { get; }
 
-        public event EventHandler? CanExecuteChanged;
+        public event EventHandler CanExecuteChanged;
 
         public bool CanExecute(object parameter)
         {
@@ -27,13 +46,6 @@ namespace FluentPassFinder.Services.Actions
             }
         }
 
-        public abstract void RunAction(EntrySearchResult searchResult);
-
-        public virtual bool CanRunAction(EntrySearchResult searchResult)
-        {
-            return true;
-        }
-        
         public void NotifyCanExecuteChanged()
         {
             CanExecuteChanged?.Invoke(this, EventArgs.Empty);
