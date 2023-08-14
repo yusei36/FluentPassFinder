@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "FluentPassFinder": {
+      "commandName": "Project"
+    },
+    "Standalone": {
+      "commandName": "Project",
+      "commandLineArgs": "-standalone"
+    }
+  }
+}

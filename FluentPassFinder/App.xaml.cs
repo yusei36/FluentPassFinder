@@ -20,6 +20,21 @@ namespace FluentPassFinder
     {
         protected override void OnStartup(StartupEventArgs e)
         {
+            if (e.Args != null && e.Args.Any() && e.Args[0].Equals("-standalone", StringComparison.InvariantCultureIgnoreCase))
+            {
+                MessageBox.Show("Standalone mode isn't implemented.", "Error", MessageBoxButton.OK);
+                Shutdown(1);
+                return;
+            }
+
+            var stackTrace = Environment.StackTrace;
+            if (!stackTrace.EndsWith("System.Threading.ThreadHelper.ThreadStart()", StringComparison.InvariantCultureIgnoreCase))
+            { 
+                MessageBox.Show("Can't be run standalone.", "Error", MessageBoxButton.OK);
+                Shutdown(1);
+                return;
+            }
+
             base.OnStartup(e);
 
             Container = new Container();
