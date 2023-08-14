@@ -75,10 +75,12 @@
                   ItemsSource="{Binding ViewModel.Entries}" 
                   SelectedItem="{Binding ViewModel.SelectedEntry}"
                   SelectionChanged="ListView_SelectionChanged"
+                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                   Visibility="{Binding ViewModel.IsContextMenuOpen, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=invert}">
             <ListView.ItemTemplate>
                 <DataTemplate DataType="models:EntryViewModel">
-                    <Grid Margin="4,0" >
+                    <Grid Margin="4,0" 
+                          ToolTipService.ToolTip="{Binding Title}">
                         <Grid.RowDefinitions>
                             <RowDefinition/>
                             <RowDefinition/>
@@ -99,9 +101,11 @@
                                       Grid.Row="0"
                                       Margin="4,0"
                                       FontTypography="Subtitle" 
+                                      TextTrimming="CharacterEllipsis"
                                       Text="{Binding Title}"/>
                         <ui:TextBlock Grid.Column="1"
                                       Grid.Row="1"
+                                      Margin="4,0"
                                       FontTypography="Body" 
                                       Text="{Binding UserName}"/>
                     </Grid>
@@ -109,13 +113,13 @@
             </ListView.ItemTemplate>
         </ListView>
         <ListView Grid.Row="1"  
-          Margin="4,0"
-          ItemsSource="{Binding ViewModel.ContextActions}" 
-          SelectedItem="{Binding ViewModel.SelectedContextAction}" 
-          SelectionChanged="ListView_SelectionChanged"
-          Visibility="{Binding ViewModel.IsContextMenuOpen, Converter={StaticResource BoolToVisibilityConverter}}">
+                  Margin="4,0"
+                  ItemsSource="{Binding ViewModel.ContextActions}" 
+                  SelectedItem="{Binding ViewModel.SelectedContextAction}" 
+                  SelectionChanged="ListView_SelectionChanged"
+                  Visibility="{Binding ViewModel.IsContextMenuOpen, Converter={StaticResource BoolToVisibilityConverter}}">
             <ListView.ItemTemplate>
-                <DataTemplate d:DataType="contracts:IAction">
+                <DataTemplate DataType="contracts:IAction">
                     <StackPanel Margin="4,0" >
                         <ui:TextBlock FontTypography="Body" 
                                       Text="{Binding ActionType}"/>
