@@ -1,5 +1,4 @@
-﻿using FluentPassFinder.Services.Actions;
-using FluentPassFinderContracts.Services;
+﻿using FluentPassFinder.Contracts;
 
 namespace FluentPassFinder.Services
 {
@@ -12,8 +11,12 @@ namespace FluentPassFinder.Services
             this.actions = actions;
         }
 
+        public IEnumerable<IAction> Actions => actions;
+
         public void RunAction(EntrySearchResult searchResult, ActionType actionType)
         {
+            if (searchResult == null) throw new ArgumentNullException(nameof(searchResult));
+
             var action = actions.FirstOrDefault(a => a.ActionType == actionType);
             if (action != null)
             {
@@ -23,6 +26,14 @@ namespace FluentPassFinder.Services
             {
                 throw new ArgumentOutOfRangeException(nameof(actionType), actionType.ToString());
             }
+        }
+
+        public void RunAction(EntrySearchResult searchResult, IAction action)
+        {
+            if (searchResult == null) throw new ArgumentNullException(nameof(searchResult));
+            if (action == null) throw new ArgumentNullException(nameof(action));
+
+            action.RunAction(searchResult);
         }
     }
 }

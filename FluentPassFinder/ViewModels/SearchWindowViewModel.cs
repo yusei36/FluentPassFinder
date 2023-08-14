@@ -1,5 +1,5 @@
-﻿using FluentPassFinderContracts;
-using FluentPassFinderContracts.Services;
+﻿using FluentPassFinder.Contracts;
+using FluentPassFinderContracts;
 using System.Collections.ObjectModel;
 
 namespace FluentPassFinder.ViewModels
@@ -20,9 +20,18 @@ namespace FluentPassFinder.ViewModels
         private ObservableCollection<EntryViewModel> entries = new ObservableCollection<EntryViewModel>();
 
         [ObservableProperty]
-        private EntryViewModel? selectedEntry;
+        private EntryViewModel selectedEntry;
 
-        public Action? HideSearchWindow;
+        [ObservableProperty]
+        private bool isContextMenuOpen = false;
+
+        [ObservableProperty]
+        private ObservableCollection<IAction> actions;
+
+        [ObservableProperty]
+        private IAction selectedAction;
+
+        public Action HideSearchWindow;
         public Boolean IsAnyDatabaseOpen => hostProxy.GetPwDatabases().Any();
 
         public SearchWindowViewModel(IPluginHostProxy hostProxy, IEntrySearchService entrySearchService, IEntryActionService entryActionService)
@@ -30,6 +39,8 @@ namespace FluentPassFinder.ViewModels
             this.hostProxy = hostProxy;
             this.entrySearchService = entrySearchService;
             this.entryActionService = entryActionService;
+            actions = new ObservableCollection<IAction>(entryActionService.Actions);
+            selectedAction = actions.First();
         }
 
         [RelayCommand]
@@ -40,8 +51,21 @@ namespace FluentPassFinder.ViewModels
                 return;
             }
 
-            entryActionService.RunAction(SelectedEntry.SearchResult, ActionType.CopyUserName);
-            HideSearchWindow?.Invoke();
+            if (IsContextMenuOpen)
+            {
+                if (SelectedAction == null)
+                {
+                    return;
+                }
+
+                entryActionService.RunAction(SelectedEntry.SearchResult, SelectedAction);
+                HideSearchWindow?.Invoke();
+            }
+            else 
+            {
+
+                entryActionService.RunAction(SelectedEntry.SearchResult, ActionType.OpenContextMenu);
+            }
         }
 
         [RelayCommand]
@@ -83,32 +107,26 @@ namespace FluentPassFinder.ViewModels
         [RelayCommand]
         private void NavigateListDown()
         {
-            if (SelectedEntry == null)
+            if (IsContextMenuOpen)
             {
-                return;
+                NavigateCollcetionDown(Actions, SelectedAction, (x) => SelectedAction = x);
             }
-
-            var selectedIndex = Entries.IndexOf(SelectedEntry);
-            var nextItemIndex = selectedIndex + 1;
-            if (nextItemIndex < Entries.Count)
+            else
             {
-                SelectedEntry = Entries[nextItemIndex];
+                NavigateCollcetionDown(Entries, SelectedEntry, (x) => SelectedEntry = x);
             }
         }
 
         [RelayCommand]
         private void NavigateListUp()
         {
-            if (SelectedEntry == null)
+            if(IsContextMenuOpen)
             {
-                return;
+                NavigateCollcetionUp(Actions, SelectedAction, (x) => SelectedAction = x);
             }
-
-            var selectedIndex = Entries.IndexOf(SelectedEntry);
-            var previousItemIndex = selectedIndex - 1;
-            if (previousItemIndex >= 0)
+            else
             {
-                SelectedEntry = Entries[previousItemIndex];
+                NavigateCollcetionUp(Entries, SelectedEntry, (x) => SelectedEntry = x);
             }
         }
 
@@ -135,6 +153,36 @@ namespace FluentPassFinder.ViewModels
                 }
 
                 SelectedEntry = Entries.FirstOrDefault();
+            }
+        }
+
+        private static void NavigateCollcetionDown<T>(ObservableCollection<T> collection, T selectedItem, Action<T> udpateSelectedItem)
+        {
+            if (selectedItem == null)
+            {
+                return;
+            }
+
+            var selectedIndex = collection.IndexOf(selectedItem);
+            var nextItemIndex = selectedIndex + 1;
+            if (nextItemIndex < collection.Count)
+            {
+                udpateSelectedItem(collection[nextItemIndex]);
+            }
+        }
+
+        private static void NavigateCollcetionUp<T>(ObservableCollection<T> collection, T selectedItem, Action<T> udpateSelectedItem)
+        {
+            if (selectedItem == null)
+            {
+                return;
+            }
+
+            var selectedIndex = collection.IndexOf(selectedItem);
+            var previousItemIndex = selectedIndex - 1;
+            if (previousItemIndex >= 0)
+            {
+                udpateSelectedItem(collection[previousItemIndex]);
             }
         }
     }

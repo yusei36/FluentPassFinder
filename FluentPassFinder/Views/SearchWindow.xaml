@@ -7,6 +7,7 @@
     xmlns:models="clr-namespace:FluentPassFinder.ViewModels"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml" 
+    xmlns:contracts="clr-namespace:FluentPassFinder.Contracts"
     xmlns:converters="clr-namespace:FluentPassFinder.Converters"
     Title="{Binding ViewModel.ApplicationTitle, Mode=OneWay}"
     d:DataContext="{d:DesignInstance local:SearchWindow,
@@ -29,6 +30,7 @@
     mc:Ignorable="d">
     <ui:FluentWindow.Resources>
         <converters:ImageToBitmapSourceConverter x:Key="ImageToBitmapSourceConverter" />
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
     </ui:FluentWindow.Resources>
     <ui:FluentWindow.InputBindings>
         <KeyBinding
@@ -72,7 +74,8 @@
                   Margin="4,0"
                   ItemsSource="{Binding ViewModel.Entries}" 
                   SelectedItem="{Binding ViewModel.SelectedEntry}"
-                  SelectionChanged="ListView_SelectionChanged">
+                  SelectionChanged="ListView_SelectionChanged"
+                  Visibility="{Binding ViewModel.IsContextMenuOpen, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=invert}">
             <ListView.ItemTemplate>
                 <DataTemplate DataType="models:EntryViewModel">
                     <Grid Margin="4,0" >
@@ -102,6 +105,21 @@
                                       FontTypography="Body" 
                                       Text="{Binding UserName}"/>
                     </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <ListView Grid.Row="1"  
+          Margin="4,0"
+          ItemsSource="{Binding ViewModel.Actions}" 
+          SelectedItem="{Binding ViewModel.SelectedAction}" 
+          SelectionChanged="ListView_SelectionChanged"
+          Visibility="{Binding ViewModel.IsContextMenuOpen, Converter={StaticResource BoolToVisibilityConverter}}">
+            <ListView.ItemTemplate>
+                <DataTemplate d:DataType="contracts:IAction">
+                    <StackPanel Margin="4,0" >
+                        <ui:TextBlock FontTypography="Body" 
+                                      Text="{Binding ActionType}"/>
+                    </StackPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>

@@ -1,4 +1,4 @@
-﻿namespace FluentPassFinderContracts.Services
+﻿namespace FluentPassFinderContracts
 {
     public class SearchOptions
     {

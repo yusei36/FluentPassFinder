@@ -1,5 +1,5 @@
-﻿using FluentPassFinderContracts;
-using FluentPassFinderContracts.Services;
+﻿using FluentPassFinder.Contracts;
+using FluentPassFinderContracts;
 using System.Drawing;
 
 namespace FluentPassFinder.ViewModels
@@ -18,7 +18,7 @@ namespace FluentPassFinder.ViewModels
         private string url;
 
         [ObservableProperty]
-        private Image? icon;
+        private Image icon;
 
         public EntrySearchResult SearchResult { get; }
 

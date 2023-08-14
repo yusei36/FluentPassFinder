@@ -1,5 +1,5 @@
-﻿using FluentPassFinderContracts;
-using FluentPassFinderContracts.Services;
+﻿using FluentPassFinder.Contracts;
+using FluentPassFinderContracts;
 using KeePass.Util.Spr;
 
 namespace FluentPassFinder.Services.Actions

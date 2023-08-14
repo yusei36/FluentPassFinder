@@ -1,9 +1,8 @@
-﻿using FluentPassFinder.Services;
-using FluentPassFinder.Services.Actions;
+﻿using FluentPassFinder.Contracts;
+using FluentPassFinder.Services;
 using FluentPassFinder.ViewModels;
 using FluentPassFinder.Views;
 using FluentPassFinderContracts;
-using FluentPassFinderContracts.Services;
 using NHotkey;
 using NHotkey.Wpf;
 using SimpleInjector;
@@ -40,6 +39,7 @@ namespace FluentPassFinder
             Container = new Container();
             Container.Register<SearchWindow, SearchWindow>();
             Container.Register<SearchWindowViewModel, SearchWindowViewModel>();
+            Container.Register(() => new Lazy<SearchWindowViewModel>(()=> searchWindow?.ViewModel ?? throw new ArgumentNullException("Current search window view model is null.")));
 
             Container.Register<IEntryActionService, EntryActionService>(Lifestyle.Singleton);
             Container.Register<IEntrySearchService, EntrySearchService>(Lifestyle.Singleton);
@@ -63,6 +63,7 @@ namespace FluentPassFinder
         }
 
         public static Container? Container { get; private set; }
+        private SearchWindow? searchWindow;
 
         private void ShowSearchWindow(object sender, HotkeyEventArgs e)
         {
@@ -71,7 +72,7 @@ namespace FluentPassFinder
                 throw new NullReferenceException("Container is null");
             }
 
-            var searchWindow = Container.GetInstance<SearchWindow>();
+            searchWindow = Container.GetInstance<SearchWindow>();
             MainWindow = searchWindow;
             searchWindow?.ShowSearchWindow();
         }

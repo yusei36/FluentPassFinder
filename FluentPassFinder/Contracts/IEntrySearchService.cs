@@ -1,7 +1,6 @@
-﻿using KeePassLib;
-using System.Collections.Generic;
+﻿using FluentPassFinderContracts;
 
-namespace FluentPassFinderContracts.Services
+namespace FluentPassFinder.Contracts
 {
     public interface IEntrySearchService
     {

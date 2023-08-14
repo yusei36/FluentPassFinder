@@ -1,9 +1,10 @@
-﻿namespace FluentPassFinderContracts.Services
+﻿namespace FluentPassFinder.Contracts
 {
     public enum ActionType
     {
         CopyPassword,
         CopyUserName,
-        CopyTotp
+        CopyTotp,
+        OpenContextMenu
     }
 }

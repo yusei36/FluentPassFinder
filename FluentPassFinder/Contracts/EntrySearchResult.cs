@@ -1,6 +1,4 @@
-﻿using KeePassLib;
-
-namespace FluentPassFinderContracts.Services
+﻿namespace FluentPassFinder.Contracts
 {
     public class EntrySearchResult
     {
