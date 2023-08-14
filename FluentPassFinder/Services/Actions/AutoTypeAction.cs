@@ -9,7 +9,7 @@ namespace FluentPassFinder.Services.Actions
         public override void RunAction(EntrySearchResult searchResult)
         {
             searchWindowInteractionService.Close();
-            hostProxy.PerformAutoType(searchResult.Entry, searchResult.Database);
+            pluginProxy.PerformAutoType(searchResult.Entry, searchResult.Database);
         }
     }
 }

@@ -6,7 +6,7 @@ namespace FluentPassFinder.ViewModels
 {
     public partial class SearchWindowViewModel : ObservableObject
     {
-        private readonly IPluginProxy hostProxy;
+        private readonly IPluginProxy pluginProxy;
         private readonly IEntrySearchService entrySearchService;
         private readonly IEntryActionService entryActionService;
 
@@ -30,11 +30,11 @@ namespace FluentPassFinder.ViewModels
 
         [ObservableProperty]
         private IAction selectedContextAction;
-        public Boolean IsAnyDatabaseOpen => hostProxy.Databases.Any();
+        public Boolean IsAnyDatabaseOpen => pluginProxy.Databases.Any();
 
-        public SearchWindowViewModel(IPluginProxy hostProxy, IEntrySearchService entrySearchService, IEntryActionService entryActionService)
+        public SearchWindowViewModel(IPluginProxy pluginProxy, IEntrySearchService entrySearchService, IEntryActionService entryActionService)
         {
-            this.hostProxy = hostProxy;
+            this.pluginProxy = pluginProxy;
             this.entrySearchService = entrySearchService;
             this.entryActionService = entryActionService;
             contextActions = new ObservableCollection<IAction>(entryActionService.Actions.Where(a => a.ActionType != ActionType.OpenContextMenu));
@@ -126,17 +126,17 @@ namespace FluentPassFinder.ViewModels
 
         partial void OnSearchTextChanged(string searchQuery)
         {
-            var dbs = hostProxy.Databases;
+            var dbs = pluginProxy.Databases;
 
             SelectedEntry = null;
             Entries.Clear();
 
             if (dbs != null)
             {
-                var entrySearchResults = entrySearchService.SearchEntries(dbs, searchQuery, hostProxy.SearchOptions);
+                var entrySearchResults = entrySearchService.SearchEntries(dbs, searchQuery, pluginProxy.SearchOptions);
                 foreach (var entrySearchResult in entrySearchResults)
                 {
-                    Entries.Add(new EntryViewModel(entrySearchResult, hostProxy));
+                    Entries.Add(new EntryViewModel(entrySearchResult, pluginProxy));
                 }
 
                 SelectedEntry = Entries.FirstOrDefault();

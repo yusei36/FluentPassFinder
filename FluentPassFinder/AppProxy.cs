@@ -2,7 +2,7 @@
 
 namespace FluentPassFinder
 {
-    public class AppHost : IAppProxy
+    public class AppProxy : IAppProxy
     {
         public void Init(IPluginProxy pluginHostProxy)
         {

@@ -5,7 +5,7 @@ namespace FluentPassFinder.Services.Actions
 {
     internal abstract class ActionBase : IAction
     {
-        protected IPluginProxy hostProxy;
+        protected IPluginProxy pluginProxy;
         protected ISearchWindowInteractionService searchWindowInteractionService;
 
         public abstract void RunAction(EntrySearchResult searchResult);
@@ -15,13 +15,13 @@ namespace FluentPassFinder.Services.Actions
             return true;
         }
 
-        public virtual void Initialize(IPluginProxy hostProxy, ISearchWindowInteractionService searchWindowInteractionService)
+        public virtual void Initialize(IPluginProxy pluginProxy, ISearchWindowInteractionService searchWindowInteractionService)
         {
-            this.hostProxy = hostProxy;
+            this.pluginProxy = pluginProxy;
             this.searchWindowInteractionService = searchWindowInteractionService;
         }
 
-        protected SearchOptions SearchOptions => hostProxy.SearchOptions;
+        protected SearchOptions SearchOptions => pluginProxy.SearchOptions;
 
         public abstract ActionType ActionType { get; }
 

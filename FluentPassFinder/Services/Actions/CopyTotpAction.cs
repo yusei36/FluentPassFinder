@@ -14,14 +14,14 @@ namespace FluentPassFinder.Services.Actions
         {
             searchWindowInteractionService.Close();
             var pluginTotpPlaceholder = SearchOptions.PluginTotpPlaceholder;
-            var totp = hostProxy.GetPlaceholderValue(pluginTotpPlaceholder, new SprContext(searchResult.Entry, searchResult.Database, SprCompileFlags.All, true, false));
+            var totp = pluginProxy.GetPlaceholderValue(pluginTotpPlaceholder, new SprContext(searchResult.Entry, searchResult.Database, SprCompileFlags.All, true, false));
 
             if (String.IsNullOrEmpty(totp) || totp == pluginTotpPlaceholder)
             {
-                totp = hostProxy.GetPlaceholderValue(NativeTotpPlacholder, new SprContext(searchResult.Entry, searchResult.Database, SprCompileFlags.All, true, false));
+                totp = pluginProxy.GetPlaceholderValue(NativeTotpPlacholder, new SprContext(searchResult.Entry, searchResult.Database, SprCompileFlags.All, true, false));
             }
 
-            hostProxy.CopyToClipboard(totp, true, true, searchResult.Entry);
+            pluginProxy.CopyToClipboard(totp, true, true, searchResult.Entry);
         }
     }
 }

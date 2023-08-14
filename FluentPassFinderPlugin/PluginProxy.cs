@@ -10,12 +10,12 @@ using System.Windows.Threading;
 
 namespace FluentPassFinderPlugin
 {
-    internal class PluginHostProxy : IPluginProxy
+    internal class PluginProxy : IPluginProxy
     {
         private Dispatcher pluginHostDispatcher;
         private MainForm mainWindow;
 
-        public PluginHostProxy(IPluginHost pluginHost)
+        public PluginProxy(IPluginHost pluginHost)
         {
             pluginHostDispatcher = Dispatcher.CurrentDispatcher;
             mainWindow = pluginHost.MainWindow;

@@ -10,64 +10,64 @@ namespace FluentPassFinderPlugin
 {
     public sealed class FluentPassFinderPluginExt : Plugin
     {
-        private const string wpfApplicationExeName = "FluentPassFinder.exe";
-        private Thread wpfAppThread;
-        private IPluginProxy pluginHostProxy;
-        private IAppProxy wpfAppHost;
+        private const string applicationExeName = "FluentPassFinder.exe";
+        private Thread appThread;
+        private IPluginProxy pluginProxy;
+        private IAppProxy appProxy;
 
         public override bool Initialize(IPluginHost host)
         {
             if (host == null) return false;
             var pluginHost = host;
-            pluginHostProxy = new PluginHostProxy(pluginHost);
+            pluginProxy = new PluginProxy(pluginHost);
 
-            wpfAppHost = GetWpfAppHost();
-            wpfAppThread = StartAppAsSeperateThread(pluginHostProxy, wpfAppHost);
+            appProxy = LoadAppProxy();
+            appThread = StartAppAsSeperateThread(pluginProxy, appProxy);
 
             pluginHost.MainWindow.DocumentManager.GetOpenDatabases();
 
             return true;
         }
 
-        private IAppProxy GetWpfAppHost()
+        private IAppProxy LoadAppProxy()
         {
-            IAppProxy wpfAppHost = null;
+            IAppProxy appProxy = null;
             var pluginAssembly = Assembly.GetAssembly(typeof(FluentPassFinderPluginExt));
             var pluginFileLocation = pluginAssembly.Location;
             var fileInfo = new FileInfo(pluginFileLocation);
-            var files = Directory.GetFiles(fileInfo.Directory.FullName, wpfApplicationExeName, SearchOption.AllDirectories);
+            var files = Directory.GetFiles(fileInfo.Directory.FullName, applicationExeName, SearchOption.AllDirectories);
             if (files.Any())
             {
                 var exeFilePath = files[0];
-                var wpfAppAssembly = Assembly.LoadFrom(exeFilePath);
-                foreach (Type type in wpfAppAssembly.GetTypes())
+                var appAssembly = Assembly.LoadFrom(exeFilePath);
+                foreach (Type type in appAssembly.GetTypes())
                 {
                     if (type.GetInterfaces().Contains(typeof(IAppProxy)) && type.IsAbstract == false)
                     {
-                        wpfAppHost = (IAppProxy)type.InvokeMember(null, BindingFlags.CreateInstance, null, null, null);
+                        appProxy = (IAppProxy)type.InvokeMember(null, BindingFlags.CreateInstance, null, null, null);
                         break;
                     }
                 }
             }
             else
             {
-                throw new Exception($"{wpfApplicationExeName} was not found.");
+                throw new Exception($"{applicationExeName} was not found.");
             }
 
-            if (wpfAppHost == null)
+            if (appProxy == null)
             {
                 throw new Exception($"No implementation of {nameof(IAppProxy)} was found.");
             }
 
-            return wpfAppHost;
+            return appProxy;
         }
 
         public override void Terminate()
         {
             try
             {
-                wpfAppHost.Shutdown();
-                wpfAppThread?.Abort();
+                appProxy.Shutdown();
+                appThread?.Abort();
             }
             catch (Exception)
             {

@@ -10,7 +10,7 @@ namespace FluentPassFinder.Converters
     /// ImageToBitmapSourceConverter from https://stackoverflow.com/a/28843857
     /// </summary>
     [ValueConversion(typeof(Image), typeof(BitmapSource))]
-    public class ImageToBitmapSourceConverter : IValueConverter
+    internal class ImageToBitmapSourceConverter : IValueConverter
     {
         [DllImport("gdi32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]

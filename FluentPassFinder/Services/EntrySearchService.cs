@@ -3,7 +3,7 @@ using FluentPassFinderContracts;
 
 namespace FluentPassFinder.Services
 {
-    class EntrySearchService : IEntrySearchService
+    internal class EntrySearchService : IEntrySearchService
     {
         public IEnumerable<EntrySearchResult> SearchEntries(IEnumerable<PwDatabase> databases, string searchQuery, SearchOptions searchOptions)
         {

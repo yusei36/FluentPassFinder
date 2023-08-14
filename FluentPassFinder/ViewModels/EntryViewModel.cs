@@ -6,7 +6,7 @@ namespace FluentPassFinder.ViewModels
 {
     public partial class EntryViewModel : ObservableObject
     {
-        private readonly IPluginProxy hostProxy;
+        private readonly IPluginProxy pluginProxy;
 
         [ObservableProperty]
         private string title;
@@ -22,10 +22,10 @@ namespace FluentPassFinder.ViewModels
 
         public EntrySearchResult SearchResult { get; }
 
-        public EntryViewModel(EntrySearchResult searchResult, IPluginProxy hostProxy)
+        public EntryViewModel(EntrySearchResult searchResult, IPluginProxy pluginProxy)
         {
             SearchResult = searchResult;
-            this.hostProxy = hostProxy;
+            this.pluginProxy = pluginProxy;
             title = searchResult.Entry.Strings.ReadSafe(PwDefs.TitleField);
             userName = searchResult.Entry.Strings.ReadSafe(PwDefs.UserNameField);
             url = searchResult.Entry.Strings.ReadSafe(PwDefs.UrlField);
@@ -41,7 +41,7 @@ namespace FluentPassFinder.ViewModels
             }
             if (entryIcon == null)
             {
-                entryIcon = hostProxy.GetBuildInIcon(searchResult.Entry.IconId);
+                entryIcon = pluginProxy.GetBuildInIcon(searchResult.Entry.IconId);
             }
             return entryIcon;
         }
