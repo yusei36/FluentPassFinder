@@ -9,6 +9,6 @@ namespace FluentPassFinder.Contracts
 
         ActionType ActionType { get; }
 
-        void Initialize(IPluginHostProxy hostProxy, ISearchWindowInteractionService searchWindowInteractionService);
+        void Initialize(IPluginProxy hostProxy, ISearchWindowInteractionService searchWindowInteractionService);
     }
 }

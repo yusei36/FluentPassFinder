@@ -6,7 +6,7 @@ namespace FluentPassFinder.ViewModels
 {
     public partial class EntryViewModel : ObservableObject
     {
-        private readonly IPluginHostProxy hostProxy;
+        private readonly IPluginProxy hostProxy;
 
         [ObservableProperty]
         private string title;
@@ -22,7 +22,7 @@ namespace FluentPassFinder.ViewModels
 
         public EntrySearchResult SearchResult { get; }
 
-        public EntryViewModel(EntrySearchResult searchResult, IPluginHostProxy hostProxy)
+        public EntryViewModel(EntrySearchResult searchResult, IPluginProxy hostProxy)
         {
             SearchResult = searchResult;
             this.hostProxy = hostProxy;

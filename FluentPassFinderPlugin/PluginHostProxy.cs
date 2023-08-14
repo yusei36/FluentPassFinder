@@ -10,7 +10,7 @@ using System.Windows.Threading;
 
 namespace FluentPassFinderPlugin
 {
-    internal class PluginHostProxy : IPluginHostProxy
+    internal class PluginHostProxy : IPluginProxy
     {
         private Dispatcher pluginHostDispatcher;
         private MainForm mainWindow;

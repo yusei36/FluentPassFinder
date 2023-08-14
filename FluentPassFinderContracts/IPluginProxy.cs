@@ -4,7 +4,7 @@ using System.Drawing;
 
 namespace FluentPassFinderContracts
 {
-    public interface IPluginHostProxy
+    public interface IPluginProxy
     {
         void CopyToClipboard(string strToCopy, bool bSprCompile, bool bIsEntryInfo, PwEntry peEntryInfo);
         string GetPlaceholderValue(string placeholder, SprContext context);

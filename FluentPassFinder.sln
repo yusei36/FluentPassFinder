@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FluentPassFinderPlugin", "F
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FluentPassFinder", "FluentPassFinder\FluentPassFinder.csproj", "{185AA238-2C34-4147-9FF2-825A95B8FA53}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentPassFinderContracts", "FluentPassFinderContracts\FluentPassFinderContracts.csproj", "{9872AD7D-83FD-47BD-AA64-E259F434DAEE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FluentPassFinderContracts", "FluentPassFinderContracts\FluentPassFinderContracts.csproj", "{9872AD7D-83FD-47BD-AA64-E259F434DAEE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

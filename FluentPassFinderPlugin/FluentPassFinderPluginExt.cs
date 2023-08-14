@@ -1,36 +1,72 @@
-﻿using FluentPassFinder;
-using FluentPassFinderContracts;
+﻿using FluentPassFinderContracts;
 using KeePass.Plugins;
 using System;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace FluentPassFinderPlugin
 {
     public sealed class FluentPassFinderPluginExt : Plugin
     {
-        private IPluginHost pluginHost = null;
+        private const string wpfApplicationExeName = "FluentPassFinder.exe";
         private Thread wpfAppThread;
-        private IPluginHostProxy pluginHostProxy;
+        private IPluginProxy pluginHostProxy;
+        private IAppProxy wpfAppHost;
 
         public override bool Initialize(IPluginHost host)
         {
             if (host == null) return false;
-            pluginHost = host;
+            var pluginHost = host;
             pluginHostProxy = new PluginHostProxy(pluginHost);
 
-            StartAppAsSeperateThread();
+            wpfAppHost = GetWpfAppHost();
+            wpfAppThread = StartAppAsSeperateThread(pluginHostProxy, wpfAppHost);
 
             pluginHost.MainWindow.DocumentManager.GetOpenDatabases();
 
             return true;
         }
 
+        private IAppProxy GetWpfAppHost()
+        {
+            IAppProxy wpfAppHost = null;
+            var pluginAssembly = Assembly.GetAssembly(typeof(FluentPassFinderPluginExt));
+            var pluginFileLocation = pluginAssembly.Location;
+            var fileInfo = new FileInfo(pluginFileLocation);
+            var files = Directory.GetFiles(fileInfo.Directory.FullName, wpfApplicationExeName, SearchOption.AllDirectories);
+            if (files.Any())
+            {
+                var exeFilePath = files[0];
+                var wpfAppAssembly = Assembly.LoadFrom(exeFilePath);
+                foreach (Type type in wpfAppAssembly.GetTypes())
+                {
+                    if (type.GetInterfaces().Contains(typeof(IAppProxy)) && type.IsAbstract == false)
+                    {
+                        wpfAppHost = (IAppProxy)type.InvokeMember(null, BindingFlags.CreateInstance, null, null, null);
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                throw new Exception($"{wpfApplicationExeName} was not found.");
+            }
+
+            if (wpfAppHost == null)
+            {
+                throw new Exception($"No implementation of {nameof(IAppProxy)} was found.");
+            }
+
+            return wpfAppHost;
+        }
+
         public override void Terminate()
         {
             try
             {
-                InvokeOnWpfApp((app) => app.Shutdown());
+                wpfAppHost.Shutdown();
                 wpfAppThread?.Abort();
             }
             catch (Exception)
@@ -39,24 +75,14 @@ namespace FluentPassFinderPlugin
             base.Terminate();
         }
 
-        private void StartAppAsSeperateThread()
+        private static Thread StartAppAsSeperateThread(IPluginProxy pluginHostProxy, IAppProxy wpfAppHost)
         {
-            wpfAppThread = new Thread(App.Main);
+            var wpfAppThread = new Thread(wpfAppHost.Main);
             wpfAppThread.SetApartmentState(ApartmentState.STA);
             wpfAppThread.Start();
 
-            // wait until app is initialized
-            while (App.Current == null)
-            {
-                Task.Delay(100).Wait();
-            }
-
-            InvokeOnWpfApp((app) => app.Init(pluginHostProxy));
-        }
-
-        private void InvokeOnWpfApp(Action<App> action)
-        {
-            App.Current?.Dispatcher.Invoke(() => action((App)App.Current));
+            wpfAppHost.Init(pluginHostProxy);
+            return wpfAppThread;
         }
     }
 }

@@ -7,6 +7,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
 	<LangVersion>latest</LangVersion>
+	<OutDir>$(SolutionDir)Build/$(Configuration)/$(TargetFramework)/bin</OutDir>
   </PropertyGroup>
 
   <ItemGroup>

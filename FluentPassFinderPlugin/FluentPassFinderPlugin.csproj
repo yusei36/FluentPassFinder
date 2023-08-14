@@ -7,13 +7,14 @@
     <UseWPF>true</UseWPF>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
 	<LangVersion>latest</LangVersion>
+	<OutDir>$(SolutionDir)Build/$(Configuration)/$(TargetFramework)/</OutDir>
   </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FluentPassFinderContracts\FluentPassFinderContracts.csproj" />
+  </ItemGroup>
   <ItemGroup>
 	  <Reference Include="KeePass">
 		  <HintPath>..\..\KeePass\KeePass.exe</HintPath>
 	  </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\FluentPassFinder\FluentPassFinder.csproj" />
   </ItemGroup>
 </Project>

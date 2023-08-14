@@ -7,13 +7,13 @@ namespace FluentPassFinder.Services
     {
         private readonly IEnumerable<IAction> actions;
 
-        public EntryActionService(IEnumerable<IAction> actions, IPluginHostProxy hostProxy, ISearchWindowInteractionService searchWindowInteractionService)
+        public EntryActionService(IEnumerable<IAction> actions, IPluginProxy hostProxy, ISearchWindowInteractionService searchWindowInteractionService)
         {
             this.actions = actions.ToList();
             InitializeActions(hostProxy, searchWindowInteractionService);
         }
 
-        private void InitializeActions(IPluginHostProxy hostProxy, ISearchWindowInteractionService searchWindowInteractionService)
+        private void InitializeActions(IPluginProxy hostProxy, ISearchWindowInteractionService searchWindowInteractionService)
         {
             foreach (var action in actions)
             {

@@ -48,7 +48,7 @@ namespace FluentPassFinder
             Container.Collection.Register<IAction>(Assembly.GetAssembly(typeof(App)));
         }
 
-        public void Init(IPluginHostProxy interactionManager)
+        public void Init(IPluginProxy interactionManager)
         {
             if (interactionManager == null)
             {
@@ -67,6 +67,8 @@ namespace FluentPassFinder
 
         public static Container? Container { get; private set; }
         private SearchWindow? searchWindow;
+
+
 
         private void ShowSearchWindow(object sender, HotkeyEventArgs e)
         {

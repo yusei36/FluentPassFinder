@@ -6,7 +6,7 @@ namespace FluentPassFinder.ViewModels
 {
     public partial class SearchWindowViewModel : ObservableObject
     {
-        private readonly IPluginHostProxy hostProxy;
+        private readonly IPluginProxy hostProxy;
         private readonly IEntrySearchService entrySearchService;
         private readonly IEntryActionService entryActionService;
 
@@ -32,7 +32,7 @@ namespace FluentPassFinder.ViewModels
         private IAction selectedContextAction;
         public Boolean IsAnyDatabaseOpen => hostProxy.Databases.Any();
 
-        public SearchWindowViewModel(IPluginHostProxy hostProxy, IEntrySearchService entrySearchService, IEntryActionService entryActionService)
+        public SearchWindowViewModel(IPluginProxy hostProxy, IEntrySearchService entrySearchService, IEntryActionService entryActionService)
         {
             this.hostProxy = hostProxy;
             this.entrySearchService = entrySearchService;
