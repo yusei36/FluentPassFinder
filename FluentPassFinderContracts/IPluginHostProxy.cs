@@ -9,8 +9,10 @@ namespace FluentPassFinderContracts
         void CopyToClipboard(string strToCopy, bool bSprCompile, bool bIsEntryInfo, PwEntry peEntryInfo);
         string GetPlaceholderValue(string placeholder, SprContext context);
         Image GetBuildInIcon(PwIcon nuildInIconId); 
-        PwDatabase[] GetPwDatabases();
-        SearchOptions SearchOptions { get; }
         void PerformAutoType(PwEntry entry, PwDatabase database, string sequence = null);
+
+
+        PwDatabase[] Databases { get; }
+        SearchOptions SearchOptions { get; }
     }
 }

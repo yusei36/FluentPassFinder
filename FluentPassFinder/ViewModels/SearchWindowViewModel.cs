@@ -30,7 +30,7 @@ namespace FluentPassFinder.ViewModels
 
         [ObservableProperty]
         private IAction selectedContextAction;
-        public Boolean IsAnyDatabaseOpen => hostProxy.GetPwDatabases().Any();
+        public Boolean IsAnyDatabaseOpen => hostProxy.Databases.Any();
 
         public SearchWindowViewModel(IPluginHostProxy hostProxy, IEntrySearchService entrySearchService, IEntryActionService entryActionService)
         {
@@ -126,7 +126,7 @@ namespace FluentPassFinder.ViewModels
 
         partial void OnSearchTextChanged(string searchQuery)
         {
-            var dbs = hostProxy.GetPwDatabases();
+            var dbs = hostProxy.Databases;
 
             SelectedEntry = null;
             Entries.Clear();

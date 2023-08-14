@@ -44,10 +44,7 @@ namespace FluentPassFinderPlugin
             return pluginHostDispatcher.Invoke(() => mainWindow.ClientIcons.Images[(int)buildInIconId]);
         }
 
-        public PwDatabase[] GetPwDatabases()
-        {
-            return mainWindow?.DocumentManager?.GetOpenDatabases().ToArray();
-        }
+        public PwDatabase[] Databases => mainWindow?.DocumentManager?.GetOpenDatabases().ToArray();
 
         public SearchOptions SearchOptions
         {
