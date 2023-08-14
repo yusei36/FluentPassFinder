@@ -1,8 +1,9 @@
 ﻿using FluentPassFinderContracts.Services;
+using System.Windows.Input;
 
 namespace FluentPassFinder.Services.Actions
 {
-    internal interface IAction
+    internal interface IAction : ICommand
     {
         void RunAction(EntrySearchResult searchResult);
 

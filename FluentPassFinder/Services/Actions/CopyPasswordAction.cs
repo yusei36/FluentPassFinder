@@ -3,18 +3,18 @@ using FluentPassFinderContracts.Services;
 
 namespace FluentPassFinder.Services.Actions
 {
-    internal class CopyPasswordAction : IAction
+    internal class CopyPasswordAction : ActionBase
     {
         private readonly IPluginHostProxy hostProxy;
 
-        public ActionType ActionType => ActionType.CopyPassword;
+        public override ActionType ActionType => ActionType.CopyPassword;
 
         public CopyPasswordAction(IPluginHostProxy hostProxy)
         {
             this.hostProxy = hostProxy;
         }
 
-        public void RunAction(EntrySearchResult searchResult)
+        public override void RunAction(EntrySearchResult searchResult)
         {
             hostProxy.CopyToClipboard(searchResult.Entry.Strings.ReadSafe(PwDefs.PasswordField), true, true, searchResult.Entry);
         }

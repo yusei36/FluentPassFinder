@@ -4,7 +4,7 @@ using KeePass.Util.Spr;
 
 namespace FluentPassFinder.Services.Actions
 {
-    internal class CopyTotpAction : IAction
+    internal class CopyTotpAction : ActionBase
     {
         private IPluginHostProxy hostProxy;
 
@@ -13,9 +13,9 @@ namespace FluentPassFinder.Services.Actions
             this.hostProxy = hostProxy;
         }
 
-        public ActionType ActionType => ActionType.CopyTotp;
+        public override ActionType ActionType => ActionType.CopyTotp;
 
-        public void RunAction(EntrySearchResult searchResult)
+        public override void RunAction(EntrySearchResult searchResult)
         {
             var totp = hostProxy.GetPlaceholderValue("{TIMEOTP}", new SprContext(searchResult.Entry, searchResult.Database, SprCompileFlags.All, true, false));
             if (string.IsNullOrWhiteSpace(totp))
