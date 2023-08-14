@@ -5,6 +5,7 @@
         CopyPassword,
         CopyUserName,
         CopyTotp,
-        OpenContextMenu
+        OpenContextMenu,
+        AutoType,
     }
 }

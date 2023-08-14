@@ -3,23 +3,22 @@ using FluentPassFinderContracts;
 
 namespace FluentPassFinder.Services.Actions
 {
-    internal class CopyPasswordAction : ActionBase
+    internal class AutoTypeAction : ActionBase
     {
         private readonly IPluginHostProxy hostProxy;
         private readonly ISearchWindowInteractionService searchWindowInteractionService;
 
-        public override ActionType ActionType => ActionType.CopyPassword;
-
-        public CopyPasswordAction(IPluginHostProxy hostProxy, ISearchWindowInteractionService searchWindowInteractionService)
+        public AutoTypeAction(IPluginHostProxy hostProxy, ISearchWindowInteractionService searchWindowInteractionService)
         {
             this.hostProxy = hostProxy;
             this.searchWindowInteractionService = searchWindowInteractionService;
         }
+        public override ActionType ActionType => ActionType.AutoType;
 
         public override void RunAction(EntrySearchResult searchResult)
         {
             searchWindowInteractionService.Close();
-            hostProxy.CopyToClipboard(searchResult.Entry.Strings.ReadSafe(PwDefs.PasswordField), true, true, searchResult.Entry);
+            hostProxy.PerformAutoType(searchResult.Entry, searchResult.Database);
         }
     }
 }

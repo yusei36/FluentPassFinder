@@ -60,5 +60,10 @@ namespace FluentPassFinderPlugin
             };
             return defaultOptions;
         }
+
+        public void PerformAutoType(PwEntry entry, PwDatabase database, string sequence = null)
+        {
+            pluginHostDispatcher.Invoke(() => AutoType.PerformIntoCurrentWindow(entry, database, sequence));
+        }
     }
 }

@@ -30,8 +30,6 @@ namespace FluentPassFinder.ViewModels
 
         [ObservableProperty]
         private IAction selectedContextAction;
-
-        public Action HideSearchWindow;
         public Boolean IsAnyDatabaseOpen => hostProxy.GetPwDatabases().Any();
 
         public SearchWindowViewModel(IPluginHostProxy hostProxy, IEntrySearchService entrySearchService, IEntryActionService entryActionService)
@@ -59,7 +57,6 @@ namespace FluentPassFinder.ViewModels
                 }
 
                 entryActionService.RunAction(SelectedEntry.SearchResult, SelectedContextAction);
-                HideSearchWindow?.Invoke();
             }
             else 
             {
@@ -77,7 +74,6 @@ namespace FluentPassFinder.ViewModels
             }
 
             entryActionService.RunAction(SelectedEntry.SearchResult, ActionType.CopyUserName);
-            HideSearchWindow?.Invoke();
         }
 
         [RelayCommand]
@@ -89,7 +85,6 @@ namespace FluentPassFinder.ViewModels
             }
 
             entryActionService.RunAction(SelectedEntry.SearchResult, ActionType.CopyPassword);
-            HideSearchWindow?.Invoke();
         }
 
         [RelayCommand]
@@ -101,7 +96,6 @@ namespace FluentPassFinder.ViewModels
             }
 
             entryActionService.RunAction(SelectedEntry.SearchResult, ActionType.CopyTotp);
-            HideSearchWindow?.Invoke();
         }
 
         [RelayCommand]

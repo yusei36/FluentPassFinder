@@ -15,7 +15,8 @@
     ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
     ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-    WindowCornerPreference="Round"
+    WindowCornerPreference="Round"    
+    mc:Ignorable="d"
     
     ShowInTaskbar="False"
     WindowStyle="None"
@@ -23,11 +24,7 @@
     ResizeMode="NoResize"
     Width="400"
     MinHeight="40"
-    SizeToContent="Height"
-    
-    Deactivated="MainWindow_Deactivated"
-    
-    mc:Ignorable="d">
+    SizeToContent="Height">
     <ui:FluentWindow.Resources>
         <converters:ImageToBitmapSourceConverter x:Key="ImageToBitmapSourceConverter" />
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />

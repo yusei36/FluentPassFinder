@@ -14,13 +14,8 @@ namespace FluentPassFinder.Views
 
             ViewModel = viewModel;
             DataContext = this;
-            ViewModel.HideSearchWindow = HideSearchWindow;
 
             InitializeComponent();
-        }
-
-        private void MainWindow_Deactivated(object? sender, EventArgs e)
-        {
         }
 
         protected override void OnDeactivated(EventArgs e)
