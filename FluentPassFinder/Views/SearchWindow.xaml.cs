@@ -7,6 +7,7 @@ namespace FluentPassFinder.Views
     {
         public SearchWindowViewModel ViewModel { get; }
         private bool isClosing = false;
+        private bool isOpening = false;
 
         public SearchWindow(SearchWindowViewModel viewModel)
         {
@@ -27,7 +28,7 @@ namespace FluentPassFinder.Views
         [RelayCommand]
         public void HideSearchWindow()
         {
-            if (!isClosing)
+            if (!isClosing && !isOpening)
             {
                 isClosing = true;
                 Close();
@@ -41,8 +42,10 @@ namespace FluentPassFinder.Views
         {
             if (ViewModel.IsAnyDatabaseOpen)
             {
+                isOpening = true;
                 Show();
                 Activate();
+                isOpening = false;
             }
         }
 
