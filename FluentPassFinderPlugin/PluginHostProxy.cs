@@ -48,5 +48,17 @@ namespace FluentPassFinderPlugin
         {
             return mainWindow?.DocumentManager?.GetOpenDatabases().ToArray();
         }
+
+        public SearchOptions GetSearchOptions()
+        {
+            var defaultOptions = new SearchOptions()
+            {
+                IncludeTitleFiled = true,
+                IncludeNotesField = true,
+                IncludeUrlField = true,
+                IncludeCustomFields = true
+            };
+            return defaultOptions;
+        }
     }
 }

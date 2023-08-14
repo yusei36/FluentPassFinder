@@ -139,14 +139,7 @@ namespace FluentPassFinder.ViewModels
 
             if (dbs != null)
             {
-                var defaultOptions = new SearchOptions()
-                {
-                    IncludeTitleFiled = true,
-                    IncludeNotesField = true,
-                    IncludeUrlField = true,
-                    IncludeCustomFields = true
-                };
-                var entrySearchResults = entrySearchService.SearchEntries(dbs, searchQuery, defaultOptions);
+                var entrySearchResults = entrySearchService.SearchEntries(dbs, searchQuery, hostProxy.GetSearchOptions());
                 foreach (var entrySearchResult in entrySearchResults)
                 {
                     Entries.Add(new EntryViewModel(entrySearchResult, hostProxy));
