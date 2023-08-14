@@ -76,7 +76,7 @@ namespace FluentPassFinder.ViewModels
                 return;
             }
 
-            entryActionService.RunAction(SelectedEntry.SearchResult, ActionType.CopyUserName);
+            entryActionService.RunAction(SelectedEntry.SearchResult, ActionType.CopyTotp);
             HideSearchWindow?.Invoke();
         }
 

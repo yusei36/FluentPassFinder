@@ -3,6 +3,7 @@
     public enum ActionType
     {
         CopyPassword,
-        CopyUserName
+        CopyUserName,
+        CopyTotp
     }
 }

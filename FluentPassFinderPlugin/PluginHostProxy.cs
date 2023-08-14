@@ -2,6 +2,7 @@
 using KeePass.Forms;
 using KeePass.Plugins;
 using KeePass.Util;
+using KeePass.Util.Spr;
 using KeePassLib;
 using System;
 using System.Drawing;
@@ -33,9 +34,14 @@ namespace FluentPassFinderPlugin
             });
         }
 
-        public Image GetBuildInIcon(PwIcon nuildInIconId)
+        public string GetPlaceholderValue(string placeholder, SprContext context)
         {
-            return pluginHostDispatcher.Invoke(() => mainWindow.ClientIcons.Images[(int)nuildInIconId]);
+            return pluginHostDispatcher.Invoke(() => SprEngine.Compile(placeholder, context));
+        }
+
+        public Image GetBuildInIcon(PwIcon buildInIconId)
+        {
+            return pluginHostDispatcher.Invoke(() => mainWindow.ClientIcons.Images[(int)buildInIconId]);
         }
 
         public PwDatabase[] GetPwDatabases()
