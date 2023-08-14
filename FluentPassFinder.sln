@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.7.34003.232
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FluentPassFinderPlugin", "FluentPassFinderPlugin\FluentPassFinderPlugin.csproj", "{EAF16377-EB62-4EE3-9C1B-F9E6658CC7AF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{185AA238-2C34-4147-9FF2-825A95B8FA53} = {185AA238-2C34-4147-9FF2-825A95B8FA53}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FluentPassFinder", "FluentPassFinder\FluentPassFinder.csproj", "{185AA238-2C34-4147-9FF2-825A95B8FA53}"
 EndProject
