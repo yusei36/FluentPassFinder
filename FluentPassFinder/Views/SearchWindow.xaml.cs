@@ -35,6 +35,11 @@ namespace FluentPassFinder.Views
 
                 ViewModel.SearchText = string.Empty;
                 ViewModel.Entries.Clear();
+
+                ViewModel.IsContextMenuOpen = false;
+                ViewModel.SelectedEntry = null;
+                ViewModel.SelectedContextAction = ViewModel.ContextActions.First();
+
                 isClosing = false;
             }
         }
