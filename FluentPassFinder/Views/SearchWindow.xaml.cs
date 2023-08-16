@@ -1,4 +1,5 @@
 ﻿using FluentPassFinder.ViewModels;
+using System.Windows;
 using System.Windows.Controls;
 using WpfScreenHelper;
 
@@ -7,6 +8,8 @@ namespace FluentPassFinder.Views
     public partial class SearchWindow
     {
         public SearchWindowViewModel ViewModel { get; }
+        public static double HeaderSize = 40.0;
+
         private bool isClosing = false;
         private bool isOpening = false;
 
@@ -50,23 +53,34 @@ namespace FluentPassFinder.Views
             if (ViewModel.IsAnyDatabaseOpen)
             {
                 isOpening = true;
-                var isLoaded = IsLoaded;
-                Screen screen = showOnPrimaryScreen ? Screen.PrimaryScreen : Screen.FromPoint(MouseHelper.MousePosition);
-                if (isLoaded)
-                {
-                    WindowHelper.SetWindowPosition(this, WpfScreenHelper.Enum.WindowPositions.Center, screen);
-                }
+                SetCenteredWindowPosition(showOnPrimaryScreen);
                 Show();
-                if (!isLoaded)
-                {
-                    WindowHelper.SetWindowPosition(this, WpfScreenHelper.Enum.WindowPositions.Center, screen);
-                }
 
                 Activate();
                 SearchBox.Focus();
 
                 isOpening = false;
             }
+        }
+
+        private void SetCenteredWindowPosition(bool showOnPrimaryScreen)
+        {
+            Screen screen = showOnPrimaryScreen ? Screen.PrimaryScreen : Screen.FromPoint(MouseHelper.MousePosition);
+            var workingAreaCenter = GetCenterOfWorkingArea(this, screen);
+
+            var topOffset = HeaderSize;
+
+            Left = workingAreaCenter.X;
+            Top = workingAreaCenter.Y - topOffset;
+            Width = workingAreaCenter.Width;
+            Height = workingAreaCenter.Height;
+        }
+
+        private static Rect GetCenterOfWorkingArea(Window window, Screen screen)
+        {
+            var x = screen.WorkingArea.X + (screen.WorkingArea.Width - window.Width) / 2.0;
+            var y = screen.WorkingArea.Y + (screen.WorkingArea.Height - window.Height) / 2.0;
+            return new Rect(x * screen.ScaleFactor, y * screen.ScaleFactor, window.Width * screen.ScaleFactor, window.Height * screen.ScaleFactor);
         }
 
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)

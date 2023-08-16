@@ -19,9 +19,10 @@
     WindowCornerPreference="Round"
     ShowInTaskbar="False"
     WindowStyle="None"
-    WindowStartupLocation="CenterScreen"
-    Width="400"
-    MinHeight="40"
+    WindowStartupLocation="Manual"
+    Width="500"
+    MinHeight="{x:Static local:SearchWindow.HeaderSize}"
+    Height="{x:Static local:SearchWindow.HeaderSize}"
     SizeToContent="Height">
     <ui:FluentWindow.Resources>
         <converters:ImageToBitmapSourceConverter x:Key="ImageToBitmapSourceConverter" />
@@ -47,7 +48,7 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="40"/>
+            <RowDefinition Height="{Binding Source={x:Static local:SearchWindow.HeaderSize}}"/>
             <RowDefinition Height="*" MaxHeight="500"/>
         </Grid.RowDefinitions>
         <ui:TextBox x:Name="SearchBox"
