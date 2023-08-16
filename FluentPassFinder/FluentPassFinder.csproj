@@ -15,6 +15,7 @@
     <PackageReference Include="SimpleInjector" Version="5.4.1" />
     <PackageReference Include="WPF-UI" Version="3.0.0-preview.4" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1 " />
+    <PackageReference Include="WpfScreenHelper" Version="2.1.0" />
   </ItemGroup>
 
   <ItemGroup>

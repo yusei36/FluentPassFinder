@@ -1,5 +1,6 @@
 ﻿using FluentPassFinder.ViewModels;
 using System.Windows.Controls;
+using WpfScreenHelper;
 
 namespace FluentPassFinder.Views
 {
@@ -44,14 +45,26 @@ namespace FluentPassFinder.Views
             }
         }
 
-        public void ShowSearchWindow()
+        public void ShowSearchWindow(bool showOnPrimaryScreen)
         {
             if (ViewModel.IsAnyDatabaseOpen)
             {
                 isOpening = true;
+                var isLoaded = IsLoaded;
+                Screen screen = showOnPrimaryScreen ? Screen.PrimaryScreen : Screen.FromPoint(MouseHelper.MousePosition);
+                if (isLoaded)
+                {
+                    WindowHelper.SetWindowPosition(this, WpfScreenHelper.Enum.WindowPositions.Center, screen);
+                }
                 Show();
+                if (!isLoaded)
+                {
+                    WindowHelper.SetWindowPosition(this, WpfScreenHelper.Enum.WindowPositions.Center, screen);
+                }
+
                 Activate();
                 SearchBox.Focus();
+
                 isOpening = false;
             }
         }

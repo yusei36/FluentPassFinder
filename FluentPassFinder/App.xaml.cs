@@ -74,8 +74,14 @@ namespace FluentPassFinder
             {
                 throw new NullReferenceException("Container is null");
             }
-
-            searchWindow?.ShowSearchWindow();
+            if (e.Name.EndsWith(nameof(Key.F)))
+            {
+                searchWindow?.ShowSearchWindow(true);
+            }
+            else
+            {
+                searchWindow?.ShowSearchWindow(false);
+            }
         }
     }
 }
