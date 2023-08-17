@@ -124,6 +124,9 @@
             <ListView.ItemTemplate>
                 <DataTemplate DataType="contracts:IAction">
                     <StackPanel Margin="4,0" >
+                        <StackPanel.InputBindings>
+                            <MouseBinding Gesture="LeftClick" Command="{Binding DataContext.ViewModel.RunActionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}" CommandParameter="{Binding ActionType}"/>
+                        </StackPanel.InputBindings>
                         <ui:TextBlock FontTypography="Body" 
                                       Text="{Binding ActionType}"/>
                     </StackPanel>

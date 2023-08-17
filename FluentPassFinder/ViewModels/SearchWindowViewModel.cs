@@ -61,7 +61,7 @@ namespace FluentPassFinder.ViewModels
             }
             else 
             {
-
+                SelectedEntry = entry;
                 entryActionService.RunAction(entry.SearchResult, ActionType.OpenContextMenu);
             }
         }
@@ -100,6 +100,17 @@ namespace FluentPassFinder.ViewModels
             }
 
             entryActionService.RunAction(entry.SearchResult, ActionType.CopyTotp);
+        }
+
+        [RelayCommand]
+        private void RunAction(ActionType actionType)
+        {
+            if (SelectedEntry == null)
+            {
+                return;
+            }
+
+            entryActionService.RunAction(SelectedEntry.SearchResult, actionType);
         }
 
         [RelayCommand]
