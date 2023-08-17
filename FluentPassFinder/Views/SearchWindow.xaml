@@ -74,7 +74,8 @@
                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                   Visibility="{Binding ViewModel.IsContextMenuOpen, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=invert}">
             <ListView.ItemTemplate>
-                <DataTemplate DataType="models:EntryViewModel">
+                <DataTemplate DataType="models:EntryViewModel" 
+                              d:DataType="models:EntryViewModel">
                     <Grid Margin="4,0" 
                           ToolTipService.ToolTip="{Binding Title}">
                         <Grid.RowDefinitions>
@@ -85,6 +86,12 @@
                             <ColumnDefinition Width="24"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
+                        <Grid.InputBindings>
+                            <MouseBinding Gesture="LeftClick" Command="{Binding DataContext.ViewModel.EnterActionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}" CommandParameter="{Binding}"/>
+                            <MouseBinding Gesture="Shift+LeftClick" Command="{Binding DataContext.ViewModel.ShiftEnterActionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}" CommandParameter="{Binding}"/>
+                            <MouseBinding Gesture="Ctrl+LeftClick" Command="{Binding DataContext.ViewModel.ControlEnterActionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}" CommandParameter="{Binding}"/>
+                            <MouseBinding Gesture="Alt+LeftClick" Command="{Binding DataContext.ViewModel.AltEnterCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}" CommandParameter="{Binding}"/>
+                        </Grid.InputBindings>
                         <ui:Image Grid.Column="0"
                                   Grid.Row="0"
                                   Grid.RowSpan="2"

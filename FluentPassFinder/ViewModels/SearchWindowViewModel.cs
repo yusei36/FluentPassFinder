@@ -42,9 +42,10 @@ namespace FluentPassFinder.ViewModels
         }
 
         [RelayCommand]
-        private void EnterAction()
+        private void EnterAction(EntryViewModel entryViewModel)
         {
-            if (SelectedEntry == null)
+            var entry = entryViewModel ?? SelectedEntry;
+            if (entry == null)
             {
                 return;
             }
@@ -56,46 +57,49 @@ namespace FluentPassFinder.ViewModels
                     return;
                 }
 
-                entryActionService.RunAction(SelectedEntry.SearchResult, SelectedContextAction);
+                entryActionService.RunAction(entry.SearchResult, SelectedContextAction);
             }
             else 
             {
 
-                entryActionService.RunAction(SelectedEntry.SearchResult, ActionType.OpenContextMenu);
+                entryActionService.RunAction(entry.SearchResult, ActionType.OpenContextMenu);
             }
         }
 
         [RelayCommand]
-        private void ShiftEnterAction()
+        private void ShiftEnterAction(EntryViewModel entryViewModel)
         {
-            if (SelectedEntry == null)
+            var entry = entryViewModel ?? SelectedEntry;
+            if (entry == null)
             {
                 return;
             }
 
-            entryActionService.RunAction(SelectedEntry.SearchResult, ActionType.CopyUserName);
+            entryActionService.RunAction(entry.SearchResult, ActionType.CopyUserName);
         }
 
         [RelayCommand]
-        private void ControlEnterAction()
+        private void ControlEnterAction(EntryViewModel entryViewModel)
         {
-            if (SelectedEntry == null)
+            var entry = entryViewModel ?? SelectedEntry;
+            if (entry == null)
             {
                 return;
             }
 
-            entryActionService.RunAction(SelectedEntry.SearchResult, ActionType.CopyPassword);
+            entryActionService.RunAction(entry.SearchResult, ActionType.CopyPassword);
         }
 
         [RelayCommand]
-        private void AltEnterAction()
+        private void AltEnterAction(EntryViewModel entryViewModel)
         {
-            if (SelectedEntry == null)
+            var entry = entryViewModel ?? SelectedEntry;
+            if (entry == null)
             {
                 return;
             }
 
-            entryActionService.RunAction(SelectedEntry.SearchResult, ActionType.CopyTotp);
+            entryActionService.RunAction(entry.SearchResult, ActionType.CopyTotp);
         }
 
         [RelayCommand]
