@@ -7,6 +7,7 @@ using NHotkey;
 using NHotkey.Wpf;
 using SimpleInjector;
 using System.Reflection;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Windows;
 using System.Windows.Input;
 
@@ -60,8 +61,11 @@ namespace FluentPassFinder
             searchWindow = new SearchWindow(viewModel);
             MainWindow = searchWindow;
 
-            HotkeyManager.Current.AddOrReplace(nameof(ShowSearchWindow)+ nameof(Key.F), Key.F, ModifierKeys.Control | ModifierKeys.Alt, ShowSearchWindow);
-            HotkeyManager.Current.AddOrReplace(nameof(ShowSearchWindow)+ nameof(Key.S), Key.S, ModifierKeys.Control | ModifierKeys.Alt, ShowSearchWindow);
+            var settings = interactionManager.SearchOptions;
+            var converter = new KeyGestureConverter();
+
+            HotkeyManager.Current.AddOrReplace(nameof(SearchOptions.GlobalHotkeyPrimaryScreen), (KeyGesture)converter.ConvertFromInvariantString(settings.GlobalHotkeyPrimaryScreen), ShowSearchWindow);
+            HotkeyManager.Current.AddOrReplace(nameof(SearchOptions.GlobalHotkeyCurrentScreen), (KeyGesture)converter.ConvertFromInvariantString(settings.GlobalHotkeyCurrentScreen), ShowSearchWindow);
         }
 
         public static Container Container { get; private set; }
@@ -74,7 +78,7 @@ namespace FluentPassFinder
             {
                 throw new NullReferenceException("Container is null");
             }
-            if (e.Name.EndsWith(nameof(Key.F)))
+            if (e.Name == nameof(SearchOptions.GlobalHotkeyPrimaryScreen))
             {
                 searchWindow?.ShowSearchWindow(true);
             }
