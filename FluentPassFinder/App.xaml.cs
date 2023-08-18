@@ -7,7 +7,6 @@ using NHotkey;
 using NHotkey.Wpf;
 using SimpleInjector;
 using System.Reflection;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Windows;
 using System.Windows.Input;
 
