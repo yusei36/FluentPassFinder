@@ -76,7 +76,7 @@ namespace FluentPassFinderPlugin
                     GlobalHotkeyPrimaryScreen = "Ctrl+Alt+F"
                 };
                 
-                pluginHost.CustomConfig.SetString(nameof(FluentPassFinderPlugin), JsonConvert.SerializeObject(defaultOptions));
+                pluginHost.CustomConfig.SetString(nameof(FluentPassFinderPlugin), JsonConvert.SerializeObject(defaultOptions, Formatting.Indented));
                 searchOptions = defaultOptions;
             }
             else
