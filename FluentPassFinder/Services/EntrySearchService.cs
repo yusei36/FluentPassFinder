@@ -14,6 +14,11 @@ namespace FluentPassFinder.Services
                 var allEntriesInDb = db.RootGroup.GetEntries(true);
                 foreach (var entry in allEntriesInDb)
                 {
+                    if (searchOptions.ExcludeExpiredEntries && entry.Expires)
+                    {
+                        break;
+                    }
+
                     var fieldNamesToSearch = GetFieldNamesToSearch(entry, searchOptions);
                     var isMatch = false;
                     foreach (var fieldName in fieldNamesToSearch)
