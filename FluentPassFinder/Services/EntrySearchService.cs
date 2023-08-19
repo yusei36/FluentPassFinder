@@ -11,8 +11,11 @@ namespace FluentPassFinder.Services
             searchQuery = searchQuery.ToLower();
             foreach (PwDatabase db in databases)
             {
-                var allEntriesInDb = db.RootGroup.GetEntries(true);
-                foreach (var entry in allEntriesInDb)
+                var allGroups = db.RootGroup.GetGroups(true);
+                allGroups.Add(db.RootGroup);
+
+                var allEntries = allGroups.SelectMany(g => g.Entries);
+                foreach (var entry in allEntries)
                 {
                     if (searchOptions.ExcludeExpiredEntries && entry.Expires)
                     {
