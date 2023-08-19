@@ -5,6 +5,7 @@ using KeePass.Util;
 using KeePass.Util.Spr;
 using KeePassLib;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System;
 using System.Drawing;
 using System.Windows.Threading;
@@ -15,6 +16,7 @@ namespace FluentPassFinderPlugin
     {
         private readonly IPluginHost pluginHost;
         private readonly MainForm mainWindow;
+        private readonly JsonSerializerSettings jsonSerializerSettings;
         private readonly Dispatcher pluginHostDispatcher;
         private readonly Settings settings;
 
@@ -23,6 +25,11 @@ namespace FluentPassFinderPlugin
             this.pluginHost = pluginHost;
             pluginHostDispatcher = Dispatcher.CurrentDispatcher;
             mainWindow = pluginHost.MainWindow;
+
+            jsonSerializerSettings = new JsonSerializerSettings();
+            jsonSerializerSettings.Converters.Add(new StringEnumConverter());
+            jsonSerializerSettings.Formatting = Formatting.Indented;
+
             settings = LoadOrCreateDefaultSettings();
         }
 
@@ -70,7 +77,7 @@ namespace FluentPassFinderPlugin
             {
                 try
                 {
-                    loadedSettings = JsonConvert.DeserializeObject<Settings>(configString);
+                    loadedSettings = JsonConvert.DeserializeObject<Settings>(configString, jsonSerializerSettings);
                 }
                 catch
                 {
@@ -102,8 +109,7 @@ namespace FluentPassFinderPlugin
                 ControlAction = ActionType.CopyPassword,
                 AltAction = ActionType.CopyTotp
             };
-
-            pluginHost.CustomConfig.SetString(nameof(FluentPassFinderPlugin), JsonConvert.SerializeObject(defaultSettings, Formatting.Indented));
+            pluginHost.CustomConfig.SetString(nameof(FluentPassFinderPlugin), JsonConvert.SerializeObject(defaultSettings, jsonSerializerSettings));
 
             return defaultSettings;
         }
