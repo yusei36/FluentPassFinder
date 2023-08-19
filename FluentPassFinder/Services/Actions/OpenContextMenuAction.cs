@@ -1,5 +1,6 @@
 ﻿using FluentPassFinder.Contracts;
 using FluentPassFinder.ViewModels;
+using FluentPassFinderContracts;
 
 namespace FluentPassFinder.Services.Actions
 {

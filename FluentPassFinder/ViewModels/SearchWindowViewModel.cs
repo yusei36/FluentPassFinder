@@ -62,7 +62,7 @@ namespace FluentPassFinder.ViewModels
             else 
             {
                 SelectedEntry = entry;
-                entryActionService.RunAction(entry.SearchResult, ActionType.OpenContextMenu);
+                entryActionService.RunAction(entry.SearchResult, pluginProxy.Settings.MainAction);
             }
         }
 
@@ -75,7 +75,7 @@ namespace FluentPassFinder.ViewModels
                 return;
             }
 
-            entryActionService.RunAction(entry.SearchResult, ActionType.CopyUserName);
+            entryActionService.RunAction(entry.SearchResult, pluginProxy.Settings.ShiftAction);
         }
 
         [RelayCommand]
@@ -87,7 +87,7 @@ namespace FluentPassFinder.ViewModels
                 return;
             }
 
-            entryActionService.RunAction(entry.SearchResult, ActionType.CopyPassword);
+            entryActionService.RunAction(entry.SearchResult, pluginProxy.Settings.ControlAction);
         }
 
         [RelayCommand]
@@ -99,7 +99,7 @@ namespace FluentPassFinder.ViewModels
                 return;
             }
 
-            entryActionService.RunAction(entry.SearchResult, ActionType.CopyTotp);
+            entryActionService.RunAction(entry.SearchResult, pluginProxy.Settings.AltAction);
         }
 
         [RelayCommand]

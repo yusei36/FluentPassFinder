@@ -96,7 +96,11 @@ namespace FluentPassFinderPlugin
                 },
                 PluginTotpPlaceholder = "{TOTP}",
                 GlobalHotkeyCurrentScreen = "Ctrl+Alt+S",
-                GlobalHotkeyPrimaryScreen = "Ctrl+Alt+F"
+                GlobalHotkeyPrimaryScreen = "Ctrl+Alt+F",
+                MainAction = ActionType.OpenContextMenu,
+                ShiftAction = ActionType.CopyUserName,
+                ControlAction = ActionType.CopyPassword,
+                AltAction = ActionType.CopyTotp
             };
 
             pluginHost.CustomConfig.SetString(nameof(FluentPassFinderPlugin), JsonConvert.SerializeObject(defaultSettings, Formatting.Indented));

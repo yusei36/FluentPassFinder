@@ -1,4 +1,4 @@
-﻿namespace FluentPassFinder.Contracts
+﻿namespace FluentPassFinderContracts
 {
     public enum ActionType
     {

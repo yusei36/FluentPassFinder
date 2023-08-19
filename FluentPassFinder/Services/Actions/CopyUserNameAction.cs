@@ -1,5 +1,6 @@
 ﻿using FluentPassFinder.Contracts;
 
+using FluentPassFinderContracts;
 namespace FluentPassFinder.Services.Actions
 {
     internal class CopyUserNameAction : ActionBase

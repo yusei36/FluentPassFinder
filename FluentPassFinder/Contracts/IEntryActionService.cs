@@ -1,3 +1,5 @@
+using FluentPassFinderContracts;
+
 namespace FluentPassFinder.Contracts
 {
     public interface IEntryActionService
