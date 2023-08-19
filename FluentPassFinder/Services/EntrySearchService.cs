@@ -14,8 +14,19 @@ namespace FluentPassFinder.Services
                 var allGroups = db.RootGroup.GetGroups(true);
                 allGroups.Add(db.RootGroup);
 
-                var allEntries = allGroups.SelectMany(g => g.Entries);
-                foreach (var entry in allEntries)
+                var includedGroups = allGroups.ToList();
+                if (searchOptions.ExcludeGroupsBySearchSetting)
+                {
+                    includedGroups = allGroups.Where(g => g.GetSearchingEnabledInherited()).ToList();
+                }
+
+                var entries = includedGroups.SelectMany(g => g.Entries);
+                var includedEntries = entries;
+                if (searchOptions.ExcludeExpiredEntries)
+                {
+
+                }
+                foreach (var entry in entries)
                 {
                     if (searchOptions.ExcludeExpiredEntries && entry.Expires)
                     {

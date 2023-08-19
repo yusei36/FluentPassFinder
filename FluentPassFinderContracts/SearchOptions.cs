@@ -8,8 +8,11 @@
         public bool IncludeUrlField { get; set; }
         public bool IncludeNotesField { get; set; }
         public bool IncludeTags { get; set; }
-        public bool ExcludeExpiredEntries { get; set; }
         public bool IncludeCustomFields { get; set; }
         public bool IncludeProtectedCustomFields { get; set; }
+
+
+        public bool ExcludeExpiredEntries { get; set; }
+        public bool ExcludeGroupsBySearchSetting { get; set; }
     }
 }
