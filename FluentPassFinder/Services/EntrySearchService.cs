@@ -11,8 +11,8 @@ namespace FluentPassFinder.Services
             searchQuery = searchQuery.ToLower();
             foreach (PwDatabase db in databases)
             {
-                var allGroups = db.RootGroup.GetGroups(true);
-                allGroups.Add(db.RootGroup);
+                var allGroups = db.RootGroup.GetGroups(true); 
+                allGroups.Insert(0, db.RootGroup);
 
                 var includedGroups = allGroups.ToList();
                 if (searchOptions.ExcludeGroupsBySearchSetting)
@@ -20,12 +20,7 @@ namespace FluentPassFinder.Services
                     includedGroups = allGroups.Where(g => g.GetSearchingEnabledInherited()).ToList();
                 }
 
-                var entries = includedGroups.SelectMany(g => g.Entries);
-                var includedEntries = entries;
-                if (searchOptions.ExcludeExpiredEntries)
-                {
-
-                }
+                var entries = includedGroups.SelectMany(g => g.GetEntries(false)).ToList();
                 foreach (var entry in entries)
                 {
                     if (searchOptions.ExcludeExpiredEntries && entry.Expires)
