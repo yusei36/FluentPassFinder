@@ -10,8 +10,7 @@ namespace FluentPassFinderContracts
         Image GetBuildInIcon(PwIcon nuildInIconId); 
         void PerformAutoType(PwEntry entry, PwDatabase database, string sequence = null);
 
-
         PwDatabase[] Databases { get; }
-        SearchOptions SearchOptions { get; }
+        Settings Settings { get; }
     }
 }

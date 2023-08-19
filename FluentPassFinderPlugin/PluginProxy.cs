@@ -16,7 +16,7 @@ namespace FluentPassFinderPlugin
         private readonly IPluginHost pluginHost;
         private Dispatcher pluginHostDispatcher;
         private MainForm mainWindow;
-        private SearchOptions searchOptions;
+        private Settings searchOptions;
 
         public PluginProxy(IPluginHost pluginHost)
         {
@@ -51,7 +51,7 @@ namespace FluentPassFinderPlugin
 
         public PwDatabase[] Databases => mainWindow?.DocumentManager?.GetOpenDatabases().ToArray();
 
-        public SearchOptions SearchOptions
+        public Settings Settings
         {
             get
             {
@@ -65,23 +65,26 @@ namespace FluentPassFinderPlugin
             
             if (configString == null)
             {
-                var defaultOptions = new SearchOptions()
+                var defaultSettings = new Settings()
                 {
-                    IncludeTitleFiled = true,
-                    IncludeNotesField = true,
-                    IncludeUrlField = true,
-                    IncludeCustomFields = true,
+                    SearchOptions = new SearchOptions()
+                    {
+                        IncludeTitleFiled = true,
+                        IncludeNotesField = true,
+                        IncludeUrlField = true,
+                        IncludeCustomFields = true,
+                    },
                     PluginTotpPlaceholder = "{TOTP}",
                     GlobalHotkeyCurrentScreen = "Ctrl+Alt+S",
                     GlobalHotkeyPrimaryScreen = "Ctrl+Alt+F"
                 };
                 
-                pluginHost.CustomConfig.SetString(nameof(FluentPassFinderPlugin), JsonConvert.SerializeObject(defaultOptions, Formatting.Indented));
-                searchOptions = defaultOptions;
+                pluginHost.CustomConfig.SetString(nameof(FluentPassFinderPlugin), JsonConvert.SerializeObject(defaultSettings, Formatting.Indented));
+                searchOptions = defaultSettings;
             }
             else
             {
-                searchOptions = JsonConvert.DeserializeObject<SearchOptions>(configString);
+                searchOptions = JsonConvert.DeserializeObject<Settings>(configString);
             }
         }
 

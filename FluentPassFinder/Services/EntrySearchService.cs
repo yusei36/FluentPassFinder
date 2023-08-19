@@ -5,7 +5,7 @@ namespace FluentPassFinder.Services
 {
     internal class EntrySearchService : IEntrySearchService
     {
-        public IEnumerable<EntrySearchResult> SearchEntries(IEnumerable<PwDatabase> databases, string searchQuery, SearchOptions searchOptions)
+        public IEnumerable<EntrySearchResult> SearchEntries(IEnumerable<PwDatabase> databases, string searchQuery, Settings settings)
         {
             searchQuery = searchQuery.ToLower();
             foreach (PwDatabase db in databases)
@@ -13,7 +13,7 @@ namespace FluentPassFinder.Services
                 var allEntriesInDb = db.RootGroup.GetEntries(true);
                 foreach (var entry in allEntriesInDb)
                 {
-                    var fieldNamesToSearch = GetFieldNamesToSearch(entry, searchOptions);
+                    var fieldNamesToSearch = GetFieldNamesToSearch(entry, settings.SearchOptions);
                     foreach (var fieldName in fieldNamesToSearch)
                     {
                         var fieldValue = entry.Strings.ReadSafe(fieldName);

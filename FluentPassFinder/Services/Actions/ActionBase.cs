@@ -21,7 +21,7 @@ namespace FluentPassFinder.Services.Actions
             this.searchWindowInteractionService = searchWindowInteractionService;
         }
 
-        protected SearchOptions SearchOptions => pluginProxy.SearchOptions;
+        protected Settings Settings => pluginProxy.Settings;
 
         public abstract ActionType ActionType { get; }
 

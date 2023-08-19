@@ -10,10 +10,5 @@
 
         public bool IncludeCustomFields { get; set; }
         public bool IncludeProtectedCustomFields { get; set; }
-
-        public string PluginTotpPlaceholder { get; set; }
-        
-        public string GlobalHotkeyCurrentScreen { get; set; }
-        public string GlobalHotkeyPrimaryScreen { get; set; }
     }
 }

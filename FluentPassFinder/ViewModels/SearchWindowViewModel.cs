@@ -148,7 +148,7 @@ namespace FluentPassFinder.ViewModels
 
             if (dbs != null)
             {
-                var entrySearchResults = entrySearchService.SearchEntries(dbs, searchQuery, pluginProxy.SearchOptions);
+                var entrySearchResults = entrySearchService.SearchEntries(dbs, searchQuery, pluginProxy.Settings);
                 foreach (var entrySearchResult in entrySearchResults)
                 {
                     Entries.Add(new EntryViewModel(entrySearchResult, pluginProxy));

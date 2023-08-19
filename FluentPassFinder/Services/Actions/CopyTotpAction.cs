@@ -12,7 +12,7 @@ namespace FluentPassFinder.Services.Actions
         public override void RunAction(EntrySearchResult searchResult)
         {
             searchWindowInteractionService.Close();
-            var pluginTotpPlaceholder = SearchOptions.PluginTotpPlaceholder;
+            var pluginTotpPlaceholder = Settings.PluginTotpPlaceholder;
             var totp = pluginProxy.GetPlaceholderValue(pluginTotpPlaceholder, searchResult.Entry, searchResult.Database);
 
             if (String.IsNullOrEmpty(totp) || totp == pluginTotpPlaceholder)

@@ -60,11 +60,11 @@ namespace FluentPassFinder
             searchWindow = new SearchWindow(viewModel);
             MainWindow = searchWindow;
 
-            var settings = interactionManager.SearchOptions;
+            var settings = interactionManager.Settings;
             var converter = new KeyGestureConverter();
 
-            HotkeyManager.Current.AddOrReplace(nameof(SearchOptions.GlobalHotkeyPrimaryScreen), (KeyGesture)converter.ConvertFromInvariantString(settings.GlobalHotkeyPrimaryScreen), ShowSearchWindow);
-            HotkeyManager.Current.AddOrReplace(nameof(SearchOptions.GlobalHotkeyCurrentScreen), (KeyGesture)converter.ConvertFromInvariantString(settings.GlobalHotkeyCurrentScreen), ShowSearchWindow);
+            HotkeyManager.Current.AddOrReplace(nameof(Settings.GlobalHotkeyPrimaryScreen), (KeyGesture)converter.ConvertFromInvariantString(settings.GlobalHotkeyPrimaryScreen), ShowSearchWindow);
+            HotkeyManager.Current.AddOrReplace(nameof(Settings.GlobalHotkeyCurrentScreen), (KeyGesture)converter.ConvertFromInvariantString(settings.GlobalHotkeyCurrentScreen), ShowSearchWindow);
         }
 
         public static Container Container { get; private set; }
@@ -77,7 +77,7 @@ namespace FluentPassFinder
             {
                 throw new NullReferenceException("Container is null");
             }
-            if (e.Name == nameof(SearchOptions.GlobalHotkeyPrimaryScreen))
+            if (e.Name == nameof(Settings.GlobalHotkeyPrimaryScreen))
             {
                 searchWindow?.ShowSearchWindow(true);
             }
