@@ -30,7 +30,7 @@ namespace FluentPassFinder.Services
                 {
                     if (searchOptions.ExcludeExpiredEntries && entry.Expires)
                     {
-                        break;
+                        continue;
                     }
 
                     var fieldNamesToSearch = GetFieldNamesToSearch(entry, searchOptions);
