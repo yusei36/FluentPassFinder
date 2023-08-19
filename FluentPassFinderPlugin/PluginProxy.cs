@@ -4,26 +4,26 @@ using KeePass.Plugins;
 using KeePass.Util;
 using KeePass.Util.Spr;
 using KeePassLib;
+using Newtonsoft.Json;
 using System;
 using System.Drawing;
 using System.Windows.Threading;
-using Newtonsoft.Json;
 
 namespace FluentPassFinderPlugin
 {
     internal class PluginProxy : IPluginProxy
     {
         private readonly IPluginHost pluginHost;
-        private Dispatcher pluginHostDispatcher;
-        private MainForm mainWindow;
-        private Settings searchOptions;
+        private readonly MainForm mainWindow;
+        private readonly Dispatcher pluginHostDispatcher;
+        private readonly Settings settings;
 
         public PluginProxy(IPluginHost pluginHost)
         {
             this.pluginHost = pluginHost;
             pluginHostDispatcher = Dispatcher.CurrentDispatcher;
             mainWindow = pluginHost.MainWindow;
-            LoadOrCreateDefaultSettings();
+            settings = LoadOrCreateDefaultSettings();
         }
 
         public void CopyToClipboard(string strToCopy, bool bSprCompile, bool bIsEntryInfo, PwEntry peEntryInfo)
@@ -49,35 +49,35 @@ namespace FluentPassFinderPlugin
             return pluginHostDispatcher.Invoke(() => mainWindow.ClientIcons.Images[(int)buildInIconId]);
         }
 
-        public PwDatabase[] Databases => mainWindow?.DocumentManager?.GetOpenDatabases().ToArray();
-
-        public Settings Settings
+        public void PerformAutoType(PwEntry entry, PwDatabase database, string sequence = null)
         {
-            get
-            {
-                return searchOptions;
-            }
+            pluginHostDispatcher.Invoke(() => AutoType.PerformIntoCurrentWindow(entry, database, sequence));
         }
 
-        private void LoadOrCreateDefaultSettings()
+        public PwDatabase[] Databases => mainWindow?.DocumentManager?.GetOpenDatabases().ToArray();
+
+        public Settings Settings => settings;
+
+        private Settings LoadOrCreateDefaultSettings()
         {
             var configString = pluginHost.CustomConfig.GetString(nameof(FluentPassFinderPlugin));
-            
+            Settings loadedSettings = null;
             if (configString == null)
             {
-                searchOptions = CreateDefaultSettings();
+                loadedSettings = CreateDefaultSettings();
             }
             else
             {
                 try
                 {
-                    searchOptions = JsonConvert.DeserializeObject<Settings>(configString);
+                    loadedSettings = JsonConvert.DeserializeObject<Settings>(configString);
                 }
                 catch
                 {
-                    searchOptions = CreateDefaultSettings();
+                    loadedSettings = CreateDefaultSettings();
                 }
             }
+            return loadedSettings;
         }
 
         private Settings CreateDefaultSettings()
@@ -100,11 +100,6 @@ namespace FluentPassFinderPlugin
             pluginHost.CustomConfig.SetString(nameof(FluentPassFinderPlugin), JsonConvert.SerializeObject(defaultSettings, Formatting.Indented));
 
             return defaultSettings;
-        }
-
-        public void PerformAutoType(PwEntry entry, PwDatabase database, string sequence = null)
-        {
-            pluginHostDispatcher.Invoke(() => AutoType.PerformIntoCurrentWindow(entry, database, sequence));
         }
     }
 }
