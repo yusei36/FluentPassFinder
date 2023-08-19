@@ -7,18 +7,23 @@ using KeePassLib;
 using System;
 using System.Drawing;
 using System.Windows.Threading;
+using Newtonsoft.Json;
 
 namespace FluentPassFinderPlugin
 {
     internal class PluginProxy : IPluginProxy
     {
+        private readonly IPluginHost pluginHost;
         private Dispatcher pluginHostDispatcher;
         private MainForm mainWindow;
+        private SearchOptions searchOptions;
 
         public PluginProxy(IPluginHost pluginHost)
         {
+            this.pluginHost = pluginHost;
             pluginHostDispatcher = Dispatcher.CurrentDispatcher;
             mainWindow = pluginHost.MainWindow;
+            LoadOrCreateDefaultSettings();
         }
 
         public void CopyToClipboard(string strToCopy, bool bSprCompile, bool bIsEntryInfo, PwEntry peEntryInfo)
@@ -50,6 +55,16 @@ namespace FluentPassFinderPlugin
         {
             get
             {
+                return searchOptions;
+            }
+        }
+
+        private void LoadOrCreateDefaultSettings()
+        {
+            var configString = pluginHost.CustomConfig.GetString(nameof(FluentPassFinderPlugin));
+            
+            if (configString == null)
+            {
                 var defaultOptions = new SearchOptions()
                 {
                     IncludeTitleFiled = true,
@@ -60,7 +75,13 @@ namespace FluentPassFinderPlugin
                     GlobalHotkeyCurrentScreen = "Ctrl+Alt+S",
                     GlobalHotkeyPrimaryScreen = "Ctrl+Alt+F"
                 };
-                return defaultOptions;
+                
+                pluginHost.CustomConfig.SetString(nameof(FluentPassFinderPlugin), JsonConvert.SerializeObject(defaultOptions));
+                searchOptions = defaultOptions;
+            }
+            else
+            {
+                searchOptions = JsonConvert.DeserializeObject<SearchOptions>(configString);
             }
         }
 
