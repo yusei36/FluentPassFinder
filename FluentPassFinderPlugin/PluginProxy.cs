@@ -65,28 +65,41 @@ namespace FluentPassFinderPlugin
             
             if (configString == null)
             {
-                var defaultSettings = new Settings()
-                {
-                    SearchOptions = new SearchOptions()
-                    {
-                        IncludeTitleFiled = true,
-                        IncludeNotesField = true,
-                        IncludeUrlField = true,
-                        IncludeCustomFields = true,
-                        IncludeTags = true,
-                    },
-                    PluginTotpPlaceholder = "{TOTP}",
-                    GlobalHotkeyCurrentScreen = "Ctrl+Alt+S",
-                    GlobalHotkeyPrimaryScreen = "Ctrl+Alt+F"
-                };
-                
-                pluginHost.CustomConfig.SetString(nameof(FluentPassFinderPlugin), JsonConvert.SerializeObject(defaultSettings, Formatting.Indented));
-                searchOptions = defaultSettings;
+                searchOptions = CreateDefaultSettings();
             }
             else
             {
-                searchOptions = JsonConvert.DeserializeObject<Settings>(configString);
+                try
+                {
+                    searchOptions = JsonConvert.DeserializeObject<Settings>(configString);
+                }
+                catch
+                {
+                    searchOptions = CreateDefaultSettings();
+                }
             }
+        }
+
+        private Settings CreateDefaultSettings()
+        {
+            var defaultSettings = new Settings()
+            {
+                SearchOptions = new SearchOptions()
+                {
+                    IncludeTitleFiled = true,
+                    IncludeNotesField = true,
+                    IncludeUrlField = true,
+                    IncludeCustomFields = true,
+                    IncludeTags = true,
+                },
+                PluginTotpPlaceholder = "{TOTP}",
+                GlobalHotkeyCurrentScreen = "Ctrl+Alt+S",
+                GlobalHotkeyPrimaryScreen = "Ctrl+Alt+F"
+            };
+
+            pluginHost.CustomConfig.SetString(nameof(FluentPassFinderPlugin), JsonConvert.SerializeObject(defaultSettings, Formatting.Indented));
+
+            return defaultSettings;
         }
 
         public void PerformAutoType(PwEntry entry, PwDatabase database, string sequence = null)
