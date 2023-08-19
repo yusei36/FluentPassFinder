@@ -10,5 +10,7 @@
 
         public bool IncludeCustomFields { get; set; }
         public bool IncludeProtectedCustomFields { get; set; }
+
+        public bool IncludeTags { get; set; }
     }
 }

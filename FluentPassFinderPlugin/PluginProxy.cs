@@ -73,6 +73,7 @@ namespace FluentPassFinderPlugin
                         IncludeNotesField = true,
                         IncludeUrlField = true,
                         IncludeCustomFields = true,
+                        IncludeTags = true,
                     },
                     PluginTotpPlaceholder = "{TOTP}",
                     GlobalHotkeyCurrentScreen = "Ctrl+Alt+S",

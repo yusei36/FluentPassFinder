@@ -7,21 +7,40 @@ namespace FluentPassFinder.Services
     {
         public IEnumerable<EntrySearchResult> SearchEntries(IEnumerable<PwDatabase> databases, string searchQuery, Settings settings)
         {
+            var searchOptions = settings.SearchOptions;
             searchQuery = searchQuery.ToLower();
             foreach (PwDatabase db in databases)
             {
                 var allEntriesInDb = db.RootGroup.GetEntries(true);
                 foreach (var entry in allEntriesInDb)
                 {
-                    var fieldNamesToSearch = GetFieldNamesToSearch(entry, settings.SearchOptions);
+                    var fieldNamesToSearch = GetFieldNamesToSearch(entry, searchOptions);
+                    var isMatch = false;
                     foreach (var fieldName in fieldNamesToSearch)
                     {
                         var fieldValue = entry.Strings.ReadSafe(fieldName);
                         if (fieldValue.Contains(searchQuery, StringComparison.InvariantCultureIgnoreCase))
                         {
-                            yield return new EntrySearchResult { Entry = entry, Database = db };
+                            isMatch = true;
                             break;
                         }
+                    }
+
+                    if (!isMatch && searchOptions.IncludeTags)
+                    {
+                        foreach (var tag in entry.Tags)
+                        {
+                            if (tag.Contains(searchQuery, StringComparison.InvariantCultureIgnoreCase))
+                            {
+                                isMatch = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (isMatch)
+                    {
+                        yield return new EntrySearchResult { Entry = entry, Database = db };
                     }
                 }
             }
