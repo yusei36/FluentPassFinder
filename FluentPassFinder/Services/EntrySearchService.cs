@@ -5,6 +5,14 @@ namespace FluentPassFinder.Services
 {
     internal class EntrySearchService : IEntrySearchService
     {
+        private const char placeholderStartingChar = '{';
+        private readonly IPluginProxy pluginProxy;
+
+        public EntrySearchService(IPluginProxy pluginProxy)
+        {
+            this.pluginProxy = pluginProxy;
+        }
+
         public IEnumerable<EntrySearchResult> SearchEntries(IEnumerable<PwDatabase> databases, string searchQuery, Settings settings)
         {
             var searchOptions = settings.SearchOptions;
@@ -33,6 +41,10 @@ namespace FluentPassFinder.Services
                     foreach (var fieldName in fieldNamesToSearch)
                     {
                         var fieldValue = entry.Strings.ReadSafe(fieldName);
+                        if (searchOptions.ResolveFieldReferences && fieldValue.Contains(placeholderStartingChar))
+                        {
+                            fieldValue = pluginProxy.GetPlaceholderValue(fieldValue, entry, db);
+                        }
                         if (fieldValue.Contains(searchQuery, StringComparison.InvariantCultureIgnoreCase))
                         {
                             isMatch = true;

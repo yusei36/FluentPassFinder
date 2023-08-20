@@ -14,5 +14,7 @@
 
         public bool ExcludeExpiredEntries { get; set; }
         public bool ExcludeGroupsBySearchSetting { get; set; }
+
+        public bool ResolveFieldReferences { get; set; }
     }
 }
