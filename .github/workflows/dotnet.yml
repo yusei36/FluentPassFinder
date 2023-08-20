@@ -31,3 +31,7 @@ jobs:
           7z x -o"Build/KeePass" ${{ steps.DownloadKeePass.outputs.filename }} KeePass.exe
     - name: Build
       run: dotnet build --no-restore
+    - uses: actions/upload-artifact@v3
+      with:
+          name: FluentPassFinderPlugin
+          path: Build/FluentPassFinder
