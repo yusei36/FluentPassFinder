@@ -20,4 +20,7 @@
       <HintPath>..\Build\KeePass\KeePass.exe</HintPath>
     </Reference>
   </ItemGroup>
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="powershell $(SolutionDir)Build\PostBuild.ps1 -OutputSrcDir $(SolutionDir)Build/$(Configuration)/$(TargetFramework) -SolutionDir $(SolutionDir)" />
+  </Target>
 </Project>
