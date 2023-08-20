@@ -24,7 +24,7 @@
 
   <ItemGroup>
     <Reference Include="KeePass">
-      <HintPath>..\..\KeePass\KeePass.exe</HintPath>
+      <HintPath>..\Build\KeePass\KeePass.exe</HintPath>
     </Reference>
   </ItemGroup>
 
