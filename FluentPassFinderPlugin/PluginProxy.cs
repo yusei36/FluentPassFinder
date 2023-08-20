@@ -29,6 +29,7 @@ namespace FluentPassFinderPlugin
             jsonSerializerSettings = new JsonSerializerSettings();
             jsonSerializerSettings.Converters.Add(new StringEnumConverter());
             jsonSerializerSettings.Formatting = Formatting.Indented;
+            jsonSerializerSettings.MissingMemberHandling = MissingMemberHandling.Ignore;
 
             settings = LoadOrCreateDefaultSettings();
         }
