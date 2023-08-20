@@ -1,5 +1,6 @@
 ﻿using FluentPassFinder.Contracts;
 using FluentPassFinderContracts;
+using KeePassLib;
 
 namespace FluentPassFinder.Services.Actions
 {
@@ -10,7 +11,8 @@ namespace FluentPassFinder.Services.Actions
         public override void RunAction(EntrySearchResult searchResult)
         {
             searchWindowInteractionService.Close();
-            pluginProxy.CopyToClipboard(searchResult.Entry.Strings.ReadSafe(PwDefs.PasswordField), true, true, searchResult.Entry);
+            var fieldValue = pluginProxy.GetPlaceholderValue(searchResult.Entry.Strings.ReadSafe(PwDefs.PasswordField), searchResult.Entry, searchResult.Database);
+            pluginProxy.CopyToClipboard(fieldValue, true, true, searchResult.Entry);
         }
     }
 }
