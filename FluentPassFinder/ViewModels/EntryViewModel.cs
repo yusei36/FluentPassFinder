@@ -7,6 +7,7 @@ namespace FluentPassFinder.ViewModels
     public partial class EntryViewModel : ObservableObject
     {
         private readonly IPluginProxy pluginProxy;
+        private const char placeholderStartingChar = '{';
 
         [ObservableProperty]
         private string title;
@@ -26,10 +27,23 @@ namespace FluentPassFinder.ViewModels
         {
             SearchResult = searchResult;
             this.pluginProxy = pluginProxy;
-            title = searchResult.Entry.Strings.ReadSafe(PwDefs.TitleField);
-            userName = searchResult.Entry.Strings.ReadSafe(PwDefs.UserNameField);
-            url = searchResult.Entry.Strings.ReadSafe(PwDefs.UrlField);
+
+            var searchOptions = pluginProxy.Settings.SearchOptions;
+            title = GetFieldValue(searchResult, PwDefs.TitleField, searchOptions.ResolveFieldReferences);
+            userName = GetFieldValue(searchResult, PwDefs.UserNameField, searchOptions.ResolveFieldReferences);
+            url = GetFieldValue(searchResult, PwDefs.UrlField, searchOptions.ResolveFieldReferences);
             icon = GetEntryIcon(searchResult);
+        }
+
+        private string GetFieldValue(EntrySearchResult searchResult, string fieldName, bool resolveFieldReference)
+        {
+            var fieldValue = searchResult.Entry.Strings.ReadSafe(fieldName);
+            if (resolveFieldReference && fieldValue.Contains(placeholderStartingChar))
+            {
+                fieldValue = pluginProxy.GetPlaceholderValue(fieldValue, searchResult.Entry, searchResult.Database);
+            }
+
+            return fieldValue;
         }
 
         private Image? GetEntryIcon(EntrySearchResult searchResult)
