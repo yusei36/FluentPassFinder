@@ -47,9 +47,9 @@ namespace FluentPassFinderPlugin
             });
         }
 
-        public string GetPlaceholderValue(string placeholder, PwEntry entry, PwDatabase database)
+        public string GetPlaceholderValue(string placeholder, PwEntry entry, PwDatabase database, bool resolveAll)
         {
-            return pluginHostDispatcher.Invoke(() => SprEngine.Compile(placeholder, new SprContext(entry, database, SprCompileFlags.All, true, false)));
+            return pluginHostDispatcher.Invoke(() => SprEngine.Compile(placeholder, new SprContext(entry, database, resolveAll ? SprCompileFlags.All : SprCompileFlags.Deref, true, false)));
         }
 
         public Image GetBuildInIcon(PwIcon buildInIconId)

@@ -13,11 +13,11 @@ namespace FluentPassFinder.Services.Actions
         {
             searchWindowInteractionService.Close();
             var pluginTotpPlaceholder = Settings.PluginTotpPlaceholder;
-            var totp = pluginProxy.GetPlaceholderValue(pluginTotpPlaceholder, searchResult.Entry, searchResult.Database);
+            var totp = pluginProxy.GetPlaceholderValue(pluginTotpPlaceholder, searchResult.Entry, searchResult.Database, true);
 
             if (String.IsNullOrEmpty(totp) || totp == pluginTotpPlaceholder)
             {
-                totp = pluginProxy.GetPlaceholderValue(NativeTotpPlacholder, searchResult.Entry, searchResult.Database);
+                totp = pluginProxy.GetPlaceholderValue(NativeTotpPlacholder, searchResult.Entry, searchResult.Database, true);
             }
 
             pluginProxy.CopyToClipboard(totp, true, true, searchResult.Entry);

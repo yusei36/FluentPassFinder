@@ -10,7 +10,7 @@ namespace FluentPassFinder.Services.Actions
         public override void RunAction(EntrySearchResult searchResult)
         {
             searchWindowInteractionService.Close();
-            var fieldValue = pluginProxy.GetPlaceholderValue(searchResult.Entry.Strings.ReadSafe(PwDefs.UserNameField), searchResult.Entry, searchResult.Database);
+            var fieldValue = pluginProxy.GetPlaceholderValue(searchResult.Entry.Strings.ReadSafe(PwDefs.UserNameField), searchResult.Entry, searchResult.Database, false);
             pluginProxy.CopyToClipboard(fieldValue, true, true, searchResult.Entry);
         }
     }

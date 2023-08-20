@@ -40,7 +40,7 @@ namespace FluentPassFinder.ViewModels
             var fieldValue = searchResult.Entry.Strings.ReadSafe(fieldName);
             if (resolveFieldReference && fieldValue.Contains(placeholderStartingChar))
             {
-                fieldValue = pluginProxy.GetPlaceholderValue(fieldValue, searchResult.Entry, searchResult.Database);
+                fieldValue = pluginProxy.GetPlaceholderValue(fieldValue, searchResult.Entry, searchResult.Database, false);
             }
 
             return fieldValue;

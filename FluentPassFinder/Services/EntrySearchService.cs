@@ -43,7 +43,7 @@ namespace FluentPassFinder.Services
                         var fieldValue = entry.Strings.ReadSafe(fieldName);
                         if (searchOptions.ResolveFieldReferences && fieldValue.Contains(placeholderStartingChar))
                         {
-                            fieldValue = pluginProxy.GetPlaceholderValue(fieldValue, entry, db);
+                            fieldValue = pluginProxy.GetPlaceholderValue(fieldValue, entry, db, false);
                         }
                         if (fieldValue.Contains(searchQuery, StringComparison.InvariantCultureIgnoreCase))
                         {
