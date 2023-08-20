@@ -93,7 +93,7 @@ namespace FluentPassFinderPlugin
             {
                 SearchOptions = new SearchOptions()
                 {
-                    IncludeTitleFiled = true,
+                    IncludeTitleField = true,
                     IncludeNotesField = true,
                     IncludeUrlField = true,
                     IncludeCustomFields = true,

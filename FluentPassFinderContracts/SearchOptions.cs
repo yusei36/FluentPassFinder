@@ -2,7 +2,7 @@
 {
     public class SearchOptions
     {
-        public bool IncludeTitleFiled { get; set; }
+        public bool IncludeTitleField { get; set; }
         public bool IncludeUserNameField { get; set; }
         public bool IncludePasswordField { get; set; }
         public bool IncludeUrlField { get; set; }

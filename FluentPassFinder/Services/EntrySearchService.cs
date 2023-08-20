@@ -75,7 +75,7 @@ namespace FluentPassFinder.Services
         private IEnumerable<string> GetFieldNamesToSearch(PwEntry entry, SearchOptions searchOptions)
         {
             var fields = new List<string>();
-            if (searchOptions.IncludeTitleFiled)
+            if (searchOptions.IncludeTitleField)
             {
                 fields.Add(PwDefs.TitleField);
             }
