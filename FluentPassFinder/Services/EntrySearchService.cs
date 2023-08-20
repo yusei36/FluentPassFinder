@@ -15,6 +15,7 @@ namespace FluentPassFinder.Services
 
         public IEnumerable<EntrySearchResult> SearchEntries(IEnumerable<PwDatabase> databases, string searchQuery, Settings settings)
         {
+            var searchTime = DateTime.Now;
             var searchOptions = settings.SearchOptions;
             searchQuery = searchQuery.ToLower();
             foreach (PwDatabase db in databases)
@@ -31,7 +32,7 @@ namespace FluentPassFinder.Services
                 var entries = includedGroups.SelectMany(g => g.GetEntries(false)).ToList();
                 foreach (var entry in entries)
                 {
-                    if (searchOptions.ExcludeExpiredEntries && entry.Expires)
+                    if (searchOptions.ExcludeExpiredEntries && entry.Expires && searchTime > entry.ExpiryTime)
                     {
                         continue;
                     }
