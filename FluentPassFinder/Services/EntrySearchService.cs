@@ -1,5 +1,6 @@
 ﻿using FluentPassFinder.Contracts;
 using FluentPassFinderContracts;
+using KeePassLib.Collections;
 
 namespace FluentPassFinder.Services
 {
@@ -20,8 +21,7 @@ namespace FluentPassFinder.Services
             searchQuery = searchQuery.ToLower();
             foreach (PwDatabase db in databases)
             {
-                var allGroups = db.RootGroup.GetGroups(true); 
-                allGroups.Insert(0, db.RootGroup);
+                PwObjectList<PwGroup> allGroups = GetAllGroups(db.RootGroup);
 
                 var includedGroups = allGroups.ToList();
                 if (searchOptions.ExcludeGroupsBySearchSetting)
@@ -71,6 +71,19 @@ namespace FluentPassFinder.Services
                     }
                 }
             }
+        }
+
+        private static PwObjectList<PwGroup> GetAllGroups(PwGroup group)
+        {
+            var groups = new PwObjectList<PwGroup>
+            {
+                group
+            };
+            foreach (var subGroup in group.GetGroups(false))
+            {
+                groups.Add(GetAllGroups(subGroup));
+            }
+            return groups;
         }
 
         private IEnumerable<string> GetFieldNamesToSearch(PwEntry entry, SearchOptions searchOptions)
