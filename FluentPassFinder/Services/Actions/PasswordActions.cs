@@ -27,7 +27,7 @@ namespace FluentPassFinder.Services.Actions
         {
             searchWindowInteractionService.Close();
             var fieldValue = pluginProxy.GetPlaceholderValue(searchResult.Entry.Strings.ReadSafe(PwDefs.PasswordField), searchResult.Entry, searchResult.Database, false);
-            pluginProxy.PerformAutoType(searchResult.Entry, searchResult.Database, fieldValue);
+            pluginProxy.PerformAutoType(searchResult.Entry, searchResult.Database, fieldValue + Consts.AutoTypeEnterPlaceholder);
         }
     }
 }

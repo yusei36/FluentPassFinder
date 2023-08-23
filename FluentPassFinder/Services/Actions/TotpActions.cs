@@ -5,8 +5,6 @@ namespace FluentPassFinder.Services.Actions
 {
     internal class CopyTotpAction : ActionBase
     {
-        private const string NativeTotpPlacholder = "{TIMEOTP}";
-
         public override ActionType ActionType => ActionType.Copy_Totp;
 
         public override int SortingIndex => 3;
@@ -19,7 +17,7 @@ namespace FluentPassFinder.Services.Actions
 
             if (String.IsNullOrEmpty(totp) || totp == pluginTotpPlaceholder)
             {
-                totp = pluginProxy.GetPlaceholderValue(NativeTotpPlacholder, searchResult.Entry, searchResult.Database, true);
+                totp = pluginProxy.GetPlaceholderValue(Consts.NativeTotpPlacholder, searchResult.Entry, searchResult.Database, true);
             }
 
             pluginProxy.CopyToClipboard(totp, true, true, searchResult.Entry);
@@ -28,8 +26,6 @@ namespace FluentPassFinder.Services.Actions
 
     internal class AutoTypeTotpAction : ActionBase
     {
-        private const string NativeTotpPlacholder = "{TIMEOTP}";
-
         public override ActionType ActionType => ActionType.AutoType_Totp;
 
         public override int SortingIndex => 13;
@@ -42,10 +38,10 @@ namespace FluentPassFinder.Services.Actions
 
             if (String.IsNullOrEmpty(totp) || totp == pluginTotpPlaceholder)
             {
-                totp = pluginProxy.GetPlaceholderValue(NativeTotpPlacholder, searchResult.Entry, searchResult.Database, true);
+                totp = pluginProxy.GetPlaceholderValue(Consts.NativeTotpPlacholder, searchResult.Entry, searchResult.Database, true);
             }
 
-            pluginProxy.PerformAutoType(searchResult.Entry, searchResult.Database, totp);
+            pluginProxy.PerformAutoType(searchResult.Entry, searchResult.Database, totp + Consts.AutoTypeEnterPlaceholder);
         }
     }
 }
