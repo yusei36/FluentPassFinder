@@ -11,6 +11,10 @@ namespace FluentPassFinder
         public void Shutdown()
         {
             InvokeOnWpfApp((app) => app.Shutdown());
+            while (App.Current != null)
+            {
+                Task.Delay(100).Wait();
+            }
         }
 
         public void Main()
