@@ -9,6 +9,8 @@ namespace FluentPassFinder.Services.Actions
 
         public override ActionType ActionType => ActionType.CopyTotp;
 
+        public override int SortingIndex => 3;
+
         public override void RunAction(EntrySearchResult searchResult)
         {
             searchWindowInteractionService.Close();

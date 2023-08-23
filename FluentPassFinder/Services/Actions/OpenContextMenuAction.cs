@@ -15,6 +15,8 @@ namespace FluentPassFinder.Services.Actions
 
         public override ActionType ActionType => ActionType.OpenContextMenu;
 
+        public override int SortingIndex => -1;
+
         public override void RunAction(EntrySearchResult searchResult)
         {
             lazySearchWindowViewModel.Value.IsContextMenuOpen = true;

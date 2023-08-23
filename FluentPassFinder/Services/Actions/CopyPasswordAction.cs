@@ -1,12 +1,13 @@
 ﻿using FluentPassFinder.Contracts;
 using FluentPassFinderContracts;
-using KeePassLib;
 
 namespace FluentPassFinder.Services.Actions
 {
     internal class CopyPasswordAction : ActionBase
     {
         public override ActionType ActionType => ActionType.CopyPassword;
+
+        public override int SortingIndex => 2;
 
         public override void RunAction(EntrySearchResult searchResult)
         {

@@ -37,7 +37,7 @@ namespace FluentPassFinder.ViewModels
             this.pluginProxy = pluginProxy;
             this.entrySearchService = entrySearchService;
             this.entryActionService = entryActionService;
-            contextActions = new ObservableCollection<IAction>(entryActionService.Actions.Where(a => a.ActionType != ActionType.OpenContextMenu));
+            contextActions = new ObservableCollection<IAction>(entryActionService.Actions.Where(a => a.SortingIndex >= 0).OrderBy(a => a.SortingIndex));
             selectedContextAction = contextActions.First();
         }
 

@@ -7,6 +7,8 @@ namespace FluentPassFinder.Services.Actions
     {
         public override ActionType ActionType => ActionType.AutoType;
 
+        public override int SortingIndex => 0;
+
         public override void RunAction(EntrySearchResult searchResult)
         {
             searchWindowInteractionService.Close();
