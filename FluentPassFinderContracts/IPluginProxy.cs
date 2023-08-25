@@ -9,6 +9,7 @@ namespace FluentPassFinderContracts
         string GetPlaceholderValue(string placeholder, PwEntry entry, PwDatabase database, bool resolveAll);
         Image GetBuildInIcon(PwIcon nuildInIconId); 
         void PerformAutoType(PwEntry entry, PwDatabase database, string sequence = null);
+        void OpenEntryUrl(PwEntry entry);
 
         PwDatabase[] Databases { get; }
         Settings Settings { get; }

@@ -128,5 +128,10 @@ namespace FluentPassFinderPlugin
 
             return defaultSettings;
         }
+
+        public void OpenEntryUrl(PwEntry entry)
+        {
+            pluginHostDispatcher.Invoke(() => WinUtil.OpenEntryUrl(entry));
+        }
     }
 }
