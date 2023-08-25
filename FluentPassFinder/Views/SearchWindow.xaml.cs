@@ -5,7 +5,7 @@ using WpfScreenHelper;
 
 namespace FluentPassFinder.Views
 {
-    public partial class SearchWindow
+    internal partial class SearchWindow
     {
         public SearchWindowViewModel ViewModel { get; }
         public static double HeaderSize = 40.0;

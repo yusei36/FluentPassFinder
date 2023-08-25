@@ -2,7 +2,7 @@
 
 namespace FluentPassFinder.Contracts
 {
-    public interface IEntrySearchService
+    internal interface IEntrySearchService
     {
         IEnumerable<EntrySearchResult> SearchEntries(IEnumerable<PwDatabase> databases, string searchQuery, Settings settings);
     }

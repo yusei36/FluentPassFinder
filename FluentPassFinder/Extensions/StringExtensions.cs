@@ -1,6 +1,6 @@
 ﻿namespace FluentPassFinder.Extensions
 {
-    static class StringExtensions
+    internal static class StringExtensions
     {
         public static bool Contains(this string sourceValue, string value, StringComparison stringComparison)
         {

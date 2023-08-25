@@ -2,7 +2,7 @@ using FluentPassFinder.Contracts.Public;
 
 namespace FluentPassFinder.Contracts
 {
-    public interface IEntryActionService
+    internal interface IEntryActionService
     {
         void RunAction(EntrySearchResult searchResult, string actionType);
         void RunAction(EntrySearchResult searchResult, IAction action);

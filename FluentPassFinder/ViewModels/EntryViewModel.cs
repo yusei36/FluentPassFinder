@@ -4,7 +4,7 @@ using System.Drawing;
 
 namespace FluentPassFinder.ViewModels
 {
-    public partial class EntryViewModel : ObservableObject
+    internal partial class EntryViewModel : ObservableObject
     {
         private readonly IPluginProxy pluginProxy;
         private const char placeholderStartingChar = '{';

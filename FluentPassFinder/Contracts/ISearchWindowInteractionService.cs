@@ -1,6 +1,6 @@
 ﻿namespace FluentPassFinder.Contracts
 {
-    public interface ISearchWindowInteractionService
+    internal interface ISearchWindowInteractionService
     {
         void Close();
     }

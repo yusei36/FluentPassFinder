@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 
 namespace FluentPassFinder.ViewModels
 {
-    public partial class SearchWindowViewModel : ObservableObject
+    internal partial class SearchWindowViewModel : ObservableObject
     {
         private readonly IPluginProxy pluginProxy;
         private readonly IEntrySearchService entrySearchService;

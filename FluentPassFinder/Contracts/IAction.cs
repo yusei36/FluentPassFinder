@@ -3,7 +3,7 @@ using System.Windows.Input;
 
 namespace FluentPassFinder.Contracts
 {
-    public interface IAction : ICommand
+    internal interface IAction : ICommand
     {
         string ActionType { get; }
         int SortingIndex { get; }
