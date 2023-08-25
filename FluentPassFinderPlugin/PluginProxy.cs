@@ -91,45 +91,8 @@ namespace FluentPassFinderPlugin
 
         private Settings CreateDefaultSettings()
         {
-            var defaultSettings = new Settings()
-            {
-                SearchOptions = new SearchOptions()
-                {
-                    IncludeTitleField = true,
-                    IncludeNotesField = true,
-                    IncludeUrlField = true,
-                    IncludeCustomFields = true,
-                    IncludeTags = true,
-                    ExcludeExpiredEntries = true,
-                    ExcludeGroupsBySearchSetting = true,
-                    ResolveFieldReferences = true,
-                },
-                PluginTotpPlaceholder = "{TOTP}",
-                PluginTotpFieldConfig = "totpsettings_stringname",
-                GlobalHotkeyCurrentScreen = "Ctrl+Alt+S",
-                GlobalHotkeyPrimaryScreen = "Ctrl+Alt+F",
-                MainAction = ActionTypeConsts.OpenContextMenu,
-                ShiftAction = string.Format(ActionTypeConsts.CopyActionPattern, PwDefs.UserNameField),
-                ControlAction = string.Format(ActionTypeConsts.CopyActionPattern, PwDefs.PasswordField),
-                AltAction = string.Format(ActionTypeConsts.CopyActionPattern, ActionTypeConsts.Totp),
-                ActionSorting = new System.Collections.Generic.Dictionary<string, int>
-                {
-                    { string.Format(ActionTypeConsts.CopyActionPattern, PwDefs.UserNameField), 1 },
-                    { string.Format(ActionTypeConsts.CopyActionPattern, PwDefs.PasswordField), 2 },
-
-                    { string.Format(ActionTypeConsts.AutoTypeActionPattern, PwDefs.UserNameField), 101 },
-                    { string.Format(ActionTypeConsts.AutoTypeActionPattern, PwDefs.PasswordField), 102 },
-                },
-                ShowActionsForCustomFields = true,
-                ExcludeActionsForFields = new System.Collections.Generic.List<string>()
-                {
-                    "_etm_template_uuid"
-                },
-                Theme = "Dark"
-            };
-            pluginHost.CustomConfig.SetString(nameof(FluentPassFinderPlugin), JsonConvert.SerializeObject(defaultSettings, jsonSerializerSettings));
-
-            return defaultSettings;
+            pluginHost.CustomConfig.SetString(nameof(FluentPassFinderPlugin), JsonConvert.SerializeObject(Settings.DefaultSettings, jsonSerializerSettings));
+            return Settings.DefaultSettings;
         }
 
         public void OpenEntryUrl(PwEntry entry)
