@@ -28,12 +28,12 @@ namespace FluentPassFinder.Services
             }
         }
 
-        public void RunAction(EntrySearchResult searchResult, ActionType actionType)
+        public void RunAction(EntrySearchResult searchResult, string actionType)
         {
             if (searchResult == null) throw new ArgumentNullException(nameof(searchResult));
 
             var actions = GetActionsForEntry(searchResult, true);
-            var action = actions.FirstOrDefault(a => a.ActionType == actionType.ToString());
+            var action = actions.FirstOrDefault(a => a.ActionType == actionType);
             if (action != null)
             {
                 action.RunAction(searchResult);

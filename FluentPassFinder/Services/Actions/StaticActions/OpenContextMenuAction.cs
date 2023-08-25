@@ -13,7 +13,7 @@ namespace FluentPassFinder.Services.Actions.StaticActions
         }
 
         public override int DefaultSortingIndex => -1;
-        public override string ActionType => FluentPassFinderContracts.ActionType.OpenContextMenu.ToString();
+        public override string ActionType => "OpenContextMenu";
         public override string DisplayName => "Open context menu for selected entry";
 
         public override void RunAction(EntrySearchResult searchResult)

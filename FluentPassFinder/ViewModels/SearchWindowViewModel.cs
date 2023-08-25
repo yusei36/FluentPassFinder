@@ -17,7 +17,7 @@ namespace FluentPassFinder.ViewModels
         private string searchText = string.Empty;
 
         [ObservableProperty]
-        private ObservableCollection<EntryViewModel> entries = new ObservableCollection<EntryViewModel>();
+        private ObservableCollection<EntryViewModel> entries = new();
 
         [ObservableProperty]
         private EntryViewModel selectedEntry;
@@ -101,7 +101,7 @@ namespace FluentPassFinder.ViewModels
         }
 
         [RelayCommand]
-        private void RunAction(ActionType actionType)
+        private void RunAction(string actionType)
         {
             if (SelectedEntry == null)
             {

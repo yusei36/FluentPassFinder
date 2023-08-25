@@ -57,7 +57,7 @@ namespace FluentPassFinder.Services.Actions.StaticActions
     internal class CopyTotpAction : TotpActionBase
     {
         public override int DefaultSortingIndex => 100;
-        public override string ActionType => FluentPassFinderContracts.ActionType.Copy_Totp.ToString();
+        public override string ActionType => "Copy_Totp";
         public override string DisplayName => "Copy 'TOTP'";
 
         public override void RunAction(EntrySearchResult searchResult)
@@ -73,7 +73,7 @@ namespace FluentPassFinder.Services.Actions.StaticActions
     internal class AutoTypeTotpAction : TotpActionBase
     {
         public override int DefaultSortingIndex => 150;
-        public override string ActionType => FluentPassFinderContracts.ActionType.AutoType_Totp.ToString();
+        public override string ActionType => "AutoType_Totp";
         public override string DisplayName => "Auto type 'TOTP'";
 
         public override void RunAction(EntrySearchResult searchResult)
