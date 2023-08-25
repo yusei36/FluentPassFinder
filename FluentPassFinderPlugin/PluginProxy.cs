@@ -4,6 +4,7 @@ using KeePass.Plugins;
 using KeePass.Util;
 using KeePass.Util.Spr;
 using KeePassLib;
+using KeePassLib.Collections;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
@@ -132,6 +133,25 @@ namespace FluentPassFinderPlugin
         public void OpenEntryUrl(PwEntry entry)
         {
             pluginHostDispatcher.Invoke(() => WinUtil.OpenEntryUrl(entry));
+        }
+
+        public void SelectEntry(PwEntry entry, PwDatabase database)
+        {
+            pluginHostDispatcher.Invoke(() =>
+            {
+                // Select db / group
+                mainWindow.UpdateUI(false, mainWindow.DocumentManager.FindDocument(database), true, entry.ParentGroup, true, null, false);
+
+                // Select entry
+                mainWindow.SelectEntries(new PwObjectList<PwEntry> { entry }, true, true);
+                mainWindow.EnsureVisibleEntry(entry.Uuid);
+
+                // Trigger another ui update, otherwise sometimes icons are wrong
+                mainWindow.UpdateUI(false, null, false, null, false, null, false);
+
+                // Bring window into foreground
+                mainWindow.EnsureVisibleForegroundWindow(true, true);
+            });
         }
     }
 }
