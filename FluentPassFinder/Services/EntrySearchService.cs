@@ -112,7 +112,7 @@ namespace FluentPassFinder.Services
 
             if (searchOptions.IncludeCustomFields)
             {
-                var customFields = entry.Strings.Where(fieldN => !PwDefs.IsStandardField(fieldN.Key));
+                var customFields = entry.Strings.Where(s => !PwDefs.IsStandardField(s.Key));
                 if (searchOptions.IncludeProtectedCustomFields)
                 {
                     fields.AddRange(customFields.Select(field => field.Key));

@@ -16,5 +16,6 @@ namespace FluentPassFinderContracts
         public ActionType AltAction { get; set; }
 
         public Dictionary<string, int> ActionSorting { get; set; }
+        public bool ShowActionsForCustomFields { get; set; }
     }
 }

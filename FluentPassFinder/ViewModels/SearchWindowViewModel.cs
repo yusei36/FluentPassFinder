@@ -165,7 +165,7 @@ namespace FluentPassFinder.ViewModels
                 return;
             }
 
-            ContextActions = new ObservableCollection<IAction>(entryActionService.GetActionsForEntry(newValue.SearchResult).Where(a => a.SortingIndex >= 0));
+            ContextActions = new ObservableCollection<IAction>(entryActionService.GetActionsForEntry(newValue.SearchResult, false));
             SelectedContextAction = ContextActions.First();
         }
 

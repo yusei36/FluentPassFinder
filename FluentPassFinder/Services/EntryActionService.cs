@@ -1,5 +1,6 @@
 ﻿using FluentPassFinder.Contracts;
 using FluentPassFinderContracts;
+using KeePassLib;
 
 namespace FluentPassFinder.Services
 {
@@ -30,7 +31,7 @@ namespace FluentPassFinder.Services
         {
             if (searchResult == null) throw new ArgumentNullException(nameof(searchResult));
 
-            var actions = GetActionsForEntry(searchResult);
+            var actions = GetActionsForEntry(searchResult, true);
             var action = actions.FirstOrDefault(a => a.ActionType == actionType.ToString());
             if (action != null)
             {
@@ -50,7 +51,7 @@ namespace FluentPassFinder.Services
             action.RunAction(searchResult);
         }
 
-        public IEnumerable<IAction> GetActionsForEntry(EntrySearchResult searchResult)
+        public IEnumerable<IAction> GetActionsForEntry(EntrySearchResult searchResult, bool inculdeHiddenActions)
         {
             var settings = pluginProxy.Settings;
             var actions = new List<IAction>();
@@ -64,6 +65,25 @@ namespace FluentPassFinder.Services
                     fieldAction.Initialize(pluginProxy, searchWindowInteractionService, standardFieldName);
                     actions.Add(fieldAction);
                 }
+            }
+
+            if (inculdeHiddenActions || (!inculdeHiddenActions && settings.ShowActionsForCustomFields))
+            {
+                var customFields = searchResult.Entry.Strings.GetKeys().Where(fieldName => !PwDefs.IsStandardField(fieldName));
+                foreach (var fieldName in customFields)
+                {
+                    var fieldActions = App.Container.GetAllInstances<IFieldAction>();
+                    foreach (var fieldAction in fieldActions)
+                    {
+                        fieldAction.Initialize(pluginProxy, searchWindowInteractionService, fieldName);
+                        actions.Add(fieldAction);
+                    }
+                }
+            }
+
+            if (!inculdeHiddenActions)
+            {
+                actions = actions.Where(a => a.SortingIndex >= 0).ToList();
             }
 
             return actions.OrderBy(a => a.SortingIndex);

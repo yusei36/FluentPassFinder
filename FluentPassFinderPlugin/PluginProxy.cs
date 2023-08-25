@@ -110,14 +110,15 @@ namespace FluentPassFinderPlugin
                 ShiftAction = ActionType.Copy_UserName,
                 ControlAction = ActionType.Copy_Password,
                 AltAction = ActionType.Copy_Totp,
-                ActionSorting = new System.Collections.Generic.Dictionary<string, int> 
-                { 
+                ActionSorting = new System.Collections.Generic.Dictionary<string, int>
+                {
                     { ActionType.Copy_UserName.ToString(), 1 },
                     { ActionType.Copy_Password.ToString(), 2 },
 
                     { ActionType.AutoType_UserName.ToString(), 101 },
                     { ActionType.AutoType_Password.ToString(), 102 },
-                }
+                },
+                ShowActionsForCustomFields = true
             };
             pluginHost.CustomConfig.SetString(nameof(FluentPassFinderPlugin), JsonConvert.SerializeObject(defaultSettings, jsonSerializerSettings));
 
