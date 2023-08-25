@@ -2,7 +2,7 @@
 
 namespace FluentPassFinder.Services.Actions.FieldActions
 {
-    internal class AutoTypeActions : FieldActionBase
+    internal class AutoTypeAction : FieldActionBase
     {
         public override string ActionType => "AutoType_"+FieldName;
 
