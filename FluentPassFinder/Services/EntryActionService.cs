@@ -66,15 +66,7 @@ namespace FluentPassFinder.Services
                 }
             }
 
-            return actions.OrderBy(a => 
-            {
-                int configuredSortingIndex;
-                if(settings.ActionSorting != null && settings.ActionSorting.TryGetValue(a.ActionType, out configuredSortingIndex))
-                {
-                    return configuredSortingIndex;
-                }
-                return a.SortingIndex;
-            });
+            return actions.OrderBy(a => a.SortingIndex);
         }
     }
 }

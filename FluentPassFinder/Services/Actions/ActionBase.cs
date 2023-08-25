@@ -1,5 +1,6 @@
 ﻿using FluentPassFinder.Contracts;
 using FluentPassFinderContracts;
+using System.Runtime;
 
 namespace FluentPassFinder.Services.Actions
 {
@@ -24,7 +25,19 @@ namespace FluentPassFinder.Services.Actions
         protected Settings Settings => pluginProxy.Settings;
 
         public abstract string ActionType { get; }
-        public abstract int SortingIndex { get; }
+        public abstract int DefaultSortingIndex { get; }
+        public int SortingIndex
+        {
+            get
+            {
+                int configuredSortingIndex;
+                if (Settings.ActionSorting != null && Settings.ActionSorting.TryGetValue(ActionType, out configuredSortingIndex))
+                {
+                    return configuredSortingIndex;
+                }
+                return DefaultSortingIndex;
+            }
+        }
 
         public event EventHandler CanExecuteChanged;
 

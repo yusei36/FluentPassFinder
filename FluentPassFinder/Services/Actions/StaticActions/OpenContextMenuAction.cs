@@ -14,7 +14,7 @@ namespace FluentPassFinder.Services.Actions.StaticActions
 
         public override string ActionType => FluentPassFinderContracts.ActionType.OpenContextMenu.ToString();
 
-        public override int SortingIndex => -1;
+        public override int DefaultSortingIndex => -1;
 
         public override void RunAction(EntrySearchResult searchResult)
         {

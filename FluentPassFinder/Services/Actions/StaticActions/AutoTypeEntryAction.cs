@@ -6,7 +6,7 @@ namespace FluentPassFinder.Services.Actions.StaticActions
     {
         public override string ActionType => FluentPassFinderContracts.ActionType.AutoType.ToString();
 
-        public override int SortingIndex => 0;
+        public override int DefaultSortingIndex => 0;
 
         public override void RunAction(EntrySearchResult searchResult)
         {
