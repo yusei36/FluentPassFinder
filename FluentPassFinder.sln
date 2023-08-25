@@ -12,10 +12,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FluentPassFinder", "FluentP
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FluentPassFinderContracts", "FluentPassFinderContracts\FluentPassFinderContracts.csproj", "{9872AD7D-83FD-47BD-AA64-E259F434DAEE}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{FEADA35C-1DEE-416F-A231-690C0A80E6DC}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflows", "Workflows", "{FEADA35C-1DEE-416F-A231-690C0A80E6DC}"
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\BuildPlugin.yml = .github\workflows\BuildPlugin.yml
-		Build\PostBuild.ps1 = Build\PostBuild.ps1
 	EndProjectSection
 EndProject
 Global
