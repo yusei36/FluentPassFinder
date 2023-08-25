@@ -15,6 +15,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflows", "Workflows", "{FEADA35C-1DEE-416F-A231-690C0A80E6DC}"
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\BuildPlugin.yml = .github\workflows\BuildPlugin.yml
+		.github\workflows\BuildReleasePlugin.yml = .github\workflows\BuildReleasePlugin.yml
 	EndProjectSection
 EndProject
 Global
