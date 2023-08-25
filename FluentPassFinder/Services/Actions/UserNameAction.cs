@@ -1,5 +1,5 @@
 ﻿using FluentPassFinder.Contracts;
-using FluentPassFinderContracts;
+using FluentPassFinder.Services.Actions.FieldActions;
 
 namespace FluentPassFinder.Services.Actions
 {
@@ -11,9 +11,9 @@ namespace FluentPassFinder.Services.Actions
 
         public override void RunAction(EntrySearchResult searchResult)
         {
-            searchWindowInteractionService.Close();
-            var fieldValue = pluginProxy.GetPlaceholderValue(searchResult.Entry.Strings.ReadSafe(PwDefs.UserNameField), searchResult.Entry, searchResult.Database, false);
-            pluginProxy.CopyToClipboard(fieldValue, true, true, searchResult.Entry);
+            var action = new CopyAction();
+            action.Initialize(pluginProxy, searchWindowInteractionService, PwDefs.UserNameField);
+            action.RunAction(searchResult);
         }
     }
 
@@ -25,9 +25,9 @@ namespace FluentPassFinder.Services.Actions
 
         public override void RunAction(EntrySearchResult searchResult)
         {
-            searchWindowInteractionService.Close();
-            var fieldValue = pluginProxy.GetPlaceholderValue(searchResult.Entry.Strings.ReadSafe(PwDefs.UserNameField), searchResult.Entry, searchResult.Database, false);
-            pluginProxy.PerformAutoType(searchResult.Entry, searchResult.Database, fieldValue + Consts.AutoTypeEnterPlaceholder);
+            var action = new AutoTypeAction();
+            action.Initialize(pluginProxy, searchWindowInteractionService, PwDefs.UserNameField);
+            action.RunAction(searchResult);
         }
     }
 }
