@@ -119,12 +119,12 @@ namespace FluentPassFinderPlugin
 
                     { ActionType.AutoType_UserName.ToString(), 101 },
                     { ActionType.AutoType_Password.ToString(), 102 },
-
-
-                    { "AutoType__etm_template_uuid", -1 },
-                    { "Copy__etm_template_uuid", -1 },
                 },
                 ShowActionsForCustomFields = true,
+                ExcludeActionsForFields = new System.Collections.Generic.List<string>()
+                {
+                    "_etm_template_uuid"
+                },
                 Theme = "Dark"
             };
             pluginHost.CustomConfig.SetString(nameof(FluentPassFinderPlugin), JsonConvert.SerializeObject(defaultSettings, jsonSerializerSettings));

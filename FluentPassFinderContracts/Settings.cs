@@ -4,7 +4,7 @@ namespace FluentPassFinderContracts
 {
     public class Settings
     {
-        public SearchOptions SearchOptions { get; set; }
+        public SearchOptions SearchOptions { get; set; } = new SearchOptions();
         public string PluginTotpPlaceholder { get; set; }
         public string PluginTotpFieldConfig { get; set; }
 
@@ -13,8 +13,9 @@ namespace FluentPassFinderContracts
         public ActionType ControlAction { get; set; }
         public ActionType AltAction { get; set; }
 
-        public Dictionary<string, int> ActionSorting { get; set; }
+        public Dictionary<string, int> ActionSorting { get; set; } = new Dictionary<string, int>();
         public bool ShowActionsForCustomFields { get; set; }
+        public List<string> ExcludeActionsForFields { get; set; } = new List<string>();
 
 
         public string GlobalHotkeyCurrentScreen { get; set; }
