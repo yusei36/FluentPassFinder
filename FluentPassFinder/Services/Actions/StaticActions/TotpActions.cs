@@ -3,6 +3,38 @@ using FluentPassFinderContracts;
 
 namespace FluentPassFinder.Services.Actions.StaticActions
 {
+    internal class CopyTotpAction : TotpActionBase
+    {
+        public override int DefaultSortingIndex => 100;
+        public override string ActionType => string.Format(ActionTypeConsts.CopyActionPattern, ActionTypeConsts.Totp);
+        public override string DisplayName => "Copy 'TOTP'";
+
+        public override void RunAction(EntrySearchResult searchResult)
+        {
+            searchWindowInteractionService.Close();
+
+            string totp = GenerateTotp(searchResult);
+
+            pluginProxy.CopyToClipboard(totp, true, true, searchResult.Entry);
+        }
+    }
+
+    internal class AutoTypeTotpAction : TotpActionBase
+    {
+        public override int DefaultSortingIndex => 150;
+        public override string ActionType => string.Format(ActionTypeConsts.AutoTypeActionPattern, ActionTypeConsts.Totp);
+        public override string DisplayName => "Auto type 'TOTP'";
+
+        public override void RunAction(EntrySearchResult searchResult)
+        {
+            searchWindowInteractionService.Close();
+
+            var totp = GenerateTotp(searchResult);
+
+            pluginProxy.PerformAutoType(searchResult.Entry, searchResult.Database, totp + Consts.AutoTypeEnterPlaceholder);
+        }
+    }
+
     internal abstract class TotpActionBase : ActionBase, IStaticAction
     {
         public override bool CanRunAction(EntrySearchResult searchResult)
@@ -52,37 +84,6 @@ namespace FluentPassFinder.Services.Actions.StaticActions
         private bool CanGenerateNativeTotp(EntrySearchResult searchResult)
         {
             return searchResult.Entry.Strings.GetKeys().Any(x => x.StartsWith(Consts.NativeTotpFieldPrefix, StringComparison.InvariantCultureIgnoreCase));
-        }
-    }
-    internal class CopyTotpAction : TotpActionBase
-    {
-        public override int DefaultSortingIndex => 100;
-        public override string ActionType => string.Format(ActionTypeConsts.CopyActionPattern, ActionTypeConsts.Totp);
-        public override string DisplayName => "Copy 'TOTP'";
-
-        public override void RunAction(EntrySearchResult searchResult)
-        {
-            searchWindowInteractionService.Close();
-
-            string totp = GenerateTotp(searchResult);
-
-            pluginProxy.CopyToClipboard(totp, true, true, searchResult.Entry);
-        }
-    }
-
-    internal class AutoTypeTotpAction : TotpActionBase
-    {
-        public override int DefaultSortingIndex => 150;
-        public override string ActionType => string.Format(ActionTypeConsts.AutoTypeActionPattern, ActionTypeConsts.Totp);
-        public override string DisplayName => "Auto type 'TOTP'";
-
-        public override void RunAction(EntrySearchResult searchResult)
-        {
-            searchWindowInteractionService.Close();
-
-            var totp = GenerateTotp(searchResult);
-
-            pluginProxy.PerformAutoType(searchResult.Entry, searchResult.Database, totp + Consts.AutoTypeEnterPlaceholder);
         }
     }
 }
