@@ -52,6 +52,7 @@ namespace FluentPassFinder.Services
 
         public IEnumerable<IAction> GetActionsForEntry(EntrySearchResult searchResult)
         {
+            var settings = pluginProxy.Settings;
             var actions = new List<IAction>();
             actions.AddRange(staticActions);
 
@@ -64,7 +65,16 @@ namespace FluentPassFinder.Services
                     actions.Add(fieldAction);
                 }
             }
-            return actions;
+
+            return actions.OrderBy(a => 
+            {
+                int configuredSortingIndex;
+                if(settings.ActionSorting != null && settings.ActionSorting.TryGetValue(a.ActionType, out configuredSortingIndex))
+                {
+                    return configuredSortingIndex;
+                }
+                return a.SortingIndex;
+            });
         }
     }
 }

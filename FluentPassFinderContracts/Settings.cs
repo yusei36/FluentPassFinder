@@ -1,4 +1,6 @@
-﻿namespace FluentPassFinderContracts
+﻿using System.Collections.Generic;
+
+namespace FluentPassFinderContracts
 {
     public class Settings
     {
@@ -12,5 +14,7 @@
         public ActionType ShiftAction { get; set; }
         public ActionType ControlAction { get; set; }
         public ActionType AltAction { get; set; }
+
+        public Dictionary<string, int> ActionSorting { get; set; }
     }
 }
