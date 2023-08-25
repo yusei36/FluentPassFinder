@@ -1,4 +1,5 @@
 ﻿using FluentPassFinder.Contracts;
+using FluentPassFinderContracts;
 
 namespace FluentPassFinder.Services.Actions.StaticActions
 {
@@ -6,7 +7,7 @@ namespace FluentPassFinder.Services.Actions.StaticActions
     {
         public override string DisplayName => "Select entry in main window";
 
-        public override string ActionType => "SelectEntry";
+        public override string ActionType => ActionTypeConsts.SelectEntry;
 
         public override int DefaultSortingIndex => 300;
 

@@ -108,17 +108,17 @@ namespace FluentPassFinderPlugin
                 PluginTotpFieldConfig = "totpsettings_stringname",
                 GlobalHotkeyCurrentScreen = "Ctrl+Alt+S",
                 GlobalHotkeyPrimaryScreen = "Ctrl+Alt+F",
-                MainAction = "OpenContextMenu",
-                ShiftAction = "Copy_UserName",
-                ControlAction = "Copy_Password",
-                AltAction = "Copy_Totp",
+                MainAction = ActionTypeConsts.OpenContextMenu,
+                ShiftAction = string.Format(ActionTypeConsts.CopyActionPattern, PwDefs.UserNameField),
+                ControlAction = string.Format(ActionTypeConsts.CopyActionPattern, PwDefs.PasswordField),
+                AltAction = string.Format(ActionTypeConsts.CopyActionPattern, ActionTypeConsts.Totp),
                 ActionSorting = new System.Collections.Generic.Dictionary<string, int>
                 {
-                    { "Copy_UserName", 1 },
-                    { "Copy_Password", 2 },
+                    { string.Format(ActionTypeConsts.CopyActionPattern, PwDefs.UserNameField), 1 },
+                    { string.Format(ActionTypeConsts.CopyActionPattern, PwDefs.PasswordField), 2 },
 
-                    { "AutoType_UserName", 101 },
-                    { "AutoType_Password", 102 },
+                    { string.Format(ActionTypeConsts.AutoTypeActionPattern, PwDefs.UserNameField), 101 },
+                    { string.Format(ActionTypeConsts.AutoTypeActionPattern, PwDefs.PasswordField), 102 },
                 },
                 ShowActionsForCustomFields = true,
                 ExcludeActionsForFields = new System.Collections.Generic.List<string>()

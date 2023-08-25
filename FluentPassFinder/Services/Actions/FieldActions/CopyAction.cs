@@ -1,11 +1,12 @@
 ﻿using FluentPassFinder.Contracts;
+using FluentPassFinderContracts;
 
 namespace FluentPassFinder.Services.Actions.FieldActions
 {
     internal class CopyAction : FieldActionBase
     {
         public override int DefaultSortingIndex => 1000;
-        public override string ActionType => $"Copy_{FieldName}";
+        public override string ActionType => string.Format(ActionTypeConsts.CopyActionPattern, FieldName);
         public override string DisplayName => $"Copy '{FieldName}'";
 
         public override void RunAction(EntrySearchResult searchResult)

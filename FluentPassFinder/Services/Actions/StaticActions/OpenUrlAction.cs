@@ -1,4 +1,5 @@
 ﻿using FluentPassFinder.Contracts;
+using FluentPassFinderContracts;
 
 namespace FluentPassFinder.Services.Actions.StaticActions
 {
@@ -6,7 +7,7 @@ namespace FluentPassFinder.Services.Actions.StaticActions
     {
         public override string DisplayName => "Open URL of selected entry";
 
-        public override string ActionType => "OpenUrl";
+        public override string ActionType => ActionTypeConsts.OpenUrl;
 
         public override int DefaultSortingIndex => 200;
 

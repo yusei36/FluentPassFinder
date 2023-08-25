@@ -1,11 +1,12 @@
 ﻿using FluentPassFinder.Contracts;
+using FluentPassFinderContracts;
 
 namespace FluentPassFinder.Services.Actions.FieldActions
 {
     internal class AutoTypeAction : FieldActionBase
     {
         public override int DefaultSortingIndex => 2000;
-        public override string ActionType => $"AutoType_{FieldName}";
+        public override string ActionType => string.Format(ActionTypeConsts.AutoTypeActionPattern, FieldName);
         public override string DisplayName => $"Auto type '{FieldName}'";
 
         public override void RunAction(EntrySearchResult searchResult)
