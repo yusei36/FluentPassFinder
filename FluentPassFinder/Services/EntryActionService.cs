@@ -5,17 +5,17 @@ namespace FluentPassFinder.Services
 {
     internal class EntryActionService : IEntryActionService
     {
-        private readonly IEnumerable<IAction> actions;
+        private IEnumerable<IAction> actions;
 
         public EntryActionService(IEnumerable<IAction> actions, IPluginProxy pluginProxy, ISearchWindowInteractionService searchWindowInteractionService)
         {
-            this.actions = actions.ToList();
-            InitializeActions(pluginProxy, searchWindowInteractionService);
+            InitializeActions(actions, pluginProxy, searchWindowInteractionService);
         }
 
-        private void InitializeActions(IPluginProxy pluginProxy, ISearchWindowInteractionService searchWindowInteractionService)
+        private void InitializeActions(IEnumerable<IAction> actions, IPluginProxy pluginProxy, ISearchWindowInteractionService searchWindowInteractionService)
         {
-            foreach (var action in actions)
+            this.actions = actions.Where(x => x is not IFieldAction).ToList();
+            foreach (var action in this.actions)
             {
                 action.Initialize(pluginProxy, searchWindowInteractionService);
             }
