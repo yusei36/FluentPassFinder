@@ -7,7 +7,7 @@ namespace FluentPassFinder.Services.Actions.FieldActions
     {
         public override string ActionType => "Copy_"+FieldName;
 
-        public override int SortingIndex => 100; 
+        public override int SortingIndex => 1000; 
 
         public override void RunAction(EntrySearchResult searchResult)
         {
