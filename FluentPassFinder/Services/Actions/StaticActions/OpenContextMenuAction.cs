@@ -1,10 +1,9 @@
 ﻿using FluentPassFinder.Contracts;
 using FluentPassFinder.ViewModels;
-using FluentPassFinderContracts;
 
-namespace FluentPassFinder.Services.Actions
+namespace FluentPassFinder.Services.Actions.StaticActions
 {
-    internal class OpenContextMenuAction : ActionBase
+    internal class OpenContextMenuAction : ActionBase, IStaticAction
     {
         private readonly Lazy<SearchWindowViewModel> lazySearchWindowViewModel;
 

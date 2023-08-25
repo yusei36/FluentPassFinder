@@ -42,7 +42,6 @@ namespace FluentPassFinder.Views
 
                 ViewModel.IsContextMenuOpen = false;
                 ViewModel.SelectedEntry = null;
-                ViewModel.SelectedContextAction = ViewModel.ContextActions.First();
 
                 isClosing = false;
             }

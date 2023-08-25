@@ -6,6 +6,6 @@ namespace FluentPassFinder.Contracts
     {
         void RunAction(EntrySearchResult searchResult, ActionType actionType);
         void RunAction(EntrySearchResult searchResult, IAction action);
-        IEnumerable<IAction> Actions { get; }
+        IEnumerable<IAction> GetActionsForEntry(EntrySearchResult searchResult);
     }
 }

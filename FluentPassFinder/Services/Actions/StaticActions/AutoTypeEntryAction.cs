@@ -1,8 +1,8 @@
 ﻿using FluentPassFinder.Contracts;
 
-namespace FluentPassFinder.Services.Actions
+namespace FluentPassFinder.Services.Actions.StaticActions
 {
-    internal class AutoTypeEntryAction : ActionBase
+    internal class AutoTypeEntryAction : ActionBase, IStaticAction
     {
         public override string ActionType => FluentPassFinderContracts.ActionType.AutoType.ToString();
 

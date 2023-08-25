@@ -37,8 +37,6 @@ namespace FluentPassFinder.ViewModels
             this.pluginProxy = pluginProxy;
             this.entrySearchService = entrySearchService;
             this.entryActionService = entryActionService;
-            contextActions = new ObservableCollection<IAction>(entryActionService.Actions.Where(a => a.SortingIndex >= 0).OrderBy(a => a.SortingIndex));
-            selectedContextAction = contextActions.First();
         }
 
         [RelayCommand]
@@ -156,6 +154,19 @@ namespace FluentPassFinder.ViewModels
 
                 SelectedEntry = Entries.FirstOrDefault();
             }
+        }
+
+        partial void OnSelectedEntryChanged(EntryViewModel oldValue, EntryViewModel newValue)
+        {
+            if (newValue == null)
+            {
+                ContextActions.Clear();
+                SelectedContextAction = null;
+                return;
+            }
+
+            ContextActions = new ObservableCollection<IAction>(entryActionService.GetActionsForEntry(newValue.SearchResult).Where(a => a.SortingIndex >= 0).OrderBy(a => a.SortingIndex));
+            SelectedContextAction = ContextActions.First();
         }
 
         private static void NavigateCollcetionDown<T>(ObservableCollection<T> collection, T selectedItem, Action<T> udpateSelectedItem)

@@ -1,9 +1,9 @@
 ﻿using FluentPassFinder.Contracts;
 using FluentPassFinderContracts;
 
-namespace FluentPassFinder.Services.Actions
+namespace FluentPassFinder.Services.Actions.StaticActions
 {
-    internal class CopyTotpAction : ActionBase
+    internal class CopyTotpAction : ActionBase, IStaticAction
     {
         public override string ActionType => FluentPassFinderContracts.ActionType.Copy_Totp.ToString();
 
@@ -15,7 +15,7 @@ namespace FluentPassFinder.Services.Actions
             var pluginTotpPlaceholder = Settings.PluginTotpPlaceholder;
             var totp = pluginProxy.GetPlaceholderValue(pluginTotpPlaceholder, searchResult.Entry, searchResult.Database, true);
 
-            if (String.IsNullOrEmpty(totp) || totp == pluginTotpPlaceholder)
+            if (string.IsNullOrEmpty(totp) || totp == pluginTotpPlaceholder)
             {
                 totp = pluginProxy.GetPlaceholderValue(Consts.NativeTotpPlacholder, searchResult.Entry, searchResult.Database, true);
             }
@@ -24,7 +24,7 @@ namespace FluentPassFinder.Services.Actions
         }
     }
 
-    internal class AutoTypeTotpAction : ActionBase
+    internal class AutoTypeTotpAction : ActionBase, IStaticAction
     {
         public override string ActionType => FluentPassFinderContracts.ActionType.AutoType_Totp.ToString();
 
@@ -36,7 +36,7 @@ namespace FluentPassFinder.Services.Actions
             var pluginTotpPlaceholder = Settings.PluginTotpPlaceholder;
             var totp = pluginProxy.GetPlaceholderValue(pluginTotpPlaceholder, searchResult.Entry, searchResult.Database, true);
 
-            if (String.IsNullOrEmpty(totp) || totp == pluginTotpPlaceholder)
+            if (string.IsNullOrEmpty(totp) || totp == pluginTotpPlaceholder)
             {
                 totp = pluginProxy.GetPlaceholderValue(Consts.NativeTotpPlacholder, searchResult.Entry, searchResult.Database, true);
             }

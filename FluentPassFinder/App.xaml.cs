@@ -52,7 +52,8 @@ namespace FluentPassFinder
 
             Container.Register<IEntryActionService, EntryActionService>();
             Container.Register<IEntrySearchService, EntrySearchService>();
-            Container.Collection.Register<IAction>(Assembly.GetAssembly(typeof(App)));
+            Container.Collection.Register<IStaticAction>(Assembly.GetAssembly(typeof(App)));
+            Container.Collection.Register<IFieldAction>(Assembly.GetAssembly(typeof(App)));
 
             Container.RegisterInstance(interactionManager);
 
