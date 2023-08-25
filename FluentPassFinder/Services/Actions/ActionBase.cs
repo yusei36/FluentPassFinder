@@ -31,8 +31,7 @@ namespace FluentPassFinder.Services.Actions
         {
             get
             {
-                int configuredSortingIndex;
-                if (Settings.ActionSorting != null && Settings.ActionSorting.TryGetValue(ActionType, out configuredSortingIndex))
+                if (Settings.ActionSorting != null && Settings.ActionSorting.TryGetValue(ActionType, out int configuredSortingIndex))
                 {
                     return configuredSortingIndex;
                 }
@@ -44,8 +43,7 @@ namespace FluentPassFinder.Services.Actions
 
         public bool CanExecute(object parameter)
         {
-            var searchResult = parameter as EntrySearchResult;
-            if (searchResult != null)
+            if (parameter is EntrySearchResult searchResult)
             {
                 return CanRunAction(searchResult);
             }
@@ -54,8 +52,7 @@ namespace FluentPassFinder.Services.Actions
 
         public void Execute(object parameter)
         {
-            var searchResult = parameter as EntrySearchResult;
-            if (searchResult != null)
+            if (parameter is EntrySearchResult searchResult)
             {
                 RunAction(searchResult);
             }
