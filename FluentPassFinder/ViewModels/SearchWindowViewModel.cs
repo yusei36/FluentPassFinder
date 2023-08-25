@@ -57,7 +57,7 @@ namespace FluentPassFinder.ViewModels
 
                 entryActionService.RunAction(entry.SearchResult, SelectedContextAction);
             }
-            else 
+            else
             {
                 SelectedEntry = entry;
                 entryActionService.RunAction(entry.SearchResult, pluginProxy.Settings.MainAction);
@@ -127,7 +127,7 @@ namespace FluentPassFinder.ViewModels
         [RelayCommand]
         private void NavigateListUp()
         {
-            if(IsContextMenuOpen)
+            if (IsContextMenuOpen)
             {
                 NavigateCollcetionUp(ContextActions, SelectedContextAction, (x) => SelectedContextAction = x);
             }

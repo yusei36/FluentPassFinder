@@ -13,7 +13,7 @@ namespace FluentPassFinder.Services.Actions.StaticActions
         {
             searchWindowInteractionService.Close();
 
-            string totp = GenerateTotp(searchResult);
+            var totp = GenerateTotp(searchResult);
 
             pluginProxy.CopyToClipboard(totp, true, true, searchResult.Entry);
         }
