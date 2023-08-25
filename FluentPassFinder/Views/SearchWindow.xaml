@@ -128,7 +128,7 @@
                             <MouseBinding Gesture="LeftClick" Command="{Binding DataContext.ViewModel.RunActionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}" CommandParameter="{Binding ActionType}"/>
                         </StackPanel.InputBindings>
                         <ui:TextBlock FontTypography="Body" 
-                                      Text="{Binding ActionType}"/>
+                                      Text="{Binding DisplayName}"/>
                     </StackPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>

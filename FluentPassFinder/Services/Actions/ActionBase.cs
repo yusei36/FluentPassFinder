@@ -24,6 +24,7 @@ namespace FluentPassFinder.Services.Actions
 
         protected Settings Settings => pluginProxy.Settings;
 
+        public abstract string DisplayName { get; }
         public abstract string ActionType { get; }
         public abstract int DefaultSortingIndex { get; }
         public int SortingIndex

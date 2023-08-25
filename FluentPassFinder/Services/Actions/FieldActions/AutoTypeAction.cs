@@ -4,9 +4,9 @@ namespace FluentPassFinder.Services.Actions.FieldActions
 {
     internal class AutoTypeAction : FieldActionBase
     {
-        public override string ActionType => "AutoType_"+FieldName;
-
         public override int DefaultSortingIndex => 2000;
+        public override string ActionType => $"AutoType_{FieldName}";
+        public override string DisplayName => $"Auto type '{FieldName}'";
 
         public override void RunAction(EntrySearchResult searchResult)
         {

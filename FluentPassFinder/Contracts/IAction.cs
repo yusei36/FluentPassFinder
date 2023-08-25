@@ -5,12 +5,11 @@ namespace FluentPassFinder.Contracts
 {
     public interface IAction : ICommand
     {
-        void RunAction(EntrySearchResult searchResult);
-
         string ActionType { get; }
-
         int SortingIndex { get; }
+        string DisplayName { get; }
 
         void Initialize(IPluginProxy hostProxy, ISearchWindowInteractionService searchWindowInteractionService);
+        void RunAction(EntrySearchResult searchResult);
     }
 }
