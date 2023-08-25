@@ -6,9 +6,6 @@ namespace FluentPassFinderContracts
     {
         public SearchOptions SearchOptions { get; set; }
         public string PluginTotpPlaceholder { get; set; }
-        
-        public string GlobalHotkeyCurrentScreen { get; set; }
-        public string GlobalHotkeyPrimaryScreen { get; set; }
 
         public ActionType MainAction { get; set; }
         public ActionType ShiftAction { get; set; }
@@ -17,5 +14,10 @@ namespace FluentPassFinderContracts
 
         public Dictionary<string, int> ActionSorting { get; set; }
         public bool ShowActionsForCustomFields { get; set; }
+
+
+        public string GlobalHotkeyCurrentScreen { get; set; }
+        public string GlobalHotkeyPrimaryScreen { get; set; }
+        public string Theme { get; set; }
     }
 }

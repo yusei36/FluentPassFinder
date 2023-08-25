@@ -15,8 +15,6 @@ namespace FluentPassFinder.Views
 
         public SearchWindow(SearchWindowViewModel viewModel)
         {
-            Wpf.Ui.Appearance.Watcher.Watch(this);
-
             ViewModel = viewModel;
             DataContext = this;
 

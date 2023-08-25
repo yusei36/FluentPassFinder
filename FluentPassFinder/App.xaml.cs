@@ -66,6 +66,8 @@ namespace FluentPassFinder
 
             HotkeyManager.Current.AddOrReplace(nameof(Settings.GlobalHotkeyPrimaryScreen), (KeyGesture)converter.ConvertFromInvariantString(settings.GlobalHotkeyPrimaryScreen), ShowSearchWindow);
             HotkeyManager.Current.AddOrReplace(nameof(Settings.GlobalHotkeyCurrentScreen), (KeyGesture)converter.ConvertFromInvariantString(settings.GlobalHotkeyCurrentScreen), ShowSearchWindow);
+
+            RestoreTheme(settings);
         }
 
         public static Container Container { get; private set; }
@@ -85,6 +87,18 @@ namespace FluentPassFinder
             else
             {
                 searchWindow?.ShowSearchWindow(false);
+            }
+        }
+
+        private static void RestoreTheme(Settings settings)
+        {
+            if (Enum.TryParse(settings.Theme, true, out Wpf.Ui.Appearance.ApplicationTheme themeType))
+            {
+                Wpf.Ui.Appearance.ApplicationThemeManager.Apply(themeType);
+            }
+            else
+            {
+                Wpf.Ui.Appearance.ApplicationThemeManager.Apply(Wpf.Ui.Appearance.ApplicationTheme.Dark);
             }
         }
     }

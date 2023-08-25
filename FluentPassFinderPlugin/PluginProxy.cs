@@ -123,7 +123,8 @@ namespace FluentPassFinderPlugin
                     { "AutoType__etm_template_uuid", -1 },
                     { "Copy__etm_template_uuid", -1 },
                 },
-                ShowActionsForCustomFields = true
+                ShowActionsForCustomFields = true,
+                Theme = "Dark"
             };
             pluginHost.CustomConfig.SetString(nameof(FluentPassFinderPlugin), JsonConvert.SerializeObject(defaultSettings, jsonSerializerSettings));
 
