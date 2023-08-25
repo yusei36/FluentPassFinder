@@ -12,5 +12,18 @@ namespace FluentPassFinder.Services.Actions.FieldActions
             FieldName = fieldName;
             Initialize(hostProxy, searchWindowInteractionService);
         }
+
+        public override bool CanRunAction(EntrySearchResult searchResult)
+        {
+            var protectedString = searchResult.Entry.Strings.GetSafe(FieldName);
+
+            // don't read protected strings to prevent having the value in memory
+            if (protectedString.IsProtected)
+            {
+                return true;
+            }
+
+            return !string.IsNullOrWhiteSpace(protectedString.ReadString());
+        }
     }
 }

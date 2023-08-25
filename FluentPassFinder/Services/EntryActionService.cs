@@ -83,7 +83,7 @@ namespace FluentPassFinder.Services
 
             if (!inculdeHiddenActions)
             {
-                actions = actions.Where(a => a.SortingIndex >= 0).ToList();
+                actions = actions.Where(a => a.SortingIndex >= 0 && a.CanExecute(searchResult)).ToList();
             }
 
             return actions.OrderBy(a => a.SortingIndex);
