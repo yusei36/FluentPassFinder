@@ -11,6 +11,9 @@
   </PropertyGroup>
   <ItemGroup>
   	<UpToDateCheckInput Include="..\FluentPassFinder\**\*.*" />
+	<UpToDateCheckInput Include="..\FluentPassFinderContracts\**\*.*" />
+	<UpToDateCheckInput Include="..\FluentPassFinderPlugin\**\*.*" />
+	<UpToDateCheckInput Include="..\Build\PostBuild.ps1" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
@@ -24,6 +27,6 @@
     </Reference>
   </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="powershell $(SolutionDir)Build\PostBuild.ps1 -OutputSrcDir $(SolutionDir)Build/$(Configuration)/$(TargetFramework) -SolutionDir $(SolutionDir)" />
+    <Exec Command="powershell $(SolutionDir)Build\PostBuild.ps1 -OutputSrcDir $(SolutionDir)Build/$(Configuration)/$(TargetFramework) -SolutionDir $(SolutionDir) -Configuration $(Configuration)" />
   </Target>
 </Project>
