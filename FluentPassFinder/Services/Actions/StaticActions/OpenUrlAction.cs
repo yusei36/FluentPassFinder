@@ -8,7 +8,7 @@ namespace FluentPassFinder.Services.Actions.StaticActions
 
         public override string ActionType => "OpenUrl";
 
-        public override int DefaultSortingIndex => 101;
+        public override int DefaultSortingIndex => 200;
 
         public override void RunAction(EntrySearchResult searchResult)
         {

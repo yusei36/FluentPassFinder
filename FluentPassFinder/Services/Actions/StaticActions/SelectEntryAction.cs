@@ -8,7 +8,7 @@ namespace FluentPassFinder.Services.Actions.StaticActions
 
         public override string ActionType => "SelectEntry";
 
-        public override int DefaultSortingIndex => 102;
+        public override int DefaultSortingIndex => 300;
 
         public override void RunAction(EntrySearchResult searchResult)
         {
