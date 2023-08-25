@@ -46,17 +46,14 @@ namespace FluentPassFinder.ViewModels
             return fieldValue;
         }
 
-        private Image? GetEntryIcon(EntrySearchResult searchResult)
+        private Image GetEntryIcon(EntrySearchResult searchResult)
         {
-            Image? entryIcon = null;
+            Image entryIcon = null;
             if (!searchResult.Entry.CustomIconUuid.Equals(PwUuid.Zero))
             {
                 entryIcon = searchResult.Database.GetCustomIcon(searchResult.Entry.CustomIconUuid, 24, 24);
             }
-            if (entryIcon == null)
-            {
-                entryIcon = pluginProxy.GetBuildInIcon(searchResult.Entry.IconId);
-            }
+            entryIcon ??= pluginProxy.GetBuildInIcon(searchResult.Entry.IconId);
             return entryIcon;
         }
     }

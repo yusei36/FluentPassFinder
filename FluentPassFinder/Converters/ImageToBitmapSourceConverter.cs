@@ -16,9 +16,9 @@ namespace FluentPassFinder.Converters
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool DeleteObject(IntPtr value);
 
-        public object? Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (value is null || !(value is Image myImage))
+            if (value is null || value is not Image myImage)
             {//ensure provided value is valid image.
                 return null;
             }
@@ -29,7 +29,7 @@ namespace FluentPassFinder.Converters
                 throw new ArgumentException($"Cannot convert System.Drawing.Image with either dimension greater than {Int16.MaxValue} to BitmapImage.\nProvided image's dimensions: {myImage.Width}x{myImage.Height}", nameof(value));
             }
 
-            using Bitmap bitmap = new Bitmap(myImage); //ensure Bitmap is disposed of after usefulness is fulfilled.
+            using Bitmap bitmap = new(myImage); //ensure Bitmap is disposed of after usefulness is fulfilled.
             IntPtr bmpPt = bitmap.GetHbitmap();
             try
             {
