@@ -11,6 +11,7 @@ namespace FluentPassFinderContracts
         void PerformAutoType(PwEntry entry, PwDatabase database, string sequence = null);
         void OpenEntryUrl(PwEntry entry);
         void SelectEntry(PwEntry entry, PwDatabase database);
+        string GetStringFromCustomConfig(string configId, string defaultValue);
 
         PwDatabase[] Databases { get; }
         Settings Settings { get; }

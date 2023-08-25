@@ -6,6 +6,7 @@ namespace FluentPassFinderContracts
     {
         public SearchOptions SearchOptions { get; set; }
         public string PluginTotpPlaceholder { get; set; }
+        public string PluginTotpFieldConfig { get; set; }
 
         public ActionType MainAction { get; set; }
         public ActionType ShiftAction { get; set; }

@@ -105,6 +105,7 @@ namespace FluentPassFinderPlugin
                     ResolveFieldReferences = true,
                 },
                 PluginTotpPlaceholder = "{TOTP}",
+                PluginTotpFieldConfig = "totpsettings_stringname",
                 GlobalHotkeyCurrentScreen = "Ctrl+Alt+S",
                 GlobalHotkeyPrimaryScreen = "Ctrl+Alt+F",
                 MainAction = ActionType.OpenContextMenu,
@@ -153,6 +154,11 @@ namespace FluentPassFinderPlugin
                 // Bring window into foreground
                 mainWindow.EnsureVisibleForegroundWindow(true, true);
             });
+        }
+
+        public string GetStringFromCustomConfig(string configId, string defaultValue)
+        {
+            return pluginHostDispatcher.Invoke(() => pluginHost.CustomConfig.GetString(configId, defaultValue));
         }
     }
 }

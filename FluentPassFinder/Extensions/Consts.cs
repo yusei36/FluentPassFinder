@@ -4,5 +4,6 @@
     {
         public const string AutoTypeEnterPlaceholder = "{ENTER}";
         public const string NativeTotpPlacholder = "{TIMEOTP}";
+        public const string NativeTotpFieldPrefix = "TimeOtp-";
     }
 }
