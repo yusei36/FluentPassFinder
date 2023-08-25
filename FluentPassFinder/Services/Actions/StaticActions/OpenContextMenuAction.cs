@@ -1,6 +1,6 @@
 ﻿using FluentPassFinder.Contracts;
 using FluentPassFinder.ViewModels;
-using FluentPassFinderContracts;
+using FluentPassFinder.Contracts.Public;
 
 namespace FluentPassFinder.Services.Actions.StaticActions
 {

@@ -1,4 +1,4 @@
-﻿using FluentPassFinderContracts;
+﻿using FluentPassFinder.Contracts.Public;
 using System.Windows.Input;
 
 namespace FluentPassFinder.Contracts

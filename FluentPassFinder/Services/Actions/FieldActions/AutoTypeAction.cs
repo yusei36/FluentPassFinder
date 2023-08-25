@@ -1,5 +1,5 @@
 ﻿using FluentPassFinder.Contracts;
-using FluentPassFinderContracts;
+using FluentPassFinder.Contracts.Public;
 
 namespace FluentPassFinder.Services.Actions.FieldActions
 {

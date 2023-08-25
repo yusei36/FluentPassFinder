@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace FluentPassFinderContracts
+namespace FluentPassFinder.Contracts.Public
 {
     public class Settings
     {

@@ -1,7 +1,7 @@
 ﻿using KeePassLib;
 using System.Drawing;
 
-namespace FluentPassFinderContracts
+namespace FluentPassFinder.Contracts.Public
 {
     public interface IPluginProxy
     {

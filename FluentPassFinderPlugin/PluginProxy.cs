@@ -1,4 +1,4 @@
-﻿using FluentPassFinderContracts;
+﻿using FluentPassFinder.Contracts.Public;
 using KeePass.Forms;
 using KeePass.Plugins;
 using KeePass.Util;

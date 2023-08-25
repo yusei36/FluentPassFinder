@@ -2,7 +2,7 @@
 using FluentPassFinder.Services;
 using FluentPassFinder.ViewModels;
 using FluentPassFinder.Views;
-using FluentPassFinderContracts;
+using FluentPassFinder.Contracts.Public;
 using NHotkey;
 using NHotkey.Wpf;
 using SimpleInjector;

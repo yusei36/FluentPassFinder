@@ -1,5 +1,5 @@
 ﻿using FluentPassFinder.Contracts;
-using FluentPassFinderContracts;
+using FluentPassFinder.Contracts.Public;
 using KeePassLib.Collections;
 
 namespace FluentPassFinder.Services

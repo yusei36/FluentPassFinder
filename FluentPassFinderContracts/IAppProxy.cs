@@ -1,4 +1,4 @@
-﻿namespace FluentPassFinderContracts
+﻿namespace FluentPassFinder.Contracts.Public
 {
     public interface IAppProxy
     {

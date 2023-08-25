@@ -1,7 +1,5 @@
 ﻿using FluentPassFinder.Contracts;
-using FluentPassFinderContracts;
-using KeePassLib;
-using System.Runtime;
+using FluentPassFinder.Contracts.Public;
 
 namespace FluentPassFinder.Services
 {

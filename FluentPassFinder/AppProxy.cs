@@ -1,4 +1,4 @@
-﻿using FluentPassFinderContracts;
+﻿using FluentPassFinder.Contracts.Public;
 
 namespace FluentPassFinder
 {
