@@ -5,7 +5,7 @@ namespace FluentPassFinder.Services.Actions
 {
     internal class CopyTotpAction : ActionBase
     {
-        public override ActionType ActionType => ActionType.Copy_Totp;
+        public override string ActionType => FluentPassFinderContracts.ActionType.Copy_Totp.ToString();
 
         public override int SortingIndex => 3;
 
@@ -26,7 +26,7 @@ namespace FluentPassFinder.Services.Actions
 
     internal class AutoTypeTotpAction : ActionBase
     {
-        public override ActionType ActionType => ActionType.AutoType_Totp;
+        public override string ActionType => FluentPassFinderContracts.ActionType.AutoType_Totp.ToString();
 
         public override int SortingIndex => 13;
 

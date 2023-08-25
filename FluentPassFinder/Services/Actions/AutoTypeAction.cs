@@ -5,7 +5,7 @@ namespace FluentPassFinder.Services.Actions
 {
     internal class AutoTypeAction : ActionBase
     {
-        public override ActionType ActionType => ActionType.AutoType;
+        public override string ActionType => FluentPassFinderContracts.ActionType.AutoType.ToString();
 
         public override int SortingIndex => 0;
 

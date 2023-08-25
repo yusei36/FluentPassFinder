@@ -5,7 +5,7 @@ namespace FluentPassFinder.Services.Actions
 {
     internal class CopyUserNameAction : ActionBase
     {
-        public override ActionType ActionType => ActionType.Copy_UserName;
+        public override string ActionType => FluentPassFinderContracts.ActionType.Copy_UserName.ToString();
 
         public override int SortingIndex => 1;
 
@@ -19,7 +19,7 @@ namespace FluentPassFinder.Services.Actions
 
     internal class AutoTypeUserNameAction : ActionBase
     {
-        public override ActionType ActionType => ActionType.AutoType_UserName;
+        public override string ActionType => FluentPassFinderContracts.ActionType.AutoType_UserName.ToString();
 
         public override int SortingIndex => 11;
 

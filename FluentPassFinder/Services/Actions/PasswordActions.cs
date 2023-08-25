@@ -5,7 +5,7 @@ namespace FluentPassFinder.Services.Actions
 {
     internal class CopyPasswordAction : ActionBase
     {
-        public override ActionType ActionType => ActionType.Copy_Password;
+        public override string ActionType => FluentPassFinderContracts.ActionType.Copy_Password.ToString();
 
         public override int SortingIndex => 2;
 
@@ -19,7 +19,7 @@ namespace FluentPassFinder.Services.Actions
 
     internal class AutoTypePasswordAction : ActionBase
     {
-        public override ActionType ActionType => ActionType.AutoType_Password;
+        public override string ActionType => FluentPassFinderContracts.ActionType.AutoType_Password.ToString();
 
         public override int SortingIndex => 12;
 

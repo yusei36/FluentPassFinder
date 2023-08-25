@@ -27,7 +27,7 @@ namespace FluentPassFinder.Services
         {
             if (searchResult == null) throw new ArgumentNullException(nameof(searchResult));
 
-            var action = actions.FirstOrDefault(a => a.ActionType == actionType);
+            var action = actions.FirstOrDefault(a => a.ActionType == actionType.ToString());
             if (action != null)
             {
                 action.RunAction(searchResult);

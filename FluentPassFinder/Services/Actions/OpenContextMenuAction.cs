@@ -13,7 +13,7 @@ namespace FluentPassFinder.Services.Actions
             this.lazySearchWindowViewModel = lazySearchWindowViewModel;
         }
 
-        public override ActionType ActionType => ActionType.OpenContextMenu;
+        public override string ActionType => FluentPassFinderContracts.ActionType.OpenContextMenu.ToString();
 
         public override int SortingIndex => -1;
 

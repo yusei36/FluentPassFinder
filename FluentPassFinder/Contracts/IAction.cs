@@ -7,7 +7,7 @@ namespace FluentPassFinder.Contracts
     {
         void RunAction(EntrySearchResult searchResult);
 
-        ActionType ActionType { get; }
+        string ActionType { get; }
 
         int SortingIndex { get; }
 
