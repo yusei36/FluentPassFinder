@@ -47,11 +47,13 @@ namespace FluentPassFinder.Contracts.Public
             AltAction = string.Format(ActionTypeConsts.CopyActionPattern, ActionTypeConsts.Totp),
             ActionSorting = new Dictionary<string, int>
                 {
-                    { string.Format(ActionTypeConsts.CopyActionPattern, PwDefs.UserNameField), 1 },
-                    { string.Format(ActionTypeConsts.CopyActionPattern, PwDefs.PasswordField), 2 },
+                    { string.Format(ActionTypeConsts.AutoTypeActionPattern, PwDefs.UserNameField), 1 },
+                    { string.Format(ActionTypeConsts.AutoTypeActionPattern, PwDefs.PasswordField), 2 },
+                    { string.Format(ActionTypeConsts.AutoTypeActionPattern, ActionTypeConsts.Totp), 3 },
 
-                    { string.Format(ActionTypeConsts.AutoTypeActionPattern, PwDefs.UserNameField), 101 },
-                    { string.Format(ActionTypeConsts.AutoTypeActionPattern, PwDefs.PasswordField), 102 },
+                    { string.Format(ActionTypeConsts.CopyActionPattern, PwDefs.UserNameField), 101 },
+                    { string.Format(ActionTypeConsts.CopyActionPattern, PwDefs.PasswordField), 102 },
+                    { string.Format(ActionTypeConsts.CopyActionPattern, ActionTypeConsts.Totp), 103 },
                 },
             ShowActionsForCustomFields = true,
             ExcludeActionsForFields = new List<string>()
