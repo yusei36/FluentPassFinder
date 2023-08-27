@@ -17,6 +17,8 @@ Shortcut can be used to open the small search window from everywhere.
 - Copy TOTP: `Alt + Enter`
 - Select action in entry context menu: `Enter`
 
+## Screenshots
+//TODO
 
 ## Configuration
 //TODO
