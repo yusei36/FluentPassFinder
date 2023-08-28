@@ -1,6 +1,7 @@
 ﻿<ui:FluentWindow
     x:Class="FluentPassFinder.Views.SearchWindow"
     x:ClassModifier="internal"
+    x:Name="WindowRoot"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -89,10 +90,10 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <Grid.InputBindings>
-                            <MouseBinding Gesture="LeftClick" Command="{Binding DataContext.ViewModel.EnterActionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}" CommandParameter="{Binding}"/>
-                            <MouseBinding Gesture="Shift+LeftClick" Command="{Binding DataContext.ViewModel.ShiftEnterActionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}" CommandParameter="{Binding}"/>
-                            <MouseBinding Gesture="Ctrl+LeftClick" Command="{Binding DataContext.ViewModel.ControlEnterActionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}" CommandParameter="{Binding}"/>
-                            <MouseBinding Gesture="Alt+LeftClick" Command="{Binding DataContext.ViewModel.AltEnterActionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}" CommandParameter="{Binding}"/>
+                            <MouseBinding Gesture="LeftClick" Command="{Binding DataContext.ViewModel.EnterActionCommand, ElementName=WindowRoot}" CommandParameter="{Binding}"/>
+                            <MouseBinding Gesture="Shift+LeftClick" Command="{Binding DataContext.ViewModel.ShiftEnterActionCommand, ElementName=WindowRoot}" CommandParameter="{Binding}"/>
+                            <MouseBinding Gesture="Ctrl+LeftClick" Command="{Binding DataContext.ViewModel.ControlEnterActionCommand, ElementName=WindowRoot}" CommandParameter="{Binding}"/>
+                            <MouseBinding Gesture="Alt+LeftClick" Command="{Binding DataContext.ViewModel.AltEnterActionCommand, ElementName=WindowRoot}" CommandParameter="{Binding}"/>
                         </Grid.InputBindings>
                         <ui:Image Grid.Column="0"
                                   Grid.Row="0"
@@ -127,7 +128,7 @@
                 <DataTemplate DataType="contracts:IAction">
                     <StackPanel Margin="4,0" >
                         <StackPanel.InputBindings>
-                            <MouseBinding Gesture="LeftClick" Command="{Binding DataContext.ViewModel.RunActionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}" CommandParameter="{Binding ActionType}"/>
+                            <MouseBinding Gesture="LeftClick" Command="{Binding DataContext.ViewModel.RunActionCommand, ElementName=WindowRoot}" CommandParameter="{Binding ActionType}"/>
                         </StackPanel.InputBindings>
                         <ui:TextBlock FontTypography="Body" 
                                       Text="{Binding DisplayName}"/>
