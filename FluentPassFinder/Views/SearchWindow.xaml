@@ -92,7 +92,7 @@
                             <MouseBinding Gesture="LeftClick" Command="{Binding DataContext.ViewModel.EnterActionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}" CommandParameter="{Binding}"/>
                             <MouseBinding Gesture="Shift+LeftClick" Command="{Binding DataContext.ViewModel.ShiftEnterActionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}" CommandParameter="{Binding}"/>
                             <MouseBinding Gesture="Ctrl+LeftClick" Command="{Binding DataContext.ViewModel.ControlEnterActionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}" CommandParameter="{Binding}"/>
-                            <MouseBinding Gesture="Alt+LeftClick" Command="{Binding DataContext.ViewModel.AltEnterCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}" CommandParameter="{Binding}"/>
+                            <MouseBinding Gesture="Alt+LeftClick" Command="{Binding DataContext.ViewModel.AltEnterActionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}" CommandParameter="{Binding}"/>
                         </Grid.InputBindings>
                         <ui:Image Grid.Column="0"
                                   Grid.Row="0"
