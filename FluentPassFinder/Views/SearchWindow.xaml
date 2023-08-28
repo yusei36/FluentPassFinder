@@ -19,6 +19,7 @@
     Title="{Binding ViewModel.ApplicationTitle, Mode=OneWay}"
     WindowCornerPreference="Round"
     ShowInTaskbar="False"
+    ResizeMode="NoResize"
     WindowStyle="None"
     WindowStartupLocation="Manual"
     Width="500"
