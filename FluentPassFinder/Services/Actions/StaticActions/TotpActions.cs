@@ -28,6 +28,7 @@ namespace FluentPassFinder.Services.Actions.StaticActions
         public override void RunAction(EntrySearchResult searchResult)
         {
             searchWindowInteractionService.Close();
+            Task.Delay(100).Wait();
 
             var totp = GenerateTotp(searchResult);
 

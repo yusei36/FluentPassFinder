@@ -12,6 +12,8 @@ namespace FluentPassFinder.Services.Actions.FieldActions
         public override void RunAction(EntrySearchResult searchResult)
         {
             searchWindowInteractionService.Close();
+            Task.Delay(100).Wait();
+
             var fieldValue = pluginProxy.GetPlaceholderValue(searchResult.Entry.Strings.ReadSafe(FieldName), searchResult.Entry, searchResult.Database, false);
             pluginProxy.PerformAutoType(searchResult.Entry, searchResult.Database, fieldValue + Consts.AutoTypeEnterPlaceholder);
         }
