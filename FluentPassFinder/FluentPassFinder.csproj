@@ -2,11 +2,8 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net48</TargetFramework>
-    <ApplicationManifest>Properties/app.manifest</ApplicationManifest>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
-	<LangVersion>latest</LangVersion>
 	<OutDir>$(SolutionDir)Build/$(Configuration)/$(TargetFramework)/bin</OutDir>
   </PropertyGroup>
 
