@@ -2,6 +2,10 @@
 KeePass Plugin with a fluent design search window to quickly find entries and autotype or copy passwords or other fields.
 Shortcut can be used to open the small search window from everywhere.
 
+## Requirements
+- KeePass2 Version 2.54 or never
+- .NET Framework 4.8
+
 ## How to use
 
 ### General shortcuts:
