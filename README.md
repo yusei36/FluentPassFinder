@@ -32,8 +32,8 @@ After KeePass is closed for the first time after the plugin was installed the co
 ```
 <Custom>
     <Item>
-		<Key>FluentPassFinderPlugin</Key>
-		<Value>{
+        <Key>FluentPassFinderPlugin</Key>
+        <Value>{
   "SearchOptions": {
     "IncludeTitleField": true,
     "IncludeUserNameField": false,
@@ -69,7 +69,7 @@ After KeePass is closed for the first time after the plugin was installed the co
   "GlobalHotkeyPrimaryScreen": "Ctrl+Alt+F",
   "Theme": "Dark"
 }</Value>
-	</Item>
+    </Item>
 </Custom>
 ```
 
