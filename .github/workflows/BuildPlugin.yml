@@ -31,6 +31,11 @@ jobs:
           7z x -o"Build/KeePass" ${{ steps.DownloadKeePass.outputs.filename }} KeePass.exe
     - name: Build
       run: dotnet build --no-restore
+    - name: Copy Readme and License files
+      run: |
+          copy LICENSE Build/KeePass/Plugins/FluentPassFinder
+          copy README.md Build/KeePass/Plugins/FluentPassFinder
+          copy ThirdPartyNotices.md Build/KeePass/Plugins/FluentPassFinder
     - uses: actions/upload-artifact@v3
       with:
           name: FluentPassFinder
