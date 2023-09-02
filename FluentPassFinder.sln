@@ -15,7 +15,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FCE2C370-8F51-4D10-B223-3C990F5C90B7}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		LICENSE = LICENSE
 		README.md = README.md
+		ThirdPartyNotices.md = ThirdPartyNotices.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflows", "Workflows", "{FB494A76-D4EA-48E8-BF1D-8D39104D790A}"

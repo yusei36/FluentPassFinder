@@ -23,5 +23,6 @@ Shortcut can be used to open the small search window from everywhere.
 ## Configuration
 //TODO
 
-## Third Party Licenses
-//TODO
+## License
+- License GPL-3.0: [LICENSE](./LICENSE)
+- Third Party Licenses: [ThirdPartyNotices.md](./ThirdPartyNotices.md)
