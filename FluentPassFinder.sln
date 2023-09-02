@@ -12,7 +12,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FluentPassFinder", "FluentP
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FluentPassFinderContracts", "FluentPassFinderContracts\FluentPassFinderContracts.csproj", "{9872AD7D-83FD-47BD-AA64-E259F434DAEE}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflows", "Workflows", "{FEADA35C-1DEE-416F-A231-690C0A80E6DC}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FCE2C370-8F51-4D10-B223-3C990F5C90B7}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflows", "Workflows", "{FB494A76-D4EA-48E8-BF1D-8D39104D790A}"
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\BuildPlugin.yml = .github\workflows\BuildPlugin.yml
 		.github\workflows\BuildReleasePlugin.yml = .github\workflows\BuildReleasePlugin.yml
@@ -39,6 +45,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{FB494A76-D4EA-48E8-BF1D-8D39104D790A} = {FCE2C370-8F51-4D10-B223-3C990F5C90B7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F52598CB-8C14-4C22-8AC3-0B21DD47F13E}
