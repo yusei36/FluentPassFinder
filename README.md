@@ -25,7 +25,12 @@ Shortcut can be used to open the small search window from everywhere.
 - Select action in entry context menu: `Enter`
 
 ## Screenshots
-//TODO
+### Search Window
+![Search window](https://github.com/yusei36/FluentPassFinder/assets/15942327/ff1fd9aa-6a4d-4728-a4a0-9ec456bb1e3e)
+
+### Entry context menu
+![Entry context menu](https://github.com/yusei36/FluentPassFinder/assets/15942327/5bbf27fd-ae17-466d-9800-88e161510a1a)
+
 
 ## Configuration
 WARNING: The configuration may undergo changes that are not compatible with the current naming and format until the settings window is implemented.
