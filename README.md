@@ -7,6 +7,7 @@ Shortcut can be used to open the small search window from everywhere.
 ## Requirements
 - KeePass2 Version 2.54 or never
 - .NET Framework 4.8
+- Only runs under Windows (tested with Windows 10 & 11)
 
 ## How to use
 
