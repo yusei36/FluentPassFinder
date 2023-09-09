@@ -30,23 +30,23 @@
     <ui:FluentWindow.Resources>
         <converters:ImageToBitmapSourceConverter x:Key="ImageToBitmapSourceConverter" />
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <converters:InvertBoolConverter x:Key="InvertBoolConverter" />
     </ui:FluentWindow.Resources>
     <ui:FluentWindow.InputBindings>
-        <KeyBinding
-            Gesture="Escape"
-            Command="{Binding HideSearchWindowCommand}" />
-        <KeyBinding
-            Gesture="Enter"
-            Command="{Binding ViewModel.EnterActionCommand}"  />
-        <KeyBinding
-            Gesture="Shift+Enter"
-            Command="{Binding ViewModel.ShiftEnterActionCommand}"  />
-        <KeyBinding
-            Gesture="Ctrl+Enter"
-            Command="{Binding ViewModel.ControlEnterActionCommand}"  />
-        <KeyBinding
-            Gesture="Alt+Enter"
-            Command="{Binding ViewModel.AltEnterActionCommand}"  />
+        <KeyBinding Gesture="Escape"
+                    Command="{Binding HideSearchWindowCommand}" />
+        <KeyBinding Gesture="Enter"
+                    Command="{Binding ViewModel.EnterActionCommand}"  />
+        <KeyBinding Gesture="Shift+Enter"
+                    Command="{Binding ViewModel.ShiftEnterActionCommand}"  />
+        <KeyBinding Gesture="Ctrl+Enter"
+                    Command="{Binding ViewModel.ControlEnterActionCommand}"  />
+        <KeyBinding Gesture="Alt+Enter"
+                    Command="{Binding ViewModel.AltEnterActionCommand}"  />
+        <KeyBinding Gesture="Down"
+                    Command="{Binding ViewModel.NavigateListDownCommand}"  />
+        <KeyBinding Gesture="Up"
+                    Command="{Binding ViewModel.NavigateListUpCommand}"  />
     </ui:FluentWindow.InputBindings>
 
     <Grid>
@@ -58,6 +58,7 @@
                     Grid.Row="0"
                     PlaceholderText="Search"
                     IconPlacement="Right"
+                    IsEnabled="{Binding ViewModel.IsContextMenuOpen, Converter={StaticResource InvertBoolConverter}}"
                     Text="{Binding ViewModel.SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
             <ui:TextBox.InputBindings>
                 <KeyBinding Gesture="Down"

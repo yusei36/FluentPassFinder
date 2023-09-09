@@ -139,6 +139,11 @@ namespace FluentPassFinder.ViewModels
 
         partial void OnSearchTextChanged(string searchQuery)
         {
+            if (IsContextMenuOpen)
+            {
+                return;
+            }
+
             var dbs = pluginProxy.Databases;
 
             SelectedEntry = null;

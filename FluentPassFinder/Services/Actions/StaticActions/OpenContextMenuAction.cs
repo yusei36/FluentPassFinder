@@ -1,6 +1,6 @@
 ﻿using FluentPassFinder.Contracts;
-using FluentPassFinder.ViewModels;
 using FluentPassFinder.Contracts.Public;
+using FluentPassFinder.ViewModels;
 
 namespace FluentPassFinder.Services.Actions.StaticActions
 {
@@ -19,7 +19,9 @@ namespace FluentPassFinder.Services.Actions.StaticActions
 
         public override void RunAction(EntrySearchResult searchResult)
         {
-            lazySearchWindowViewModel.Value.IsContextMenuOpen = true;
+            var searchWindowViewModel = lazySearchWindowViewModel.Value;
+            searchWindowViewModel.IsContextMenuOpen = true;
+            searchWindowViewModel.SearchText = pluginProxy.GetPlaceholderValue(searchResult.Entry.Strings.ReadSafe(PwDefs.TitleField), searchResult.Entry, searchResult.Database, false);
         }
     }
 }
