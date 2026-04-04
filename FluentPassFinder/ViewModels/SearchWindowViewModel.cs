@@ -107,7 +107,7 @@ namespace FluentPassFinder.ViewModels
                 NavigateCollectionUp(Entries, SelectedEntry, x => SelectedEntry = x);
         }
 
-        partial void OnSearchTextChanged(string searchQuery)
+        partial void OnSearchTextChanged(string value)
         {
             if (IsContextMenuOpen) return;
 
@@ -116,7 +116,7 @@ namespace FluentPassFinder.ViewModels
 
             if (!pluginProxy.IsAnyDatabaseOpen) return;
 
-            foreach (var result in entrySearchService.SearchEntries(searchQuery))
+            foreach (var result in entrySearchService.SearchEntries(value))
                 Entries.Add(new EntryViewModel(result));
 
             SelectedEntry = Entries.Count > 0 ? Entries[0] : null;

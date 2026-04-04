@@ -28,6 +28,6 @@
     </Reference>
   </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="powershell $(ProjectDir)PostBuild.ps1 -OutputSrcDir $(SolutionDir)Build/$(Configuration)/$(TargetFramework) -SolutionDir $(SolutionDir) -Configuration $(Configuration)" />
+    <Exec Command="powershell $(ProjectDir)PostBuild.ps1 -OutputSrcDir $(SolutionDir)Build/$(Configuration)/$(TargetFramework) -AppBinDir $(SolutionDir)Build/$(Configuration)/net10.0-windows/bin -SolutionDir $(SolutionDir) -Configuration $(Configuration)" />
   </Target>
 </Project>

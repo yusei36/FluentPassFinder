@@ -20,25 +20,18 @@ namespace FluentPassFinder
     {
         protected override void OnStartup(StartupEventArgs e)
         {
-            if (e.Args != null && e.Args.Any() && e.Args[0].Equals("-standalone", StringComparison.InvariantCultureIgnoreCase))
+            if (e.Args == null || e.Args.Length == 0 || string.IsNullOrEmpty(e.Args[0]))
             {
-                MessageBox.Show("Standalone mode isn't implemented.", "Error", MessageBoxButton.OK);
-                Shutdown(1);
-                return;
-            }
-
-            var stackTrace = Environment.StackTrace;
-            if (!stackTrace.EndsWith("System.Threading.ThreadHelper.ThreadStart()", StringComparison.InvariantCultureIgnoreCase))
-            { 
-                MessageBox.Show("Can't be run standalone.", "Error", MessageBoxButton.OK);
+                MessageBox.Show("This application is launched by the FluentPassFinder KeePass plugin.", "Error", MessageBoxButton.OK);
                 Shutdown(1);
                 return;
             }
 
             base.OnStartup(e);
+            Init(e.Args[0]);
         }
 
-        public void Init(string pipeName)
+        private void Init(string pipeName)
         {
             if (string.IsNullOrEmpty(pipeName))
                 throw new ArgumentNullException(nameof(pipeName));

@@ -1,19 +1,17 @@
-using FluentPassFinder.Contracts.Public;
 using FluentPassFinderPlugin.Ipc;
 using KeePass.Plugins;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 
 namespace FluentPassFinderPlugin
 {
     public sealed class FluentPassFinderPluginExt : Plugin
     {
         private const string applicationExeName = "FluentPassFinder.exe";
-        private Thread appThread;
-        private IAppProxy appProxy;
+        private Process appProcess;
         private PipeServer pipeServer;
 
         public override bool Initialize(IPluginHost host)
@@ -26,8 +24,7 @@ namespace FluentPassFinderPlugin
             pipeServer = new PipeServer(pipeName, handler);
             pipeServer.Start();
 
-            appProxy = LoadAppProxy();
-            appThread = StartAppAsSeperateThread(appProxy, pipeName);
+            appProcess = Process.Start(FindAppExePath(), pipeName);
 
             return true;
         }
@@ -36,8 +33,8 @@ namespace FluentPassFinderPlugin
         {
             try
             {
-                appProxy?.Shutdown();
-                appThread?.Abort();
+                if (appProcess != null && !appProcess.HasExited)
+                    appProcess.Kill();
             }
             catch (Exception) { }
 
@@ -46,7 +43,7 @@ namespace FluentPassFinderPlugin
             base.Terminate();
         }
 
-        private IAppProxy LoadAppProxy()
+        private string FindAppExePath()
         {
             var pluginAssembly = Assembly.GetAssembly(typeof(FluentPassFinderPluginExt));
             var fileInfo = new FileInfo(pluginAssembly.Location);
@@ -55,26 +52,7 @@ namespace FluentPassFinderPlugin
             if (!files.Any())
                 throw new Exception($"{applicationExeName} was not found.");
 
-            var appAssembly = Assembly.LoadFrom(files[0]);
-            foreach (Type type in appAssembly.GetTypes())
-            {
-                if (type.GetInterfaces().Contains(typeof(IAppProxy)) && !type.IsAbstract)
-                    return (IAppProxy)type.InvokeMember(null, BindingFlags.CreateInstance, null, null, null);
-            }
-
-            throw new Exception($"No implementation of {nameof(IAppProxy)} was found.");
-        }
-
-        private static Thread StartAppAsSeperateThread(IAppProxy appProxy, string pipeName)
-        {
-            var appThread = new Thread(appProxy.Main);
-            appThread.SetApartmentState(ApartmentState.STA);
-            appThread.Priority = ThreadPriority.Highest;
-            appThread.Start();
-
-            appProxy.WaitForAppCreation();
-            appProxy.Init(pipeName);
-            return appThread;
+            return files[0];
         }
     }
 }
