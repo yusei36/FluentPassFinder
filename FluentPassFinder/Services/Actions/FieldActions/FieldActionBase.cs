@@ -1,4 +1,4 @@
-﻿using FluentPassFinder.Contracts;
+using FluentPassFinder.Contracts;
 using FluentPassFinder.Contracts.Public;
 
 namespace FluentPassFinder.Services.Actions.FieldActions
@@ -15,15 +15,10 @@ namespace FluentPassFinder.Services.Actions.FieldActions
 
         public override bool CanRunAction(EntrySearchResult searchResult)
         {
-            var protectedString = searchResult.Entry.Strings.GetSafe(FieldName);
+            if (!searchResult.Entry.Fields.TryGetValue(FieldName, out var field))
+                return false;
 
-            // don't read protected strings to prevent having the value in memory
-            if (protectedString.IsProtected)
-            {
-                return true;
-            }
-
-            return !string.IsNullOrWhiteSpace(protectedString.ReadString());
+            return field.HasValue;
         }
     }
 }

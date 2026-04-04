@@ -1,4 +1,4 @@
-﻿using FluentPassFinder.Contracts;
+using FluentPassFinder.Contracts;
 using FluentPassFinder.Contracts.Public;
 using System.Collections.ObjectModel;
 
@@ -30,7 +30,8 @@ namespace FluentPassFinder.ViewModels
 
         [ObservableProperty]
         private IAction selectedContextAction;
-        public Boolean IsAnyDatabaseOpen => pluginProxy.Databases.Any();
+
+        public bool IsAnyDatabaseOpen => pluginProxy.IsAnyDatabaseOpen;
 
         public SearchWindowViewModel(IPluginProxy pluginProxy, IEntrySearchService entrySearchService, IEntryActionService entryActionService)
         {
@@ -43,18 +44,11 @@ namespace FluentPassFinder.ViewModels
         private void EnterAction(EntryViewModel entryViewModel)
         {
             var entry = entryViewModel ?? SelectedEntry;
-            if (entry == null)
-            {
-                return;
-            }
+            if (entry == null) return;
 
             if (IsContextMenuOpen)
             {
-                if (SelectedContextAction == null)
-                {
-                    return;
-                }
-
+                if (SelectedContextAction == null) return;
                 entryActionService.RunAction(entry.SearchResult, SelectedContextAction);
             }
             else
@@ -68,11 +62,7 @@ namespace FluentPassFinder.ViewModels
         private void ShiftEnterAction(EntryViewModel entryViewModel)
         {
             var entry = entryViewModel ?? SelectedEntry;
-            if (entry == null)
-            {
-                return;
-            }
-
+            if (entry == null) return;
             entryActionService.RunAction(entry.SearchResult, pluginProxy.Settings.ShiftAction);
         }
 
@@ -80,11 +70,7 @@ namespace FluentPassFinder.ViewModels
         private void ControlEnterAction(EntryViewModel entryViewModel)
         {
             var entry = entryViewModel ?? SelectedEntry;
-            if (entry == null)
-            {
-                return;
-            }
-
+            if (entry == null) return;
             entryActionService.RunAction(entry.SearchResult, pluginProxy.Settings.ControlAction);
         }
 
@@ -92,22 +78,14 @@ namespace FluentPassFinder.ViewModels
         private void AltEnterAction(EntryViewModel entryViewModel)
         {
             var entry = entryViewModel ?? SelectedEntry;
-            if (entry == null)
-            {
-                return;
-            }
-
+            if (entry == null) return;
             entryActionService.RunAction(entry.SearchResult, pluginProxy.Settings.AltAction);
         }
 
         [RelayCommand]
         private void RunAction(string actionType)
         {
-            if (SelectedEntry == null)
-            {
-                return;
-            }
-
+            if (SelectedEntry == null) return;
             entryActionService.RunAction(SelectedEntry.SearchResult, actionType);
         }
 
@@ -115,93 +93,62 @@ namespace FluentPassFinder.ViewModels
         private void NavigateListDown()
         {
             if (IsContextMenuOpen)
-            {
-                NavigateCollcetionDown(ContextActions, SelectedContextAction, (x) => SelectedContextAction = x);
-            }
+                NavigateCollectionDown(ContextActions, SelectedContextAction, x => SelectedContextAction = x);
             else
-            {
-                NavigateCollcetionDown(Entries, SelectedEntry, (x) => SelectedEntry = x);
-            }
+                NavigateCollectionDown(Entries, SelectedEntry, x => SelectedEntry = x);
         }
 
         [RelayCommand]
         private void NavigateListUp()
         {
             if (IsContextMenuOpen)
-            {
-                NavigateCollcetionUp(ContextActions, SelectedContextAction, (x) => SelectedContextAction = x);
-            }
+                NavigateCollectionUp(ContextActions, SelectedContextAction, x => SelectedContextAction = x);
             else
-            {
-                NavigateCollcetionUp(Entries, SelectedEntry, (x) => SelectedEntry = x);
-            }
+                NavigateCollectionUp(Entries, SelectedEntry, x => SelectedEntry = x);
         }
 
         partial void OnSearchTextChanged(string searchQuery)
         {
-            if (IsContextMenuOpen)
-            {
-                return;
-            }
-
-            var dbs = pluginProxy.Databases;
+            if (IsContextMenuOpen) return;
 
             SelectedEntry = null;
             Entries.Clear();
 
-            if (dbs != null)
-            {
-                var entrySearchResults = entrySearchService.SearchEntries(dbs, searchQuery, pluginProxy.Settings);
-                foreach (var entrySearchResult in entrySearchResults)
-                {
-                    Entries.Add(new EntryViewModel(entrySearchResult, pluginProxy));
-                }
+            if (!pluginProxy.IsAnyDatabaseOpen) return;
 
-                SelectedEntry = Entries.FirstOrDefault();
-            }
+            foreach (var result in entrySearchService.SearchEntries(searchQuery))
+                Entries.Add(new EntryViewModel(result));
+
+            SelectedEntry = Entries.Count > 0 ? Entries[0] : null;
         }
 
         partial void OnSelectedEntryChanged(EntryViewModel oldValue, EntryViewModel newValue)
         {
             if (newValue == null)
             {
-                ContextActions.Clear();
+                ContextActions?.Clear();
                 SelectedContextAction = null;
                 return;
             }
 
             ContextActions = new ObservableCollection<IAction>(entryActionService.GetActionsForEntry(newValue.SearchResult, false));
-            SelectedContextAction = ContextActions.First();
+            SelectedContextAction = ContextActions.Count > 0 ? ContextActions[0] : null;
         }
 
-        private static void NavigateCollcetionDown<T>(ObservableCollection<T> collection, T selectedItem, Action<T> udpateSelectedItem)
+        private static void NavigateCollectionDown<T>(ObservableCollection<T> collection, T selectedItem, System.Action<T> update)
         {
-            if (selectedItem == null)
-            {
-                return;
-            }
-
-            var selectedIndex = collection.IndexOf(selectedItem);
-            var nextItemIndex = selectedIndex + 1;
-            if (nextItemIndex < collection.Count)
-            {
-                udpateSelectedItem(collection[nextItemIndex]);
-            }
+            if (selectedItem == null) return;
+            var idx = collection.IndexOf(selectedItem);
+            if (idx + 1 < collection.Count)
+                update(collection[idx + 1]);
         }
 
-        private static void NavigateCollcetionUp<T>(ObservableCollection<T> collection, T selectedItem, Action<T> udpateSelectedItem)
+        private static void NavigateCollectionUp<T>(ObservableCollection<T> collection, T selectedItem, System.Action<T> update)
         {
-            if (selectedItem == null)
-            {
-                return;
-            }
-
-            var selectedIndex = collection.IndexOf(selectedItem);
-            var previousItemIndex = selectedIndex - 1;
-            if (previousItemIndex >= 0)
-            {
-                udpateSelectedItem(collection[previousItemIndex]);
-            }
+            if (selectedItem == null) return;
+            var idx = collection.IndexOf(selectedItem);
+            if (idx - 1 >= 0)
+                update(collection[idx - 1]);
         }
     }
 }

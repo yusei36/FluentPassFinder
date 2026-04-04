@@ -1,13 +1,11 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	<RootNamespace>FluentPassFinder.Contracts.Public</RootNamespace>
+    <RootNamespace>FluentPassFinder.Contracts.Public</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="KeePass">
-      <HintPath>..\Build\KeePass\KeePass.exe</HintPath>
-    </Reference>
-    <Reference Include="WindowsBase" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
+
 </Project>

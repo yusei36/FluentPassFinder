@@ -1,4 +1,5 @@
 ﻿using FluentPassFinder.Contracts;
+using FluentPassFinder.Ipc;
 using FluentPassFinder.Services;
 using FluentPassFinder.ViewModels;
 using FluentPassFinder.Views;
@@ -37,12 +38,13 @@ namespace FluentPassFinder
             base.OnStartup(e);
         }
 
-        public void Init(IPluginProxy interactionManager)
+        public void Init(string pipeName)
         {
-            if (interactionManager == null)
-            {
-                throw new ArgumentNullException(nameof(interactionManager));
-            }
+            if (string.IsNullOrEmpty(pipeName))
+                throw new ArgumentNullException(nameof(pipeName));
+
+            var pipeClient = new PipeClient(pipeName);
+            pipeClient.Connect();
 
             Container = new Container();
             Container.Register<SearchWindowViewModel, SearchWindowViewModel>();
@@ -55,13 +57,13 @@ namespace FluentPassFinder
             Container.Collection.Register<IStaticAction>(Assembly.GetAssembly(typeof(App)));
             Container.Collection.Register<IFieldAction>(Assembly.GetAssembly(typeof(App)));
 
-            Container.RegisterInstance(interactionManager);
+            Container.RegisterInstance<IPluginProxy>(pipeClient);
 
             var viewModel = Container.GetInstance<SearchWindowViewModel>();
             searchWindow = new SearchWindow(viewModel);
             MainWindow = searchWindow;
 
-            var settings = interactionManager.Settings;
+            var settings = pipeClient.Settings;
             var converter = new KeyGestureConverter();
 
             HotkeyManager.Current.AddOrReplace(nameof(Settings.GlobalHotkeyPrimaryScreen), (KeyGesture)converter.ConvertFromInvariantString(settings.GlobalHotkeyPrimaryScreen), ShowSearchWindow);

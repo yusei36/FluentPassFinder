@@ -1,5 +1,8 @@
-﻿using FluentPassFinder.Contracts;
+using FluentPassFinder.Contracts;
 using FluentPassFinder.Contracts.Public;
+using FluentPassFinder.Extensions;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace FluentPassFinder.Services.Actions.StaticActions
 {
@@ -12,10 +15,8 @@ namespace FluentPassFinder.Services.Actions.StaticActions
         public override void RunAction(EntrySearchResult searchResult)
         {
             searchWindowInteractionService.Close();
-
             var totp = GenerateTotp(searchResult);
-
-            pluginProxy.CopyToClipboard(totp, true, true, searchResult.Entry);
+            pluginProxy.CopyToClipboard(totp, searchResult.Entry.Uuid, searchResult.Entry.DatabaseUuid);
         }
     }
 
@@ -29,10 +30,8 @@ namespace FluentPassFinder.Services.Actions.StaticActions
         {
             searchWindowInteractionService.Close();
             Task.Delay(100).Wait();
-
             var totp = GenerateTotp(searchResult);
-
-            pluginProxy.PerformAutoType(searchResult.Entry, searchResult.Database, totp + Consts.AutoTypeEnterPlaceholder);
+            pluginProxy.PerformAutoType(searchResult.Entry.Uuid, searchResult.Entry.DatabaseUuid, totp + Consts.AutoTypeEnterPlaceholder);
         }
     }
 
@@ -47,14 +46,23 @@ namespace FluentPassFinder.Services.Actions.StaticActions
         {
             string totp = null;
             var pluginTotpPlaceholder = Settings.PluginTotpPlaceholder;
+
             if (CanGeneratePluginTotp(searchResult))
             {
-                totp = pluginProxy.GetPlaceholderValue(pluginTotpPlaceholder, searchResult.Entry, searchResult.Database, true);
+                totp = pluginProxy.GetPlaceholderValue(
+                    pluginTotpPlaceholder,
+                    searchResult.Entry.Uuid,
+                    searchResult.Entry.DatabaseUuid,
+                    resolveAll: true);
             }
 
             if ((string.IsNullOrEmpty(totp) || totp == pluginTotpPlaceholder) && CanGenerateNativeTotp(searchResult))
             {
-                totp = pluginProxy.GetPlaceholderValue(Consts.NativeTotpPlacholder, searchResult.Entry, searchResult.Database, true);
+                totp = pluginProxy.GetPlaceholderValue(
+                    Consts.NativeTotpPlacholder,
+                    searchResult.Entry.Uuid,
+                    searchResult.Entry.DatabaseUuid,
+                    resolveAll: true);
             }
 
             return totp;
@@ -63,28 +71,22 @@ namespace FluentPassFinder.Services.Actions.StaticActions
         private bool CanGeneratePluginTotp(EntrySearchResult searchResult)
         {
             var pluginTotpPlaceholder = Settings.PluginTotpPlaceholder;
-            if (pluginTotpPlaceholder != null)
-            {
-                var pluginTotpFieldConfig = Settings.PluginTotpFieldConfig;
-                if (pluginTotpFieldConfig == null)
-                {
-                    return true;
-                }
-                else
-                {
-                    var configuredField = pluginProxy.GetStringFromCustomConfig(pluginTotpFieldConfig, null);
-                    if (!string.IsNullOrEmpty(configuredField) && searchResult.Entry.Strings.GetKeys().Contains(configuredField))
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
+            if (pluginTotpPlaceholder == null)
+                return false;
+
+            var pluginTotpFieldConfig = Settings.PluginTotpFieldConfig;
+            if (pluginTotpFieldConfig == null)
+                return true;
+
+            var configuredField = pluginProxy.GetStringFromCustomConfig(pluginTotpFieldConfig, null);
+            return !string.IsNullOrEmpty(configuredField)
+                   && searchResult.Entry.Fields.ContainsKey(configuredField);
         }
 
-        private bool CanGenerateNativeTotp(EntrySearchResult searchResult)
+        private static bool CanGenerateNativeTotp(EntrySearchResult searchResult)
         {
-            return searchResult.Entry.Strings.GetKeys().Any(x => x.StartsWith(Consts.NativeTotpFieldPrefix, StringComparison.InvariantCultureIgnoreCase));
+            return searchResult.Entry.Fields.Keys
+                .Any(k => k.StartsWith(Consts.NativeTotpFieldPrefix, System.StringComparison.InvariantCultureIgnoreCase));
         }
     }
 }

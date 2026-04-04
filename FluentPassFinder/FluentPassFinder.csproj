@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="NHotkey.Wpf" Version="2.1.1" />
     <PackageReference Include="SimpleInjector" Version="5.4.1" />
     <PackageReference Include="WPF-UI" Version="3.0.0-preview.6" />

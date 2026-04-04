@@ -1,4 +1,4 @@
-﻿using FluentPassFinder.Contracts;
+using FluentPassFinder.Contracts;
 using FluentPassFinder.Contracts.Public;
 
 namespace FluentPassFinder.Services.Actions.StaticActions
@@ -12,7 +12,7 @@ namespace FluentPassFinder.Services.Actions.StaticActions
         public override void RunAction(EntrySearchResult searchResult)
         {
             searchWindowInteractionService.Close();
-            pluginProxy.PerformAutoType(searchResult.Entry, searchResult.Database);
+            pluginProxy.PerformAutoType(searchResult.Entry.Uuid, searchResult.Entry.DatabaseUuid);
         }
     }
 }

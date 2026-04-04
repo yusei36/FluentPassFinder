@@ -1,4 +1,4 @@
-﻿using FluentPassFinder.Contracts;
+using FluentPassFinder.Contracts;
 using FluentPassFinder.Contracts.Public;
 
 namespace FluentPassFinder.Services.Actions.FieldActions
@@ -12,8 +12,7 @@ namespace FluentPassFinder.Services.Actions.FieldActions
         public override void RunAction(EntrySearchResult searchResult)
         {
             searchWindowInteractionService.Close();
-            var fieldValue = pluginProxy.GetPlaceholderValue(searchResult.Entry.Strings.ReadSafe(FieldName), searchResult.Entry, searchResult.Database, false);
-            pluginProxy.CopyToClipboard(fieldValue, true, true, searchResult.Entry);
+            pluginProxy.CopyField(searchResult.Entry.Uuid, searchResult.Entry.DatabaseUuid, FieldName);
         }
     }
 }

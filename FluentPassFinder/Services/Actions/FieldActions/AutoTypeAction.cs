@@ -1,5 +1,6 @@
-﻿using FluentPassFinder.Contracts;
+using FluentPassFinder.Contracts;
 using FluentPassFinder.Contracts.Public;
+using System.Threading.Tasks;
 
 namespace FluentPassFinder.Services.Actions.FieldActions
 {
@@ -13,9 +14,7 @@ namespace FluentPassFinder.Services.Actions.FieldActions
         {
             searchWindowInteractionService.Close();
             Task.Delay(100).Wait();
-
-            var fieldValue = pluginProxy.GetPlaceholderValue(searchResult.Entry.Strings.ReadSafe(FieldName), searchResult.Entry, searchResult.Database, false);
-            pluginProxy.PerformAutoType(searchResult.Entry, searchResult.Database, fieldValue + Consts.AutoTypeEnterPlaceholder);
+            pluginProxy.AutoTypeField(searchResult.Entry.Uuid, searchResult.Entry.DatabaseUuid, FieldName);
         }
     }
 }

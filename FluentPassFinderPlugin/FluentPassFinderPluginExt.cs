@@ -1,4 +1,5 @@
-﻿using FluentPassFinder.Contracts.Public;
+using FluentPassFinder.Contracts.Public;
+using FluentPassFinderPlugin.Ipc;
 using KeePass.Plugins;
 using System;
 using System.IO;
@@ -12,78 +13,67 @@ namespace FluentPassFinderPlugin
     {
         private const string applicationExeName = "FluentPassFinder.exe";
         private Thread appThread;
-        private IPluginProxy pluginProxy;
         private IAppProxy appProxy;
+        private PipeServer pipeServer;
 
         public override bool Initialize(IPluginHost host)
         {
             if (host == null) return false;
-            var pluginHost = host;
-            pluginProxy = new PluginProxy(pluginHost);
+
+            var handler = new PluginRequestHandler(host);
+            var pipeName = "FluentPassFinder_" + Guid.NewGuid().ToString("N");
+
+            pipeServer = new PipeServer(pipeName, handler);
+            pipeServer.Start();
 
             appProxy = LoadAppProxy();
-            appThread = StartAppAsSeperateThread(pluginProxy, appProxy);
-
-            pluginHost.MainWindow.DocumentManager.GetOpenDatabases();
+            appThread = StartAppAsSeperateThread(appProxy, pipeName);
 
             return true;
-        }
-
-        private IAppProxy LoadAppProxy()
-        {
-            IAppProxy appProxy = null;
-            var pluginAssembly = Assembly.GetAssembly(typeof(FluentPassFinderPluginExt));
-            var pluginFileLocation = pluginAssembly.Location;
-            var fileInfo = new FileInfo(pluginFileLocation);
-            var files = Directory.GetFiles(fileInfo.Directory.FullName, applicationExeName, SearchOption.AllDirectories);
-            if (files.Any())
-            {
-                var exeFilePath = files[0];
-                var appAssembly = Assembly.LoadFrom(exeFilePath);
-                foreach (Type type in appAssembly.GetTypes())
-                {
-                    if (type.GetInterfaces().Contains(typeof(IAppProxy)) && type.IsAbstract == false)
-                    {
-                        appProxy = (IAppProxy)type.InvokeMember(null, BindingFlags.CreateInstance, null, null, null);
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                throw new Exception($"{applicationExeName} was not found.");
-            }
-
-            if (appProxy == null)
-            {
-                throw new Exception($"No implementation of {nameof(IAppProxy)} was found.");
-            }
-
-            return appProxy;
         }
 
         public override void Terminate()
         {
             try
             {
-                appProxy.Shutdown();
+                appProxy?.Shutdown();
                 appThread?.Abort();
             }
-            catch (Exception)
-            {
-            }
+            catch (Exception) { }
+
+            pipeServer?.Dispose();
+
             base.Terminate();
         }
 
-        private static Thread StartAppAsSeperateThread(IPluginProxy pluginHostProxy, IAppProxy appHost)
+        private IAppProxy LoadAppProxy()
         {
-            var appThread = new Thread(appHost.Main);
+            var pluginAssembly = Assembly.GetAssembly(typeof(FluentPassFinderPluginExt));
+            var fileInfo = new FileInfo(pluginAssembly.Location);
+            var files = Directory.GetFiles(fileInfo.Directory.FullName, applicationExeName, SearchOption.AllDirectories);
+
+            if (!files.Any())
+                throw new Exception($"{applicationExeName} was not found.");
+
+            var appAssembly = Assembly.LoadFrom(files[0]);
+            foreach (Type type in appAssembly.GetTypes())
+            {
+                if (type.GetInterfaces().Contains(typeof(IAppProxy)) && !type.IsAbstract)
+                    return (IAppProxy)type.InvokeMember(null, BindingFlags.CreateInstance, null, null, null);
+            }
+
+            throw new Exception($"No implementation of {nameof(IAppProxy)} was found.");
+        }
+
+        private static Thread StartAppAsSeperateThread(IAppProxy appProxy, string pipeName)
+        {
+            var appThread = new Thread(appProxy.Main);
             appThread.SetApartmentState(ApartmentState.STA);
             appThread.Priority = ThreadPriority.Highest;
             appThread.Start();
 
-            appHost.WaitForAppCreation();
-            appHost.Init(pluginHostProxy);
+            appProxy.WaitForAppCreation();
+            appProxy.Init(pipeName);
             return appThread;
         }
     }
