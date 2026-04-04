@@ -68,12 +68,12 @@ namespace FluentPassFinder.Services
         private IEnumerable<string> GetFields(EntrySearchResult searchResult, bool includeHiddenActions)
         {
             var settings = pluginProxy.Settings;
-            var fields = new List<string>(ActionTypeConsts.StandardFieldNames);
+            var fields = new List<string>(Consts.StandardFieldNames);
 
             if (includeHiddenActions || settings.ShowActionsForCustomFields)
             {
                 var customFields = searchResult.Entry.Fields.Keys
-                    .Where(fieldName => !ActionTypeConsts.IsStandardField(fieldName));
+                    .Where(fieldName => !Consts.IsStandardField(fieldName));
                 fields.AddRange(customFields);
             }
 

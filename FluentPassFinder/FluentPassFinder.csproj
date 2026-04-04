@@ -20,10 +20,4 @@
     <ProjectReference Include="..\FluentPassFinderContracts\FluentPassFinderContracts.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="KeePass">
-      <HintPath>..\Build\KeePass\KeePass.exe</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>
