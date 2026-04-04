@@ -1,11 +1,11 @@
 namespace FluentPassFinder.Contracts.Public.Ipc
 {
-    public class SearchEntriesRequest : PipeEnvelope
+    public class SearchEntriesRequest : PipeRequest
     {
         public string Query { get; set; }
     }
 
-    public class GetPlaceholderValueRequest : PipeEnvelope
+    public class GetPlaceholderValueRequest : PipeRequest
     {
         public string Placeholder { get; set; }
         public string EntryUuid { get; set; }
@@ -13,51 +13,51 @@ namespace FluentPassFinder.Contracts.Public.Ipc
         public bool ResolveAll { get; set; }
     }
 
-    public class GetStringFromCustomConfigRequest : PipeEnvelope
+    public class GetStringFromCustomConfigRequest : PipeRequest
     {
         public string ConfigId { get; set; }
         public string DefaultValue { get; set; }
     }
 
-    public class GetSettingsRequest : PipeEnvelope { }
+    public class GetSettingsRequest : PipeRequest { }
 
-    public class IsAnyDatabaseOpenRequest : PipeEnvelope { }
+    public class IsAnyDatabaseOpenRequest : PipeRequest { }
 
-    public class CopyFieldRequest : PipeEnvelope
+    public class CopyFieldRequest : PipeRequest
     {
         public string EntryUuid { get; set; }
         public string DatabaseUuid { get; set; }
         public string FieldName { get; set; }
     }
 
-    public class CopyToClipboardRequest : PipeEnvelope
+    public class CopyToClipboardRequest : PipeRequest
     {
         public string Value { get; set; }
         public string EntryUuid { get; set; }
         public string DatabaseUuid { get; set; }
     }
 
-    public class AutoTypeFieldRequest : PipeEnvelope
+    public class AutoTypeFieldRequest : PipeRequest
     {
         public string EntryUuid { get; set; }
         public string DatabaseUuid { get; set; }
         public string FieldName { get; set; }
     }
 
-    public class PerformAutoTypeRequest : PipeEnvelope
+    public class PerformAutoTypeRequest : PipeRequest
     {
         public string EntryUuid { get; set; }
         public string DatabaseUuid { get; set; }
         public string Sequence { get; set; }
     }
 
-    public class OpenEntryUrlRequest : PipeEnvelope
+    public class OpenEntryUrlRequest : PipeRequest
     {
         public string EntryUuid { get; set; }
         public string DatabaseUuid { get; set; }
     }
 
-    public class SelectEntryRequest : PipeEnvelope
+    public class SelectEntryRequest : PipeRequest
     {
         public string EntryUuid { get; set; }
         public string DatabaseUuid { get; set; }

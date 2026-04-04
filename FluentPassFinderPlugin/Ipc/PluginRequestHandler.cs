@@ -43,40 +43,40 @@ namespace FluentPassFinderPlugin.Ipc
 
         /// <summary>
         /// Dispatch a raw JSON request string to the appropriate handler.
-        /// The <see cref="PipeEnvelope.Type"/> field is read first; then the JSON is
+        /// The <see cref="PipeRequest.Type"/> field is read first; then the JSON is
         /// deserialized again to the exact concrete request type — no JObject wrapper needed.
         /// </summary>
-        public PipeEnvelope Handle(string requestJson)
+        public PipeResponse Handle(string requestJson)
         {
             // Peek at the base class to read Id and Type without full deserialization
-            var peek = PipeProtocol.Deserialize<PipeEnvelope>(requestJson);
+            var peek = PipeProtocol.DeserializeRequest<PipeRequest>(requestJson);
 
             try
             {
                 switch (peek.Type)
                 {
                     case PipeRequestTypes.SearchEntries:
-                        return HandleSearchEntries(PipeProtocol.Deserialize<SearchEntriesRequest>(requestJson));
+                        return HandleSearchEntries(PipeProtocol.DeserializeRequest<SearchEntriesRequest>(requestJson));
                     case PipeRequestTypes.GetPlaceholderValue:
-                        return HandleGetPlaceholderValue(PipeProtocol.Deserialize<GetPlaceholderValueRequest>(requestJson));
+                        return HandleGetPlaceholderValue(PipeProtocol.DeserializeRequest<GetPlaceholderValueRequest>(requestJson));
                     case PipeRequestTypes.GetStringFromCustomConfig:
-                        return HandleGetStringFromCustomConfig(PipeProtocol.Deserialize<GetStringFromCustomConfigRequest>(requestJson));
+                        return HandleGetStringFromCustomConfig(PipeProtocol.DeserializeRequest<GetStringFromCustomConfigRequest>(requestJson));
                     case PipeRequestTypes.GetSettings:
                         return new GetSettingsResponse { Id = peek.Id, Success = true, Settings = settings };
                     case PipeRequestTypes.IsAnyDatabaseOpen:
                         return HandleIsAnyDatabaseOpen(peek.Id);
                     case PipeRequestTypes.CopyField:
-                        return HandleCopyField(PipeProtocol.Deserialize<CopyFieldRequest>(requestJson));
+                        return HandleCopyField(PipeProtocol.DeserializeRequest<CopyFieldRequest>(requestJson));
                     case PipeRequestTypes.CopyToClipboard:
-                        return HandleCopyToClipboard(PipeProtocol.Deserialize<CopyToClipboardRequest>(requestJson));
+                        return HandleCopyToClipboard(PipeProtocol.DeserializeRequest<CopyToClipboardRequest>(requestJson));
                     case PipeRequestTypes.AutoTypeField:
-                        return HandleAutoTypeField(PipeProtocol.Deserialize<AutoTypeFieldRequest>(requestJson));
+                        return HandleAutoTypeField(PipeProtocol.DeserializeRequest<AutoTypeFieldRequest>(requestJson));
                     case PipeRequestTypes.PerformAutoType:
-                        return HandlePerformAutoType(PipeProtocol.Deserialize<PerformAutoTypeRequest>(requestJson));
+                        return HandlePerformAutoType(PipeProtocol.DeserializeRequest<PerformAutoTypeRequest>(requestJson));
                     case PipeRequestTypes.OpenEntryUrl:
-                        return HandleOpenEntryUrl(PipeProtocol.Deserialize<OpenEntryUrlRequest>(requestJson));
+                        return HandleOpenEntryUrl(PipeProtocol.DeserializeRequest<OpenEntryUrlRequest>(requestJson));
                     case PipeRequestTypes.SelectEntry:
-                        return HandleSelectEntry(PipeProtocol.Deserialize<SelectEntryRequest>(requestJson));
+                        return HandleSelectEntry(PipeProtocol.DeserializeRequest<SelectEntryRequest>(requestJson));
                     default:
                         return Ack(peek.Id, success: false, error: $"Unknown request type: {peek.Type}");
                 }
@@ -89,7 +89,7 @@ namespace FluentPassFinderPlugin.Ipc
 
         // ── Search ────────────────────────────────────────────────────────────────
 
-        private PipeEnvelope HandleSearchEntries(SearchEntriesRequest req)
+        private PipeResponse HandleSearchEntries(SearchEntriesRequest req)
         {
             var entries = pluginHostDispatcher.Invoke(() =>
             {
@@ -124,7 +124,7 @@ namespace FluentPassFinderPlugin.Ipc
 
         // ── Actions ───────────────────────────────────────────────────────────────
 
-        private PipeEnvelope HandleGetPlaceholderValue(GetPlaceholderValueRequest req)
+        private PipeResponse HandleGetPlaceholderValue(GetPlaceholderValueRequest req)
         {
             var value = pluginHostDispatcher.Invoke(() =>
             {
@@ -136,21 +136,21 @@ namespace FluentPassFinderPlugin.Ipc
             return new GetPlaceholderValueResponse { Id = req.Id, Success = true, Value = value };
         }
 
-        private PipeEnvelope HandleGetStringFromCustomConfig(GetStringFromCustomConfigRequest req)
+        private PipeResponse HandleGetStringFromCustomConfig(GetStringFromCustomConfigRequest req)
         {
             var value = pluginHostDispatcher.Invoke(() =>
                 pluginHost.CustomConfig.GetString(req.ConfigId, req.DefaultValue));
             return new GetStringFromCustomConfigResponse { Id = req.Id, Success = true, Value = value };
         }
 
-        private PipeEnvelope HandleIsAnyDatabaseOpen(string requestId)
+        private PipeResponse HandleIsAnyDatabaseOpen(string requestId)
         {
             var isOpen = pluginHostDispatcher.Invoke(() =>
                 mainWindow.DocumentManager.GetOpenDatabases().Any());
             return new IsAnyDatabaseOpenResponse { Id = requestId, Success = true, IsOpen = isOpen };
         }
 
-        private PipeEnvelope HandleCopyField(CopyFieldRequest req)
+        private PipeResponse HandleCopyField(CopyFieldRequest req)
         {
             pluginHostDispatcher.Invoke(() =>
             {
@@ -167,7 +167,7 @@ namespace FluentPassFinderPlugin.Ipc
             return Ack(req.Id);
         }
 
-        private PipeEnvelope HandleCopyToClipboard(CopyToClipboardRequest req)
+        private PipeResponse HandleCopyToClipboard(CopyToClipboardRequest req)
         {
             pluginHostDispatcher.Invoke(() =>
             {
@@ -180,7 +180,7 @@ namespace FluentPassFinderPlugin.Ipc
             return Ack(req.Id);
         }
 
-        private PipeEnvelope HandleAutoTypeField(AutoTypeFieldRequest req)
+        private PipeResponse HandleAutoTypeField(AutoTypeFieldRequest req)
         {
             pluginHostDispatcher.Invoke(() =>
             {
@@ -196,7 +196,7 @@ namespace FluentPassFinderPlugin.Ipc
             return Ack(req.Id);
         }
 
-        private PipeEnvelope HandlePerformAutoType(PerformAutoTypeRequest req)
+        private PipeResponse HandlePerformAutoType(PerformAutoTypeRequest req)
         {
             pluginHostDispatcher.Invoke(() =>
             {
@@ -207,7 +207,7 @@ namespace FluentPassFinderPlugin.Ipc
             return Ack(req.Id);
         }
 
-        private PipeEnvelope HandleOpenEntryUrl(OpenEntryUrlRequest req)
+        private PipeResponse HandleOpenEntryUrl(OpenEntryUrlRequest req)
         {
             pluginHostDispatcher.Invoke(() =>
             {
@@ -217,7 +217,7 @@ namespace FluentPassFinderPlugin.Ipc
             return Ack(req.Id);
         }
 
-        private PipeEnvelope HandleSelectEntry(SelectEntryRequest req)
+        private PipeResponse HandleSelectEntry(SelectEntryRequest req)
         {
             pluginHostDispatcher.Invoke(() =>
             {
@@ -401,7 +401,7 @@ namespace FluentPassFinderPlugin.Ipc
             return Settings.DefaultSettings;
         }
 
-        private static PipeEnvelope Ack(string id, bool success = true, string error = null) =>
-            new PipeEnvelope { Id = id, Success = success, Error = error };
+        private static PipeResponse Ack(string id, bool success = true, string error = null) =>
+            new PipeResponse { Id = id, Success = success, Error = error };
     }
 }

@@ -1,15 +1,16 @@
 namespace FluentPassFinder.Contracts.Public.Ipc
 {
-    /// <summary>
-    /// Base class for every message sent over the named pipe.
-    /// Requests inherit and add their parameters; responses inherit and add their return values.
-    /// </summary>
-    public class PipeEnvelope
+    /// <summary>Base class for all pipe request messages.</summary>
+    public class PipeRequest
     {
         public string Id { get; set; }
         public string Type { get; set; }
+    }
 
-        // Populated on responses only
+    /// <summary>Base class for all pipe response messages.</summary>
+    public class PipeResponse
+    {
+        public string Id { get; set; }
         public bool Success { get; set; }
         public string Error { get; set; }
     }

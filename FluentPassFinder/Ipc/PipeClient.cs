@@ -138,30 +138,31 @@ namespace FluentPassFinder.Ipc
 
         /// <summary>Send a request and deserialize the response to the concrete type.</summary>
         private TRes Send<TReq, TRes>(TReq request)
-            where TReq : PipeEnvelope
-            where TRes : PipeEnvelope
+            where TReq : PipeRequest
+            where TRes : PipeResponse
         {
             var responseJson = Exchange(request);
-            var response = PipeProtocol.Deserialize<TRes>(responseJson);
+            var response = PipeProtocol.DeserializeResponse<TRes>(responseJson);
             if (!response.Success)
                 throw new InvalidOperationException(response.Error ?? "Pipe request failed.");
             return response;
         }
 
         /// <summary>Send a void request (no typed return value).</summary>
-        private void SendVoid<TReq>(TReq request) where TReq : PipeEnvelope
+        private void SendVoid<TReq>(TReq request)
+            where TReq : PipeRequest
         {
             var responseJson = Exchange(request);
-            var response = PipeProtocol.Deserialize<PipeEnvelope>(responseJson);
+            var response = PipeProtocol.DeserializeResponse<PipeResponse>(responseJson);
             if (!response.Success)
                 throw new InvalidOperationException(response.Error ?? "Pipe request failed.");
         }
 
-        private string Exchange(PipeEnvelope envelope)
+        private string Exchange(PipeRequest request)
         {
             lock (syncLock)
             {
-                PipeProtocol.WriteMessage(clientStream, envelope);
+                PipeProtocol.WriteRequest(clientStream, request);
                 return PipeProtocol.ReadJson(clientStream);
             }
         }

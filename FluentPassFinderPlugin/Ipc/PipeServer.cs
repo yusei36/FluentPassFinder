@@ -45,7 +45,7 @@ namespace FluentPassFinderPlugin.Ipc
                     if (json == null) break;
 
                     var response = handler.Handle(json);
-                    PipeProtocol.WriteMessage(serverStream, response);
+                    PipeProtocol.WriteResponse(serverStream, response);
                 }
             }
             catch (Exception)

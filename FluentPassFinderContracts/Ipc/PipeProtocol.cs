@@ -1,5 +1,4 @@
 using Newtonsoft.Json;
-using System;
 using System.IO;
 using System.IO.Pipes;
 using System.Text;
@@ -17,14 +16,18 @@ namespace FluentPassFinder.Contracts.Public.Ipc
         /// Serialize <paramref name="message"/> (using its runtime type) and write it
         /// length-prefixed to <paramref name="stream"/>.
         /// </summary>
-        public static void WriteMessage(PipeStream stream, PipeEnvelope message)
+        public static void WriteRequest(PipeStream stream, PipeRequest message)
         {
-            var json = JsonConvert.SerializeObject(message, message.GetType(), SerializerSettings);
-            var data = Encoding.UTF8.GetBytes(json);
-            var lengthBytes = BitConverter.GetBytes(data.Length);
-            stream.Write(lengthBytes, 0, 4);
-            stream.Write(data, 0, data.Length);
-            stream.Flush();
+            WriteRaw(stream, JsonConvert.SerializeObject(message, message.GetType(), SerializerSettings));
+        }
+
+        /// <summary>
+        /// Serialize <paramref name="message"/> (using its runtime type) and write it
+        /// length-prefixed to <paramref name="stream"/>.
+        /// </summary>
+        public static void WriteResponse(PipeStream stream, PipeResponse message)
+        {
+            WriteRaw(stream, JsonConvert.SerializeObject(message, message.GetType(), SerializerSettings));
         }
 
         /// <summary>Read one length-prefixed message and return the raw JSON string.</summary>
@@ -34,16 +37,31 @@ namespace FluentPassFinder.Contracts.Public.Ipc
             if (ReadExact(stream, lengthBytes, 4) != 4)
                 return null;
 
-            var length = BitConverter.ToInt32(lengthBytes, 0);
+            var length = System.BitConverter.ToInt32(lengthBytes, 0);
             var data = new byte[length];
             ReadExact(stream, data, length);
             return Encoding.UTF8.GetString(data);
         }
 
-        /// <summary>Deserialize a previously read JSON string to a concrete envelope type.</summary>
-        public static T Deserialize<T>(string json) where T : PipeEnvelope
+        /// <summary>Deserialize a previously read JSON string to a concrete request type.</summary>
+        public static T DeserializeRequest<T>(string json) where T : PipeRequest
         {
             return JsonConvert.DeserializeObject<T>(json, SerializerSettings);
+        }
+
+        /// <summary>Deserialize a previously read JSON string to a concrete response type.</summary>
+        public static T DeserializeResponse<T>(string json) where T : PipeResponse
+        {
+            return JsonConvert.DeserializeObject<T>(json, SerializerSettings);
+        }
+
+        private static void WriteRaw(PipeStream stream, string json)
+        {
+            var data = Encoding.UTF8.GetBytes(json);
+            var lengthBytes = System.BitConverter.GetBytes(data.Length);
+            stream.Write(lengthBytes, 0, 4);
+            stream.Write(data, 0, data.Length);
+            stream.Flush();
         }
 
         private static int ReadExact(PipeStream stream, byte[] buffer, int count)
