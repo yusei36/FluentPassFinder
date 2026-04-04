@@ -41,10 +41,10 @@ namespace FluentPassFinderPlugin.Ipc
 
                 while (running && serverStream.IsConnected)
                 {
-                    var request = PipeProtocol.ReadMessage<PipeRequest>(serverStream);
-                    if (request == null) break;
+                    var json = PipeProtocol.ReadJson(serverStream);
+                    if (json == null) break;
 
-                    var response = handler.Handle(request);
+                    var response = handler.Handle(json);
                     PipeProtocol.WriteMessage(serverStream, response);
                 }
             }

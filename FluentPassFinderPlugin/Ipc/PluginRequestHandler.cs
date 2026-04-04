@@ -41,40 +41,59 @@ namespace FluentPassFinderPlugin.Ipc
             settings = LoadOrCreateDefaultSettings();
         }
 
-        public PipeResponse Handle(PipeRequest request)
+        /// <summary>
+        /// Dispatch a raw JSON request string to the appropriate handler.
+        /// The <see cref="PipeEnvelope.Type"/> field is read first; then the JSON is
+        /// deserialized again to the exact concrete request type — no JObject wrapper needed.
+        /// </summary>
+        public PipeEnvelope Handle(string requestJson)
         {
+            // Peek at the base class to read Id and Type without full deserialization
+            var peek = PipeProtocol.Deserialize<PipeEnvelope>(requestJson);
+
             try
             {
-                switch (request.Type)
+                switch (peek.Type)
                 {
-                    case PipeRequestTypes.SearchEntries:       return HandleSearchEntries(request);
-                    case PipeRequestTypes.GetPlaceholderValue: return HandleGetPlaceholderValue(request);
-                    case PipeRequestTypes.GetStringFromCustomConfig: return HandleGetStringFromCustomConfig(request);
-                    case PipeRequestTypes.GetSettings:         return HandleGetSettings(request);
-                    case PipeRequestTypes.IsAnyDatabaseOpen:   return HandleIsAnyDatabaseOpen(request);
-                    case PipeRequestTypes.CopyField:           return HandleCopyField(request);
-                    case PipeRequestTypes.CopyToClipboard:     return HandleCopyToClipboard(request);
-                    case PipeRequestTypes.AutoTypeField:       return HandleAutoTypeField(request);
-                    case PipeRequestTypes.PerformAutoType:     return HandlePerformAutoType(request);
-                    case PipeRequestTypes.OpenEntryUrl:        return HandleOpenEntryUrl(request);
-                    case PipeRequestTypes.SelectEntry:         return HandleSelectEntry(request);
+                    case PipeRequestTypes.SearchEntries:
+                        return HandleSearchEntries(PipeProtocol.Deserialize<SearchEntriesRequest>(requestJson));
+                    case PipeRequestTypes.GetPlaceholderValue:
+                        return HandleGetPlaceholderValue(PipeProtocol.Deserialize<GetPlaceholderValueRequest>(requestJson));
+                    case PipeRequestTypes.GetStringFromCustomConfig:
+                        return HandleGetStringFromCustomConfig(PipeProtocol.Deserialize<GetStringFromCustomConfigRequest>(requestJson));
+                    case PipeRequestTypes.GetSettings:
+                        return new GetSettingsResponse { Id = peek.Id, Success = true, Settings = settings };
+                    case PipeRequestTypes.IsAnyDatabaseOpen:
+                        return HandleIsAnyDatabaseOpen(peek.Id);
+                    case PipeRequestTypes.CopyField:
+                        return HandleCopyField(PipeProtocol.Deserialize<CopyFieldRequest>(requestJson));
+                    case PipeRequestTypes.CopyToClipboard:
+                        return HandleCopyToClipboard(PipeProtocol.Deserialize<CopyToClipboardRequest>(requestJson));
+                    case PipeRequestTypes.AutoTypeField:
+                        return HandleAutoTypeField(PipeProtocol.Deserialize<AutoTypeFieldRequest>(requestJson));
+                    case PipeRequestTypes.PerformAutoType:
+                        return HandlePerformAutoType(PipeProtocol.Deserialize<PerformAutoTypeRequest>(requestJson));
+                    case PipeRequestTypes.OpenEntryUrl:
+                        return HandleOpenEntryUrl(PipeProtocol.Deserialize<OpenEntryUrlRequest>(requestJson));
+                    case PipeRequestTypes.SelectEntry:
+                        return HandleSelectEntry(PipeProtocol.Deserialize<SelectEntryRequest>(requestJson));
                     default:
-                        return Error(request.Id, $"Unknown request type: {request.Type}");
+                        return Ack(peek.Id, success: false, error: $"Unknown request type: {peek.Type}");
                 }
             }
             catch (Exception ex)
             {
-                return Error(request.Id, ex.Message);
+                return Ack(peek.Id, success: false, error: ex.Message);
             }
         }
 
         // ── Search ────────────────────────────────────────────────────────────────
 
-        private PipeResponse HandleSearchEntries(PipeRequest request)
+        private PipeEnvelope HandleSearchEntries(SearchEntriesRequest req)
         {
             var entries = pluginHostDispatcher.Invoke(() =>
             {
-                var query = (request.Query ?? string.Empty).ToLowerInvariant();
+                var query = (req.Query ?? string.Empty).ToLowerInvariant();
                 var searchOptions = settings.SearchOptions;
                 var searchTime = DateTime.Now;
                 var results = new List<EntryDto>();
@@ -87,7 +106,6 @@ namespace FluentPassFinderPlugin.Ipc
                         : allGroups;
 
                     var dbUuid = UuidToString(db.RootGroup.Uuid);
-
                     foreach (var entry in includedGroups.SelectMany(g => g.GetEntries(false)))
                     {
                         if (searchOptions.ExcludeExpiredEntries && entry.Expires && searchTime > entry.ExpiryTime)
@@ -101,8 +119,121 @@ namespace FluentPassFinderPlugin.Ipc
                 return results;
             });
 
-            return new PipeResponse { Id = request.Id, Success = true, Entries = entries.ToArray() };
+            return new SearchEntriesResponse { Id = req.Id, Success = true, Entries = entries.ToArray() };
         }
+
+        // ── Actions ───────────────────────────────────────────────────────────────
+
+        private PipeEnvelope HandleGetPlaceholderValue(GetPlaceholderValueRequest req)
+        {
+            var value = pluginHostDispatcher.Invoke(() =>
+            {
+                var (entry, db) = ResolveEntry(req.EntryUuid, req.DatabaseUuid);
+                if (entry == null) return req.Placeholder;
+                var flags = req.ResolveAll ? SprCompileFlags.All : SprCompileFlags.Deref;
+                return SprEngine.Compile(req.Placeholder, new SprContext(entry, db, flags, true, false));
+            });
+            return new GetPlaceholderValueResponse { Id = req.Id, Success = true, Value = value };
+        }
+
+        private PipeEnvelope HandleGetStringFromCustomConfig(GetStringFromCustomConfigRequest req)
+        {
+            var value = pluginHostDispatcher.Invoke(() =>
+                pluginHost.CustomConfig.GetString(req.ConfigId, req.DefaultValue));
+            return new GetStringFromCustomConfigResponse { Id = req.Id, Success = true, Value = value };
+        }
+
+        private PipeEnvelope HandleIsAnyDatabaseOpen(string requestId)
+        {
+            var isOpen = pluginHostDispatcher.Invoke(() =>
+                mainWindow.DocumentManager.GetOpenDatabases().Any());
+            return new IsAnyDatabaseOpenResponse { Id = requestId, Success = true, IsOpen = isOpen };
+        }
+
+        private PipeEnvelope HandleCopyField(CopyFieldRequest req)
+        {
+            pluginHostDispatcher.Invoke(() =>
+            {
+                var (entry, db) = ResolveEntry(req.EntryUuid, req.DatabaseUuid);
+                if (entry == null) return;
+
+                var value = entry.Strings.ReadSafe(req.FieldName);
+                if (value.IndexOf('{') >= 0)
+                    value = SprEngine.Compile(value, new SprContext(entry, db, SprCompileFlags.Deref, true, false));
+
+                if (ClipboardUtil.Copy(value, false, true, entry, db, IntPtr.Zero))
+                    mainWindow.StartClipboardCountdown();
+            });
+            return Ack(req.Id);
+        }
+
+        private PipeEnvelope HandleCopyToClipboard(CopyToClipboardRequest req)
+        {
+            pluginHostDispatcher.Invoke(() =>
+            {
+                var (entry, db) = ResolveEntry(req.EntryUuid, req.DatabaseUuid);
+                if (entry == null) return;
+
+                if (ClipboardUtil.Copy(req.Value, false, true, entry, db, IntPtr.Zero))
+                    mainWindow.StartClipboardCountdown();
+            });
+            return Ack(req.Id);
+        }
+
+        private PipeEnvelope HandleAutoTypeField(AutoTypeFieldRequest req)
+        {
+            pluginHostDispatcher.Invoke(() =>
+            {
+                var (entry, db) = ResolveEntry(req.EntryUuid, req.DatabaseUuid);
+                if (entry == null) return;
+
+                var value = entry.Strings.ReadSafe(req.FieldName);
+                if (value.IndexOf('{') >= 0)
+                    value = SprEngine.Compile(value, new SprContext(entry, db, SprCompileFlags.Deref, true, false));
+
+                AutoType.PerformIntoCurrentWindow(entry, db, value + "{ENTER}");
+            });
+            return Ack(req.Id);
+        }
+
+        private PipeEnvelope HandlePerformAutoType(PerformAutoTypeRequest req)
+        {
+            pluginHostDispatcher.Invoke(() =>
+            {
+                var (entry, db) = ResolveEntry(req.EntryUuid, req.DatabaseUuid);
+                if (entry != null)
+                    AutoType.PerformIntoCurrentWindow(entry, db, req.Sequence);
+            });
+            return Ack(req.Id);
+        }
+
+        private PipeEnvelope HandleOpenEntryUrl(OpenEntryUrlRequest req)
+        {
+            pluginHostDispatcher.Invoke(() =>
+            {
+                var (entry, _) = ResolveEntry(req.EntryUuid, req.DatabaseUuid);
+                if (entry != null) WinUtil.OpenEntryUrl(entry);
+            });
+            return Ack(req.Id);
+        }
+
+        private PipeEnvelope HandleSelectEntry(SelectEntryRequest req)
+        {
+            pluginHostDispatcher.Invoke(() =>
+            {
+                var (entry, db) = ResolveEntry(req.EntryUuid, req.DatabaseUuid);
+                if (entry == null) return;
+
+                mainWindow.UpdateUI(false, mainWindow.DocumentManager.FindDocument(db), true, entry.ParentGroup, true, null, false);
+                mainWindow.SelectEntries(new PwObjectList<PwEntry> { entry }, true, true);
+                mainWindow.EnsureVisibleEntry(entry.Uuid);
+                mainWindow.UpdateUI(false, null, false, null, false, null, false);
+                mainWindow.EnsureVisibleForegroundWindow(true, true);
+            });
+            return Ack(req.Id);
+        }
+
+        // ── Search helpers ────────────────────────────────────────────────────────
 
         private bool MatchesQuery(PwEntry entry, PwDatabase db, string query, SearchOptions opts)
         {
@@ -152,10 +283,9 @@ namespace FluentPassFinderPlugin.Ipc
         private EntryDto BuildEntryDto(PwEntry entry, PwDatabase db, string dbUuid)
         {
             var resolve = settings.SearchOptions.ResolveFieldReferences;
-
             var dto = new EntryDto
             {
-                Uuid = UuidToString(entry.Uuid),
+                Uuid     = UuidToString(entry.Uuid),
                 DatabaseUuid = dbUuid,
                 Title    = ResolveDisplay(entry.Strings.ReadSafe(PwDefs.TitleField),    entry, db, resolve),
                 UserName = ResolveDisplay(entry.Strings.ReadSafe(PwDefs.UserNameField), entry, db, resolve),
@@ -178,122 +308,6 @@ namespace FluentPassFinderPlugin.Ipc
             return dto;
         }
 
-        // ── Actions ───────────────────────────────────────────────────────────────
-
-        private PipeResponse HandleGetPlaceholderValue(PipeRequest request)
-        {
-            var value = pluginHostDispatcher.Invoke(() =>
-            {
-                var (entry, db) = ResolveEntry(request.EntryUuid, request.DatabaseUuid);
-                if (entry == null) return request.Placeholder;
-                var flags = (request.ResolveAll == true) ? SprCompileFlags.All : SprCompileFlags.Deref;
-                return SprEngine.Compile(request.Placeholder, new SprContext(entry, db, flags, true, false));
-            });
-            return new PipeResponse { Id = request.Id, Success = true, StringValue = value };
-        }
-
-        private PipeResponse HandleGetStringFromCustomConfig(PipeRequest request)
-        {
-            var value = pluginHostDispatcher.Invoke(() =>
-                pluginHost.CustomConfig.GetString(request.ConfigId, request.DefaultValue));
-            return new PipeResponse { Id = request.Id, Success = true, StringValue = value };
-        }
-
-        private PipeResponse HandleGetSettings(PipeRequest request)
-        {
-            return new PipeResponse { Id = request.Id, Success = true, Settings = settings };
-        }
-
-        private PipeResponse HandleIsAnyDatabaseOpen(PipeRequest request)
-        {
-            var isOpen = pluginHostDispatcher.Invoke(() =>
-                mainWindow.DocumentManager.GetOpenDatabases().Any());
-            return new PipeResponse { Id = request.Id, Success = true, BoolValue = isOpen };
-        }
-
-        private PipeResponse HandleCopyField(PipeRequest request)
-        {
-            pluginHostDispatcher.Invoke(() =>
-            {
-                var (entry, db) = ResolveEntry(request.EntryUuid, request.DatabaseUuid);
-                if (entry == null) return;
-
-                var value = entry.Strings.ReadSafe(request.FieldName);
-                if (value.IndexOf('{') >= 0)
-                    value = SprEngine.Compile(value, new SprContext(entry, db, SprCompileFlags.Deref, true, false));
-
-                if (ClipboardUtil.Copy(value, false, true, entry, db, IntPtr.Zero))
-                    mainWindow.StartClipboardCountdown();
-            });
-            return Ok(request.Id);
-        }
-
-        private PipeResponse HandleCopyToClipboard(PipeRequest request)
-        {
-            pluginHostDispatcher.Invoke(() =>
-            {
-                var (entry, db) = ResolveEntry(request.EntryUuid, request.DatabaseUuid);
-                if (entry == null) return;
-
-                if (ClipboardUtil.Copy(request.Value, false, true, entry, db, IntPtr.Zero))
-                    mainWindow.StartClipboardCountdown();
-            });
-            return Ok(request.Id);
-        }
-
-        private PipeResponse HandleAutoTypeField(PipeRequest request)
-        {
-            pluginHostDispatcher.Invoke(() =>
-            {
-                var (entry, db) = ResolveEntry(request.EntryUuid, request.DatabaseUuid);
-                if (entry == null) return;
-
-                var value = entry.Strings.ReadSafe(request.FieldName);
-                if (value.IndexOf('{') >= 0)
-                    value = SprEngine.Compile(value, new SprContext(entry, db, SprCompileFlags.Deref, true, false));
-
-                AutoType.PerformIntoCurrentWindow(entry, db, value + "{ENTER}");
-            });
-            return Ok(request.Id);
-        }
-
-        private PipeResponse HandlePerformAutoType(PipeRequest request)
-        {
-            pluginHostDispatcher.Invoke(() =>
-            {
-                var (entry, db) = ResolveEntry(request.EntryUuid, request.DatabaseUuid);
-                if (entry == null) return;
-                AutoType.PerformIntoCurrentWindow(entry, db, request.Sequence);
-            });
-            return Ok(request.Id);
-        }
-
-        private PipeResponse HandleOpenEntryUrl(PipeRequest request)
-        {
-            pluginHostDispatcher.Invoke(() =>
-            {
-                var (entry, _) = ResolveEntry(request.EntryUuid, request.DatabaseUuid);
-                if (entry != null) WinUtil.OpenEntryUrl(entry);
-            });
-            return Ok(request.Id);
-        }
-
-        private PipeResponse HandleSelectEntry(PipeRequest request)
-        {
-            pluginHostDispatcher.Invoke(() =>
-            {
-                var (entry, db) = ResolveEntry(request.EntryUuid, request.DatabaseUuid);
-                if (entry == null) return;
-
-                mainWindow.UpdateUI(false, mainWindow.DocumentManager.FindDocument(db), true, entry.ParentGroup, true, null, false);
-                mainWindow.SelectEntries(new PwObjectList<PwEntry> { entry }, true, true);
-                mainWindow.EnsureVisibleEntry(entry.Uuid);
-                mainWindow.UpdateUI(false, null, false, null, false, null, false);
-                mainWindow.EnsureVisibleForegroundWindow(true, true);
-            });
-            return Ok(request.Id);
-        }
-
         // ── Helpers ───────────────────────────────────────────────────────────────
 
         private (PwEntry entry, PwDatabase database) ResolveEntry(string entryUuid, string databaseUuid)
@@ -307,8 +321,7 @@ namespace FluentPassFinderPlugin.Ipc
             if (database == null) return (null, null);
 
             var entryUuidObj = new PwUuid(Convert.FromBase64String(entryUuid));
-            var entry = database.RootGroup.FindEntry(entryUuidObj, true);
-            return (entry, database);
+            return (database.RootGroup.FindEntry(entryUuidObj, true), database);
         }
 
         private static List<PwGroup> CollectGroups(PwGroup root)
@@ -356,12 +369,9 @@ namespace FluentPassFinderPlugin.Ipc
         {
             if (image == null) return null;
             using (var ms = new MemoryStream())
+            using (var bmp = new Bitmap(image))
             {
-                // Clone via Bitmap to avoid GDI+ stream-dependency quirk
-                using (var bmp = new Bitmap(image))
-                {
-                    bmp.Save(ms, ImageFormat.Png);
-                }
+                bmp.Save(ms, ImageFormat.Png);
                 return ms.ToArray();
             }
         }
@@ -391,10 +401,7 @@ namespace FluentPassFinderPlugin.Ipc
             return Settings.DefaultSettings;
         }
 
-        private static PipeResponse Ok(string id) =>
-            new PipeResponse { Id = id, Success = true };
-
-        private static PipeResponse Error(string id, string message) =>
-            new PipeResponse { Id = id, Success = false, Error = message };
+        private static PipeEnvelope Ack(string id, bool success = true, string error = null) =>
+            new PipeEnvelope { Id = id, Success = success, Error = error };
     }
 }

@@ -24,126 +24,107 @@ namespace FluentPassFinder.Ipc
             clientStream.Connect(10000);
 
             // Warm up: fetch and cache settings once on connect
-            cachedSettings = SendRequest(new PipeRequest { Id = NewId(), Type = PipeRequestTypes.GetSettings })
-                             .Settings;
+            cachedSettings = Send<GetSettingsRequest, GetSettingsResponse>(
+                new GetSettingsRequest { Id = NewId(), Type = PipeRequestTypes.GetSettings }).Settings;
         }
 
         // ── IPluginProxy ──────────────────────────────────────────────────────────
 
         public IEnumerable<EntryDto> SearchEntries(string query)
         {
-            var response = SendRequest(new PipeRequest
-            {
-                Id    = NewId(),
-                Type  = PipeRequestTypes.SearchEntries,
-                Query = query,
-            });
+            var response = Send<SearchEntriesRequest, SearchEntriesResponse>(
+                new SearchEntriesRequest { Id = NewId(), Type = PipeRequestTypes.SearchEntries, Query = query });
             return response.Entries ?? Array.Empty<EntryDto>();
         }
 
         public string GetPlaceholderValue(string placeholder, string entryUuid, string databaseUuid, bool resolveAll)
         {
-            return SendRequest(new PipeRequest
-            {
-                Id           = NewId(),
-                Type         = PipeRequestTypes.GetPlaceholderValue,
-                Placeholder  = placeholder,
-                EntryUuid    = entryUuid,
-                DatabaseUuid = databaseUuid,
-                ResolveAll   = resolveAll,
-            }).StringValue;
+            return Send<GetPlaceholderValueRequest, GetPlaceholderValueResponse>(
+                new GetPlaceholderValueRequest
+                {
+                    Id           = NewId(),
+                    Type         = PipeRequestTypes.GetPlaceholderValue,
+                    Placeholder  = placeholder,
+                    EntryUuid    = entryUuid,
+                    DatabaseUuid = databaseUuid,
+                    ResolveAll   = resolveAll,
+                }).Value;
         }
 
         public string GetStringFromCustomConfig(string configId, string defaultValue)
         {
-            return SendRequest(new PipeRequest
-            {
-                Id           = NewId(),
-                Type         = PipeRequestTypes.GetStringFromCustomConfig,
-                ConfigId     = configId,
-                DefaultValue = defaultValue,
-            }).StringValue;
+            return Send<GetStringFromCustomConfigRequest, GetStringFromCustomConfigResponse>(
+                new GetStringFromCustomConfigRequest
+                {
+                    Id           = NewId(),
+                    Type         = PipeRequestTypes.GetStringFromCustomConfig,
+                    ConfigId     = configId,
+                    DefaultValue = defaultValue,
+                }).Value;
         }
 
-        public Settings Settings => cachedSettings
-                                    ?? (cachedSettings = FetchSettings());
+        public Settings Settings => cachedSettings ?? (cachedSettings = FetchSettings());
 
         public bool IsAnyDatabaseOpen
         {
             get
             {
-                var response = SendRequest(new PipeRequest { Id = NewId(), Type = PipeRequestTypes.IsAnyDatabaseOpen });
-                return response.BoolValue == true;
+                return Send<IsAnyDatabaseOpenRequest, IsAnyDatabaseOpenResponse>(
+                    new IsAnyDatabaseOpenRequest { Id = NewId(), Type = PipeRequestTypes.IsAnyDatabaseOpen }).IsOpen;
             }
         }
 
         public void CopyField(string entryUuid, string databaseUuid, string fieldName)
         {
-            SendRequest(new PipeRequest
+            SendVoid(new CopyFieldRequest
             {
-                Id           = NewId(),
-                Type         = PipeRequestTypes.CopyField,
-                EntryUuid    = entryUuid,
-                DatabaseUuid = databaseUuid,
-                FieldName    = fieldName,
+                Id = NewId(), Type = PipeRequestTypes.CopyField,
+                EntryUuid = entryUuid, DatabaseUuid = databaseUuid, FieldName = fieldName,
             });
         }
 
         public void AutoTypeField(string entryUuid, string databaseUuid, string fieldName)
         {
-            SendRequest(new PipeRequest
+            SendVoid(new AutoTypeFieldRequest
             {
-                Id           = NewId(),
-                Type         = PipeRequestTypes.AutoTypeField,
-                EntryUuid    = entryUuid,
-                DatabaseUuid = databaseUuid,
-                FieldName    = fieldName,
+                Id = NewId(), Type = PipeRequestTypes.AutoTypeField,
+                EntryUuid = entryUuid, DatabaseUuid = databaseUuid, FieldName = fieldName,
             });
         }
 
         public void CopyToClipboard(string value, string entryUuid, string databaseUuid)
         {
-            SendRequest(new PipeRequest
+            SendVoid(new CopyToClipboardRequest
             {
-                Id           = NewId(),
-                Type         = PipeRequestTypes.CopyToClipboard,
-                Value        = value,
-                EntryUuid    = entryUuid,
-                DatabaseUuid = databaseUuid,
+                Id = NewId(), Type = PipeRequestTypes.CopyToClipboard,
+                Value = value, EntryUuid = entryUuid, DatabaseUuid = databaseUuid,
             });
         }
 
         public void PerformAutoType(string entryUuid, string databaseUuid, string sequence = null)
         {
-            SendRequest(new PipeRequest
+            SendVoid(new PerformAutoTypeRequest
             {
-                Id           = NewId(),
-                Type         = PipeRequestTypes.PerformAutoType,
-                EntryUuid    = entryUuid,
-                DatabaseUuid = databaseUuid,
-                Sequence     = sequence,
+                Id = NewId(), Type = PipeRequestTypes.PerformAutoType,
+                EntryUuid = entryUuid, DatabaseUuid = databaseUuid, Sequence = sequence,
             });
         }
 
         public void OpenEntryUrl(string entryUuid, string databaseUuid)
         {
-            SendRequest(new PipeRequest
+            SendVoid(new OpenEntryUrlRequest
             {
-                Id           = NewId(),
-                Type         = PipeRequestTypes.OpenEntryUrl,
-                EntryUuid    = entryUuid,
-                DatabaseUuid = databaseUuid,
+                Id = NewId(), Type = PipeRequestTypes.OpenEntryUrl,
+                EntryUuid = entryUuid, DatabaseUuid = databaseUuid,
             });
         }
 
         public void SelectEntry(string entryUuid, string databaseUuid)
         {
-            SendRequest(new PipeRequest
+            SendVoid(new SelectEntryRequest
             {
-                Id           = NewId(),
-                Type         = PipeRequestTypes.SelectEntry,
-                EntryUuid    = entryUuid,
-                DatabaseUuid = databaseUuid,
+                Id = NewId(), Type = PipeRequestTypes.SelectEntry,
+                EntryUuid = entryUuid, DatabaseUuid = databaseUuid,
             });
         }
 
@@ -151,15 +132,37 @@ namespace FluentPassFinder.Ipc
 
         private Settings FetchSettings()
         {
-            return SendRequest(new PipeRequest { Id = NewId(), Type = PipeRequestTypes.GetSettings }).Settings;
+            return Send<GetSettingsRequest, GetSettingsResponse>(
+                new GetSettingsRequest { Id = NewId(), Type = PipeRequestTypes.GetSettings }).Settings;
         }
 
-        private PipeResponse SendRequest(PipeRequest request)
+        /// <summary>Send a request and deserialize the response to the concrete type.</summary>
+        private TRes Send<TReq, TRes>(TReq request)
+            where TReq : PipeEnvelope
+            where TRes : PipeEnvelope
+        {
+            var responseJson = Exchange(request);
+            var response = PipeProtocol.Deserialize<TRes>(responseJson);
+            if (!response.Success)
+                throw new InvalidOperationException(response.Error ?? "Pipe request failed.");
+            return response;
+        }
+
+        /// <summary>Send a void request (no typed return value).</summary>
+        private void SendVoid<TReq>(TReq request) where TReq : PipeEnvelope
+        {
+            var responseJson = Exchange(request);
+            var response = PipeProtocol.Deserialize<PipeEnvelope>(responseJson);
+            if (!response.Success)
+                throw new InvalidOperationException(response.Error ?? "Pipe request failed.");
+        }
+
+        private string Exchange(PipeEnvelope envelope)
         {
             lock (syncLock)
             {
-                PipeProtocol.WriteMessage(clientStream, request);
-                return PipeProtocol.ReadMessage<PipeResponse>(clientStream);
+                PipeProtocol.WriteMessage(clientStream, envelope);
+                return PipeProtocol.ReadJson(clientStream);
             }
         }
 

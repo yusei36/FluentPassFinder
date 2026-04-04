@@ -13,9 +13,13 @@ namespace FluentPassFinder.Contracts.Public.Ipc
             NullValueHandling = NullValueHandling.Ignore
         };
 
-        public static void WriteMessage<T>(PipeStream stream, T message)
+        /// <summary>
+        /// Serialize <paramref name="message"/> (using its runtime type) and write it
+        /// length-prefixed to <paramref name="stream"/>.
+        /// </summary>
+        public static void WriteMessage(PipeStream stream, PipeEnvelope message)
         {
-            var json = JsonConvert.SerializeObject(message, SerializerSettings);
+            var json = JsonConvert.SerializeObject(message, message.GetType(), SerializerSettings);
             var data = Encoding.UTF8.GetBytes(json);
             var lengthBytes = BitConverter.GetBytes(data.Length);
             stream.Write(lengthBytes, 0, 4);
@@ -23,17 +27,22 @@ namespace FluentPassFinder.Contracts.Public.Ipc
             stream.Flush();
         }
 
-        public static T ReadMessage<T>(PipeStream stream)
+        /// <summary>Read one length-prefixed message and return the raw JSON string.</summary>
+        public static string ReadJson(PipeStream stream)
         {
             var lengthBytes = new byte[4];
             if (ReadExact(stream, lengthBytes, 4) != 4)
-                return default(T);
+                return null;
 
             var length = BitConverter.ToInt32(lengthBytes, 0);
             var data = new byte[length];
             ReadExact(stream, data, length);
+            return Encoding.UTF8.GetString(data);
+        }
 
-            var json = Encoding.UTF8.GetString(data);
+        /// <summary>Deserialize a previously read JSON string to a concrete envelope type.</summary>
+        public static T Deserialize<T>(string json) where T : PipeEnvelope
+        {
             return JsonConvert.DeserializeObject<T>(json, SerializerSettings);
         }
 
