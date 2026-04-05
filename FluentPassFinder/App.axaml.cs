@@ -18,6 +18,7 @@ namespace FluentPassFinder
     {
         public static Container Container { get; private set; }
 
+        private static App _instance;
         private SearchWindow _searchWindow;
 
         public override void Initialize()
@@ -56,11 +57,14 @@ namespace FluentPassFinder
 
         private void Init(string pipeName, IClassicDesktopStyleApplicationLifetime desktop)
         {
+            _instance = this;
+
             var pipeClient = new PipeClient(pipeName);
             pipeClient.Connect();
 
             Container = new Container();
             Container.Register<SearchWindowViewModel, SearchWindowViewModel>();
+            Container.Register<SettingsViewModel, SettingsViewModel>();
             Container.Register(() => new Lazy<SearchWindowViewModel>(() =>
                 _searchWindow?.ViewModel ?? throw new InvalidOperationException("Current search window view model is null.")));
             Container.Register(() => new Lazy<SearchWindow>(() =>
@@ -73,7 +77,9 @@ namespace FluentPassFinder
             Container.RegisterInstance<IPluginProxy>(pipeClient);
 
             var viewModel = Container.GetInstance<SearchWindowViewModel>();
-            _searchWindow = new SearchWindow(viewModel);
+            var settingsViewModel = Container.GetInstance<SettingsViewModel>();
+            var settingsView = new Views.SettingsView(settingsViewModel);
+            _searchWindow = new SearchWindow(viewModel, settingsView);
 
             var settings = pipeClient.Settings;
             RegisterHotkeys(settings);
@@ -94,6 +100,24 @@ namespace FluentPassFinder
                 await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
                     desktop.Shutdown(0));
             });
+        }
+
+        internal static void ApplySettings(Settings settings)
+        {
+            var isDark = !string.Equals(settings.Theme, "Light", StringComparison.OrdinalIgnoreCase);
+            Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+                Current.RequestedThemeVariant = isDark ? ThemeVariant.Dark : ThemeVariant.Light);
+
+            HotkeyRegistrar.Unregister(nameof(Settings.GlobalHotkeyPrimaryScreen));
+            HotkeyRegistrar.Unregister(nameof(Settings.GlobalHotkeyCurrentScreen));
+            HotkeyRegistrar.Register(
+                nameof(Settings.GlobalHotkeyPrimaryScreen),
+                settings.GlobalHotkeyPrimaryScreen,
+                () => Avalonia.Threading.Dispatcher.UIThread.Post(() => _instance?._searchWindow?.ShowSearchWindow(true)));
+            HotkeyRegistrar.Register(
+                nameof(Settings.GlobalHotkeyCurrentScreen),
+                settings.GlobalHotkeyCurrentScreen,
+                () => Avalonia.Threading.Dispatcher.UIThread.Post(() => _instance?._searchWindow?.ShowSearchWindow(false)));
         }
 
         private void RegisterHotkeys(Settings settings)

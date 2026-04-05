@@ -26,6 +26,9 @@ namespace FluentPassFinder.ViewModels
         private bool isContextMenuOpen = false;
 
         [ObservableProperty]
+        private bool isSettingsOpen = false;
+
+        [ObservableProperty]
         private ObservableCollection<IAction> contextActions;
 
         [ObservableProperty]
@@ -111,6 +114,12 @@ namespace FluentPassFinder.ViewModels
         private void ClearSearch()
         {
             SearchText = string.Empty;
+        }
+
+        [RelayCommand]
+        private void ToggleSettings()
+        {
+            IsSettingsOpen = !IsSettingsOpen;
         }
 
         partial void OnSearchTextChanged(string value)

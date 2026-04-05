@@ -26,5 +26,8 @@ namespace FluentPassFinder.Contracts.Public
         // Navigation actions
         void OpenEntryUrl(string entryUuid, string databaseUuid);
         void SelectEntry(string entryUuid, string databaseUuid);
+
+        // Settings persistence
+        void SaveSettings(Settings settings);
     }
 }

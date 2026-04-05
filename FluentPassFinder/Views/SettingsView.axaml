@@ -1,0 +1,165 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:FluentPassFinder.Views"
+             xmlns:models="clr-namespace:FluentPassFinder.ViewModels"
+             x:Class="FluentPassFinder.Views.SettingsView"
+             x:ClassModifier="internal"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance local:SettingsView}">
+
+    <ScrollViewer MaxHeight="500"
+                  HorizontalScrollBarVisibility="Disabled"
+                  VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="12 8 12 12" Spacing="4">
+
+            <!-- General -->
+            <TextBlock Text="General"
+                       FontSize="11"
+                       FontWeight="SemiBold"
+                       Opacity="0.6"
+                       Margin="0 4 0 2" />
+
+            <Grid ColumnDefinitions="*,*" Margin="0 2">
+                <TextBlock Grid.Column="0" Text="Theme" VerticalAlignment="Center" FontSize="13" />
+                <ComboBox Grid.Column="1"
+                          ItemsSource="{x:Static models:SettingsViewModel.AvailableThemes}"
+                          SelectedItem="{Binding ViewModel.Theme}"
+                          HorizontalAlignment="Stretch"
+                          FontSize="13" />
+            </Grid>
+
+            <Grid ColumnDefinitions="*,*" Margin="0 2">
+                <TextBlock Grid.Column="0" Text="Hotkey (current screen)" VerticalAlignment="Center" FontSize="13" />
+                <TextBox Grid.Column="1"
+                         Text="{Binding ViewModel.GlobalHotkeyCurrentScreen}"
+                         FontSize="13" />
+            </Grid>
+
+            <Grid ColumnDefinitions="*,*" Margin="0 2">
+                <TextBlock Grid.Column="0" Text="Hotkey (primary screen)" VerticalAlignment="Center" FontSize="13" />
+                <TextBox Grid.Column="1"
+                         Text="{Binding ViewModel.GlobalHotkeyPrimaryScreen}"
+                         FontSize="13" />
+            </Grid>
+
+			<CheckBox IsChecked="{Binding ViewModel.ShowActionsForCustomFields}"
+                      Content="Show actions for custom fields"
+                      FontSize="13"
+                      Margin="0 2" />
+
+            <Separator Margin="0 6" />
+
+            <!-- Search Fields -->
+            <TextBlock Text="Search Fields"
+                       FontSize="11"
+                       FontWeight="SemiBold"
+                       Opacity="0.6"
+                       Margin="0 0 0 2" />
+
+            <CheckBox IsChecked="{Binding ViewModel.IncludeTitleField}"     Content="Title"                    FontSize="13" />
+            <CheckBox IsChecked="{Binding ViewModel.IncludeUserNameField}"  Content="Username"                 FontSize="13" />
+            <CheckBox IsChecked="{Binding ViewModel.IncludePasswordField}"  Content="Password"                 FontSize="13" />
+            <CheckBox IsChecked="{Binding ViewModel.IncludeUrlField}"       Content="URL"                      FontSize="13" />
+            <CheckBox IsChecked="{Binding ViewModel.IncludeNotesField}"     Content="Notes"                    FontSize="13" />
+            <CheckBox IsChecked="{Binding ViewModel.IncludeTags}"           Content="Tags"                     FontSize="13" />
+            <CheckBox IsChecked="{Binding ViewModel.IncludeCustomFields}"   Content="Custom fields"            FontSize="13" />
+            <CheckBox IsChecked="{Binding ViewModel.IncludeProtectedCustomFields}" Content="Protected custom fields" FontSize="13" />
+
+            <Separator Margin="0 6" />
+
+            <!-- Search Behavior -->
+            <TextBlock Text="Search Behavior"
+                       FontSize="11"
+                       FontWeight="SemiBold"
+                       Opacity="0.6"
+                       Margin="0 0 0 2" />
+
+            <CheckBox IsChecked="{Binding ViewModel.ExcludeExpiredEntries}"       Content="Exclude expired entries"          FontSize="13" />
+            <CheckBox IsChecked="{Binding ViewModel.ExcludeGroupsBySearchSetting}" Content="Respect group search setting"    FontSize="13" />
+            <CheckBox IsChecked="{Binding ViewModel.ResolveFieldReferences}"      Content="Resolve field references"         FontSize="13" />
+
+            <Separator Margin="0 6" />
+
+            <!-- Key Bindings -->
+            <TextBlock Text="Key Bindings"
+                       FontSize="11"
+                       FontWeight="SemiBold"
+                       Opacity="0.6"
+                       Margin="0 0 0 2" />
+
+            <Grid ColumnDefinitions="*,*" Margin="0 2">
+                <TextBlock Grid.Column="0" Text="Enter" VerticalAlignment="Center" FontSize="13" />
+                <ComboBox Grid.Column="1"
+                          ItemsSource="{x:Static models:SettingsViewModel.AvailableActions}"
+                          SelectedItem="{Binding ViewModel.MainAction}"
+                          HorizontalAlignment="Stretch"
+                          FontSize="12" />
+            </Grid>
+
+            <Grid ColumnDefinitions="*,*" Margin="0 2">
+                <TextBlock Grid.Column="0" Text="Shift+Enter" VerticalAlignment="Center" FontSize="13" />
+                <ComboBox Grid.Column="1"
+                          ItemsSource="{x:Static models:SettingsViewModel.AvailableActions}"
+                          SelectedItem="{Binding ViewModel.ShiftAction}"
+                          HorizontalAlignment="Stretch"
+                          FontSize="12" />
+            </Grid>
+
+            <Grid ColumnDefinitions="*,*" Margin="0 2">
+                <TextBlock Grid.Column="0" Text="Ctrl+Enter" VerticalAlignment="Center" FontSize="13" />
+                <ComboBox Grid.Column="1"
+                          ItemsSource="{x:Static models:SettingsViewModel.AvailableActions}"
+                          SelectedItem="{Binding ViewModel.ControlAction}"
+                          HorizontalAlignment="Stretch"
+                          FontSize="12" />
+            </Grid>
+
+            <Grid ColumnDefinitions="*,*" Margin="0 2">
+                <TextBlock Grid.Column="0" Text="Alt+Enter" VerticalAlignment="Center" FontSize="13" />
+                <ComboBox Grid.Column="1"
+                          ItemsSource="{x:Static models:SettingsViewModel.AvailableActions}"
+                          SelectedItem="{Binding ViewModel.AltAction}"
+                          HorizontalAlignment="Stretch"
+                          FontSize="12" />
+            </Grid>
+
+            <Separator Margin="0 6" />
+
+            <!-- TOTP (Advanced) -->
+            <TextBlock Text="TOTP (Advanced)"
+                       FontSize="11"
+                       FontWeight="SemiBold"
+                       Opacity="0.6"
+                       Margin="0 0 0 2" />
+
+            <Grid ColumnDefinitions="*,*" Margin="0 2">
+                <TextBlock Grid.Column="0" Text="Plugin placeholder" VerticalAlignment="Center" FontSize="13" />
+                <TextBox Grid.Column="1"
+                         Text="{Binding ViewModel.PluginTotpPlaceholder}"
+                         FontSize="13" />
+            </Grid>
+
+            <Grid ColumnDefinitions="*,*" Margin="0 2">
+                <TextBlock Grid.Column="0" Text="Field config key" VerticalAlignment="Center" FontSize="13" />
+                <TextBox Grid.Column="1"
+                         Text="{Binding ViewModel.PluginTotpFieldConfig}"
+                         FontSize="13" />
+            </Grid>
+
+            <Separator Margin="0 6" />
+
+            <!-- Buttons -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" Margin="0 2 0 0">
+                <Button Content="Reset to Defaults"
+                        Command="{Binding ViewModel.ResetToDefaultsCommand}"
+                        FontSize="13" />
+                <Button Content="Save"
+                        Command="{Binding ViewModel.SaveCommand}"
+                        FontSize="13" />
+            </StackPanel>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

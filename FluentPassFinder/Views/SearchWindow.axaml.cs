@@ -11,15 +11,17 @@ namespace FluentPassFinder.Views
     internal partial class SearchWindow : Window
     {
         public SearchWindowViewModel ViewModel { get; }
+        public SettingsView SettingsView { get; }
         public static double HeaderSize = 40.0;
 
         private bool _isClosing;
         private bool _isOpening;
         private bool _pendingHide;
 
-        public SearchWindow(SearchWindowViewModel viewModel)
+        public SearchWindow(SearchWindowViewModel viewModel, SettingsView settingsView)
         {
             ViewModel = viewModel;
+            SettingsView = settingsView;
             DataContext = this;
 
             InitializeComponent();
@@ -39,6 +41,7 @@ namespace FluentPassFinder.Views
             SearchBox.Text = string.Empty;
             ViewModel.Entries.Clear();
             ViewModel.IsContextMenuOpen = false;
+            ViewModel.IsSettingsOpen = false;
             ViewModel.SelectedEntry = null;
 
             // Defer Hide() so Avalonia renders one frame with the cleared state first.
@@ -63,6 +66,7 @@ namespace FluentPassFinder.Views
 
             ViewModel.SearchText = string.Empty;
             ViewModel.IsContextMenuOpen = false;
+            ViewModel.IsSettingsOpen = false;
             SearchBox.Text = string.Empty;
 
             SetCenteredWindowPosition(showOnPrimaryScreen);

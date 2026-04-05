@@ -62,4 +62,9 @@ namespace FluentPassFinder.Contracts.Public.Ipc
         public string EntryUuid { get; set; }
         public string DatabaseUuid { get; set; }
     }
+
+    public class SaveSettingsRequest : PipeRequest
+    {
+        public Settings Settings { get; set; }
+    }
 }

@@ -128,6 +128,12 @@ namespace FluentPassFinder.Ipc
             });
         }
 
+        public void SaveSettings(Settings settings)
+        {
+            SendVoid(new SaveSettingsRequest { Id = NewId(), Type = PipeRequestTypes.SaveSettings, Settings = settings });
+            cachedSettings = settings;
+        }
+
         // ── Internals ─────────────────────────────────────────────────────────────
 
         private Settings FetchSettings()

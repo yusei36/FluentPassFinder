@@ -24,8 +24,9 @@ namespace FluentPassFinderPlugin.Ipc
         private readonly MainForm mainWindow;
         private readonly Dispatcher pluginHostDispatcher;
         private readonly JsonSerializerSettings jsonSerializerSettings;
-        private readonly Settings settings;
         private readonly Dictionary<int, byte[]> builtInIconCache = new Dictionary<int, byte[]>();
+
+        private Settings settings;
 
         public PluginRequestHandler(IPluginHost pluginHost)
         {
@@ -77,6 +78,8 @@ namespace FluentPassFinderPlugin.Ipc
                         return HandleOpenEntryUrl(PipeProtocol.DeserializeRequest<OpenEntryUrlRequest>(requestJson));
                     case PipeRequestTypes.SelectEntry:
                         return HandleSelectEntry(PipeProtocol.DeserializeRequest<SelectEntryRequest>(requestJson));
+                    case PipeRequestTypes.SaveSettings:
+                        return HandleSaveSettings(PipeProtocol.DeserializeRequest<SaveSettingsRequest>(requestJson));
                     default:
                         return Ack(peek.Id, success: false, error: $"Unknown request type: {peek.Type}");
                 }
@@ -377,6 +380,15 @@ namespace FluentPassFinderPlugin.Ipc
         }
 
         // ── Settings ──────────────────────────────────────────────────────────────
+
+        private PipeResponse HandleSaveSettings(SaveSettingsRequest req)
+        {
+            settings = req.Settings;
+            pluginHostDispatcher.Invoke(() =>
+                pluginHost.CustomConfig.SetString(nameof(FluentPassFinderPlugin),
+                    JsonConvert.SerializeObject(settings, jsonSerializerSettings)));
+            return Ack(req.Id);
+        }
 
         private Settings LoadOrCreateDefaultSettings()
         {

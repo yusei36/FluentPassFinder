@@ -79,6 +79,19 @@
                                       Height="10"
                                       Data="{x:Static icons:Icons.Close}" />
                         </Button>
+                        <Button Command="{Binding ViewModel.ToggleSettingsCommand}"
+                                IsVisible="{Binding ViewModel.SearchText, Converter={StaticResource StringEmptyConverter}}"
+                                Width="28"
+                                Height="28"
+                                Padding="0"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                VerticalAlignment="Center"
+                                ToolTip.Tip="Settings">
+                            <PathIcon Width="14"
+                                      Height="14"
+                                      Data="{x:Static icons:Icons.Settings}" />
+                        </Button>
                         <PathIcon Width="16"
                                   Height="16"
                                   Margin="0 0 8 0"
@@ -91,8 +104,14 @@
                 </TextBox.KeyBindings>
             </TextBox>
 
-            <ListBox Grid.Row="1"
-                     ItemsSource="{Binding ViewModel.Entries}"
+            <ContentControl Grid.Row="1"
+                            Content="{Binding SettingsView}"
+                            IsVisible="{Binding ViewModel.IsSettingsOpen}" />
+
+            <Panel Grid.Row="1"
+                   IsVisible="{Binding ViewModel.IsSettingsOpen, Converter={StaticResource InvertBoolConverter}}">
+
+            <ListBox ItemsSource="{Binding ViewModel.Entries}"
                      SelectedItem="{Binding ViewModel.SelectedEntry}"
                      SelectionChanged="ListBox_SelectionChanged"
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
@@ -148,8 +167,7 @@
                 </ListBox.ItemTemplate>
             </ListBox>
 
-            <ListBox Grid.Row="1"
-                     ItemsSource="{Binding ViewModel.ContextActions}"
+            <ListBox ItemsSource="{Binding ViewModel.ContextActions}"
                      SelectedItem="{Binding ViewModel.SelectedContextAction}"
                      SelectionChanged="ListBox_SelectionChanged"
                      IsVisible="{Binding ViewModel.IsContextMenuOpen}">
@@ -203,6 +221,7 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
+            </Panel>
         </Grid>
     </Border>
 </Window>

@@ -11,7 +11,9 @@ namespace FluentPassFinder
     internal static class HotkeyRegistrar
     {
         private static readonly Dictionary<int, Action> _handlers = new();
-        private static readonly Queue<(string gesture, Action callback)> _registerQueue = new();
+        private static readonly Dictionary<string, int> _nameToId = new();
+        private static readonly Queue<(string name, string gesture, Action callback)> _registerQueue = new();
+        private static readonly Queue<string> _unregisterQueue = new();
         private static readonly object _queueLock = new();
         private static int _nextId = 0xC000;
 
@@ -107,12 +109,28 @@ namespace FluentPassFinder
                 return;
 
             lock (_queueLock)
-                _registerQueue.Enqueue((gestureString, callback));
+                _registerQueue.Enqueue((name, gestureString, callback));
 
             EnsureMessageLoop();
 
             // Signal the message loop thread to drain the queue.
             // _hwnd is set before _hwndReady fires, so this is safe.
+            PostMessage(_hwnd, WM_APP_REGISTER, IntPtr.Zero, IntPtr.Zero);
+        }
+
+        /// <summary>
+        /// Unregister a hotkey by name. The unregistration is queued and processed on the
+        /// message loop thread (same thread that called RegisterHotKey) before any pending
+        /// registrations, so calling Unregister then Register with the same name is safe.
+        /// </summary>
+        public static void Unregister(string name)
+        {
+            if (string.IsNullOrEmpty(name)) return;
+
+            lock (_queueLock)
+                _unregisterQueue.Enqueue(name);
+
+            EnsureMessageLoop();
             PostMessage(_hwnd, WM_APP_REGISTER, IntPtr.Zero, IntPtr.Zero);
         }
 
@@ -170,15 +188,26 @@ namespace FluentPassFinder
 
             if (msg == WM_APP_REGISTER)
             {
-                // Drain the registration queue on the message loop thread so that
-                // RegisterHotKey is called from the correct thread (WM_HOTKEY is
-                // posted to the thread that called RegisterHotKey).
+                // Drain both queues on the message loop thread so that RegisterHotKey /
+                // UnregisterHotKey are always called from the thread that owns the hotkeys.
+                // Unregistrations are processed first so re-registering with the same name works.
                 lock (_queueLock)
                 {
+                    while (_unregisterQueue.Count > 0)
+                    {
+                        var name = _unregisterQueue.Dequeue();
+                        if (_nameToId.TryGetValue(name, out var id))
+                        {
+                            UnregisterHotKey(_hwnd, id);
+                            _handlers.Remove(id);
+                            _nameToId.Remove(name);
+                        }
+                    }
+
                     while (_registerQueue.Count > 0)
                     {
-                        var (gesture, callback) = _registerQueue.Dequeue();
-                        DoRegister(gesture, callback);
+                        var (name, gesture, callback) = _registerQueue.Dequeue();
+                        DoRegister(name, gesture, callback);
                     }
                 }
                 return IntPtr.Zero;
@@ -187,13 +216,14 @@ namespace FluentPassFinder
             return DefWindowProc(hWnd, msg, wParam, lParam);
         }
 
-        private static void DoRegister(string gestureString, Action callback)
+        private static void DoRegister(string name, string gestureString, Action callback)
         {
             var (modifiers, vk) = ParseGesture(gestureString);
             if (vk == 0) return;
 
             var id = _nextId++;
             _handlers[id] = callback;
+            if (name != null) _nameToId[name] = id;
             RegisterHotKey(_hwnd, id, modifiers | MOD_NOREPEAT, vk);
         }
 

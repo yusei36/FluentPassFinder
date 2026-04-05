@@ -28,5 +28,6 @@ namespace FluentPassFinder.Contracts.Public.Ipc
         public const string PerformAutoType          = nameof(PerformAutoType);
         public const string OpenEntryUrl             = nameof(OpenEntryUrl);
         public const string SelectEntry              = nameof(SelectEntry);
+        public const string SaveSettings             = nameof(SaveSettings);
     }
 }
