@@ -9,6 +9,8 @@ namespace FluentPassFinder.ViewModels
         private readonly IPluginProxy pluginProxy;
         private readonly IEntrySearchService entrySearchService;
         private readonly IEntryActionService entryActionService;
+        private readonly ISearchWindowInteractionService searchWindowInteractionService;
+        private readonly SettingsViewModel settingsViewModel;
 
         [ObservableProperty]
         private string applicationTitle = "FluentPassFinder";
@@ -28,6 +30,8 @@ namespace FluentPassFinder.ViewModels
         [ObservableProperty]
         private bool isSettingsOpen = false;
 
+        public bool IsSearchBarVisible => !IsContextMenuOpen && !IsSettingsOpen;
+
         [ObservableProperty]
         private ObservableCollection<IAction> contextActions;
 
@@ -36,11 +40,13 @@ namespace FluentPassFinder.ViewModels
 
         public bool IsAnyDatabaseOpen => pluginProxy.IsAnyDatabaseOpen;
 
-        public SearchWindowViewModel(IPluginProxy pluginProxy, IEntrySearchService entrySearchService, IEntryActionService entryActionService)
+        public SearchWindowViewModel(IPluginProxy pluginProxy, IEntrySearchService entrySearchService, IEntryActionService entryActionService, ISearchWindowInteractionService searchWindowInteractionService, SettingsViewModel settingsViewModel)
         {
             this.pluginProxy = pluginProxy;
             this.entrySearchService = entrySearchService;
             this.entryActionService = entryActionService;
+            this.searchWindowInteractionService = searchWindowInteractionService;
+            this.settingsViewModel = settingsViewModel;
         }
 
         [RelayCommand]
@@ -121,6 +127,37 @@ namespace FluentPassFinder.ViewModels
         {
             IsSettingsOpen = !IsSettingsOpen;
         }
+
+        [RelayCommand]
+        private void NavigateBack()
+        {
+            if (IsSettingsOpen)
+            {
+                IsSettingsOpen = false;
+                searchWindowInteractionService.FocusSearchBox();
+            }
+            // TODO: think about a option to navigate back from context menu or make it the default behavior
+            //else if (IsContextMenuOpen)
+            //{
+            //    IsContextMenuOpen = false;
+            //    searchWindowInteractionService.FocusSearchBox();
+            //}
+            else
+            {
+                searchWindowInteractionService.Close();
+            }
+        }
+
+        [RelayCommand]
+        private void SaveSettingsAndClose()
+        {
+            settingsViewModel.SaveCommand.Execute(null);
+            IsSettingsOpen = false;
+            searchWindowInteractionService.FocusSearchBox();
+        }
+
+        partial void OnIsContextMenuOpenChanged(bool value) => OnPropertyChanged(nameof(IsSearchBarVisible));
+        partial void OnIsSettingsOpenChanged(bool value) => OnPropertyChanged(nameof(IsSearchBarVisible));
 
         partial void OnSearchTextChanged(string value)
         {

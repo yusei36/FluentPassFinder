@@ -32,7 +32,7 @@
     </Window.Resources>
 
     <Window.KeyBindings>
-        <KeyBinding Gesture="Escape"       Command="{Binding HideSearchWindowCommand}" />
+        <KeyBinding Gesture="Escape"       Command="{Binding ViewModel.NavigateBackCommand}" />
         <KeyBinding Gesture="Return"       Command="{Binding ViewModel.EnterActionCommand}" />
         <KeyBinding Gesture="Shift+Return" Command="{Binding ViewModel.ShiftEnterActionCommand}" />
         <KeyBinding Gesture="Ctrl+Return"  Command="{Binding ViewModel.ControlEnterActionCommand}" />
@@ -50,59 +50,111 @@
                 <RowDefinition Height="*" MaxHeight="500" />
             </Grid.RowDefinitions>
 
-            <TextBox x:Name="SearchBox"
-                     Grid.Row="0"
-                     Watermark="Search"
-					 FontSize="16"
-					 Classes.hideCaret="{Binding ViewModel.IsContextMenuOpen}"
-                     IsReadOnly="{Binding ViewModel.IsContextMenuOpen}"
-					 Text="{Binding ViewModel.SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                <TextBox.Styles>
-                    <Style Selector="TextBox.hideCaret">
-                        <Setter Property="CaretBrush" Value="Transparent" />
-                    </Style>
-                </TextBox.Styles>
-                <TextBox.InnerRightContent>
-                    <StackPanel Orientation="Horizontal"
-                                IsVisible="{Binding ViewModel.IsContextMenuOpen, Converter={StaticResource InvertBoolConverter}}">
-                        <Button Command="{Binding ViewModel.ClearSearchCommand}"
-                                Click="ClearSearchButton_Click"
-                                IsVisible="{Binding ViewModel.SearchText, Converter={StaticResource StringEmptyConverter}, ConverterParameter=Invert}"
-                                Width="28"
-                                Height="28"
-                                Padding="0"
-                                Background="Transparent"
-                                BorderThickness="0"
-                                VerticalAlignment="Center"
-                                ToolTip.Tip="Clear">
-                            <PathIcon Width="10"
-                                      Height="10"
-                                      Data="{x:Static icons:Icons.Close}" />
-                        </Button>
-                        <Button Command="{Binding ViewModel.ToggleSettingsCommand}"
-                                IsVisible="{Binding ViewModel.SearchText, Converter={StaticResource StringEmptyConverter}}"
-                                Width="28"
-                                Height="28"
-                                Padding="0"
-                                Background="Transparent"
-                                BorderThickness="0"
-                                VerticalAlignment="Center"
-                                ToolTip.Tip="Settings">
-                            <PathIcon Width="14"
-                                      Height="14"
-                                      Data="{x:Static icons:Icons.Settings}" />
-                        </Button>
-                        <PathIcon Width="16"
-                                  Height="16"
-                                  Margin="0 0 8 0"
-                                  Data="{x:Static icons:Icons.Search}" />
-                    </StackPanel>
-                </TextBox.InnerRightContent>
-                <TextBox.KeyBindings>
-                    <KeyBinding Gesture="Down" Command="{Binding ViewModel.NavigateListDownCommand}" />
-                    <KeyBinding Gesture="Up"   Command="{Binding ViewModel.NavigateListUpCommand}" />
-                </TextBox.KeyBindings>
-            </TextBox>
+            <Panel Grid.Row="0">
+
+                <!-- Normal search bar -->
+                <TextBox x:Name="SearchBox"
+                         IsVisible="{Binding ViewModel.IsSearchBarVisible}"
+                         Watermark="Search"
+                         FontSize="16"
+                         Text="{Binding ViewModel.SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                    <TextBox.InnerRightContent>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Command="{Binding ViewModel.ClearSearchCommand}"
+                                    Click="ClearSearchButton_Click"
+                                    IsVisible="{Binding ViewModel.SearchText, Converter={StaticResource StringEmptyConverter}, ConverterParameter=Invert}"
+                                    Width="28"
+                                    Height="28"
+                                    Padding="0"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    VerticalAlignment="Center"
+                                    ToolTip.Tip="Clear">
+                                <PathIcon Width="10"
+                                          Height="10"
+                                          Data="{x:Static icons:Icons.Close}" />
+                            </Button>
+                            <Button Command="{Binding ViewModel.ToggleSettingsCommand}"
+                                    IsVisible="{Binding ViewModel.SearchText, Converter={StaticResource StringEmptyConverter}}"
+                                    Width="28"
+                                    Height="28"
+                                    Padding="0"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    VerticalAlignment="Center"
+                                    ToolTip.Tip="Settings">
+                                <PathIcon Width="14"
+                                          Height="14"
+                                          Data="{x:Static icons:Icons.Settings}" />
+                            </Button>
+                            <PathIcon Width="16"
+                                      Height="16"
+                                      Margin="0 0 8 0"
+                                      Data="{x:Static icons:Icons.Search}" />
+                        </StackPanel>
+                    </TextBox.InnerRightContent>
+                    <TextBox.KeyBindings>
+                        <KeyBinding Gesture="Down" Command="{Binding ViewModel.NavigateListDownCommand}" />
+                        <KeyBinding Gesture="Up"   Command="{Binding ViewModel.NavigateListUpCommand}" />
+                    </TextBox.KeyBindings>
+                </TextBox>
+
+                <!-- Context menu header: selected entry icon + title -->
+                <Grid IsVisible="{Binding ViewModel.IsContextMenuOpen}"
+                      ColumnDefinitions="Auto,*"
+                      Margin="12 0">
+                    <Image Grid.Column="0"
+                           Source="{Binding ViewModel.SelectedEntry.Icon}"
+                           Width="20"
+                           Height="20"
+                           Margin="0 0 8 0"
+                           VerticalAlignment="Center" />
+                    <TextBlock Grid.Column="1"
+                               Text="{Binding ViewModel.SelectedEntry.Title}"
+                               FontSize="16"
+                               FontWeight="SemiBold"
+                               VerticalAlignment="Center"
+                               TextTrimming="CharacterEllipsis" />
+                </Grid>
+
+                <!-- Settings header: title + Save / Reset buttons -->
+                <Grid IsVisible="{Binding ViewModel.IsSettingsOpen}"
+                      ColumnDefinitions="*,Auto,Auto"
+                      Margin="12 0 4 0">
+                    <TextBlock Grid.Column="0"
+                               Text="Settings"
+                               FontSize="16"
+                               FontWeight="SemiBold"
+                               VerticalAlignment="Center" />
+                    <Button Grid.Column="1"
+                            Command="{Binding SettingsView.ViewModel.ResetToDefaultsCommand}"
+                            Width="28"
+                            Height="28"
+                            Padding="0"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            VerticalAlignment="Center"
+                            ToolTip.Tip="Reset to defaults">
+                        <PathIcon Width="14"
+                                  Height="14"
+                                  Data="{x:Static icons:Icons.Reset}" />
+                    </Button>
+                    <Button Grid.Column="2"
+                            Command="{Binding ViewModel.SaveSettingsAndCloseCommand}"
+                            Width="28"
+                            Height="28"
+                            Padding="0"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            VerticalAlignment="Center"
+                            ToolTip.Tip="Save settings">
+                        <PathIcon Width="14"
+                                  Height="14"
+                                  Data="{x:Static icons:Icons.Save}" />
+                    </Button>
+                </Grid>
+
+            </Panel>
 
             <ContentControl Grid.Row="1"
                             Content="{Binding SettingsView}"

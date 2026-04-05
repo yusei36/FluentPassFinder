@@ -147,19 +147,6 @@
                          Text="{Binding ViewModel.PluginTotpFieldConfig}"
                          FontSize="13" />
             </Grid>
-
-            <Separator Margin="0 6" />
-
-            <!-- Buttons -->
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" Margin="0 2 0 0">
-                <Button Content="Reset to Defaults"
-                        Command="{Binding ViewModel.ResetToDefaultsCommand}"
-                        FontSize="13" />
-                <Button Content="Save"
-                        Command="{Binding ViewModel.SaveCommand}"
-                        FontSize="13" />
-            </StackPanel>
-
         </StackPanel>
     </ScrollViewer>
 </UserControl>

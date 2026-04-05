@@ -23,7 +23,6 @@ namespace FluentPassFinder.Services.Actions.StaticActions
         {
             var vm = lazySearchWindowViewModel.Value;
             vm.IsContextMenuOpen = true;
-            vm.SearchText = searchResult.Entry.Title;
         }
     }
 }

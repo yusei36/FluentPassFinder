@@ -64,12 +64,12 @@ namespace FluentPassFinder
 
             Container = new Container();
             Container.Register<SearchWindowViewModel, SearchWindowViewModel>();
-            Container.Register<SettingsViewModel, SettingsViewModel>();
-            Container.Register(() => new Lazy<SearchWindowViewModel>(() =>
+            Container.RegisterSingleton<SettingsViewModel, SettingsViewModel>();
+            Container.RegisterSingleton(() => new Lazy<SearchWindowViewModel>(() =>
                 _searchWindow?.ViewModel ?? throw new InvalidOperationException("Current search window view model is null.")));
-            Container.Register(() => new Lazy<SearchWindow>(() =>
+            Container.RegisterSingleton(() => new Lazy<SearchWindow>(() =>
                 _searchWindow ?? throw new InvalidOperationException("Current search window is null.")));
-            Container.Register<ISearchWindowInteractionService, SearchWindowInteractionService>();
+            Container.RegisterSingleton<ISearchWindowInteractionService, SearchWindowInteractionService>();
             Container.Register<IEntryActionService, EntryActionService>();
             Container.Register<IEntrySearchService, EntrySearchService>();
             Container.Collection.Register<IStaticAction>(Assembly.GetAssembly(typeof(App)));

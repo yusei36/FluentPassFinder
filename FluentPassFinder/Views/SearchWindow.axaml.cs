@@ -29,6 +29,8 @@ namespace FluentPassFinder.Views
             Deactivated += (_, _) => HideSearchWindow();
         }
 
+        public void FocusSearchBox() => SearchBox.Focus();
+
         [CommunityToolkit.Mvvm.Input.RelayCommand]
         public void HideSearchWindow()
         {
