@@ -58,6 +58,15 @@
                          Watermark="Search"
                          FontSize="16"
                          Text="{Binding ViewModel.SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+					<TextBox.Styles>
+						<Style Selector="TextBox:focus-within /template/ Border#PART_BorderElement">
+							<Setter Property="BorderBrush" Value="Transparent" />
+						</Style>
+					</TextBox.Styles>
+					<TextBox.KeyBindings>
+						<KeyBinding Gesture="Down" Command="{Binding ViewModel.NavigateListDownCommand}" />
+						<KeyBinding Gesture="Up"   Command="{Binding ViewModel.NavigateListUpCommand}" />
+					</TextBox.KeyBindings>
                     <TextBox.InnerRightContent>
 						<!--Margin-Right: 3 is to align with the buttons in settings-->
                         <StackPanel Orientation="Horizontal" Margin="0 0 3 0">
@@ -91,10 +100,6 @@
                             </Button>
                         </StackPanel>
                     </TextBox.InnerRightContent>
-                    <TextBox.KeyBindings>
-                        <KeyBinding Gesture="Down" Command="{Binding ViewModel.NavigateListDownCommand}" />
-                        <KeyBinding Gesture="Up"   Command="{Binding ViewModel.NavigateListUpCommand}" />
-                    </TextBox.KeyBindings>
                 </TextBox>
 
                 <!-- Context menu header: selected entry icon + title -->
