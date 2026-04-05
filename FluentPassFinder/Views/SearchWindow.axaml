@@ -22,10 +22,12 @@
         SystemDecorations="None"
         ExtendClientAreaToDecorationsHint="True"
         ExtendClientAreaChromeHints="NoChrome"
+		FontFamily="Segoe UI Variable, Segoe UI, sans-serif"
         Background="Transparent">
 
     <Window.Resources>
         <converters:InvertBoolConverter x:Key="InvertBoolConverter" />
+		<converters:BoolToCaretBrushConverter x:Key="BoolToCaretBrushConverter"/>
     </Window.Resources>
 
     <Window.KeyBindings>
@@ -50,10 +52,15 @@
             <TextBox x:Name="SearchBox"
                      Grid.Row="0"
                      Watermark="Search"
-                     IsEnabled="{Binding ViewModel.IsContextMenuOpen, Converter={StaticResource InvertBoolConverter}}"
-                     Text="{Binding ViewModel.SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+					 FontSize="16"
+                     IsReadOnly="{Binding ViewModel.IsContextMenuOpen}"
+					 CaretBrush="{Binding ViewModel.IsContextMenuOpen, Converter={StaticResource BoolToCaretBrushConverter}}" 
+					 Text="{Binding ViewModel.SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <TextBox.InnerRightContent>
-                    <PathIcon Width="16" Height="16"
+                    <PathIcon Width="16" 
+							  Height="16" 
+							  Margin="0 0 8 0"
+							  IsVisible="{Binding ViewModel.IsContextMenuOpen, Converter={StaticResource InvertBoolConverter}}"
                               Data="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
                 </TextBox.InnerRightContent>
                 <TextBox.KeyBindings>
@@ -63,15 +70,19 @@
             </TextBox>
 
             <ListBox Grid.Row="1"
-                     Margin="4,0"
                      ItemsSource="{Binding ViewModel.Entries}"
                      SelectedItem="{Binding ViewModel.SelectedEntry}"
                      SelectionChanged="ListBox_SelectionChanged"
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                      IsVisible="{Binding ViewModel.IsContextMenuOpen, Converter={StaticResource InvertBoolConverter}}">
+				<ListBox.Styles>
+					<Style Selector="ListBoxItem">
+						<Setter Property="Padding" Value="2" />
+					</Style>
+				</ListBox.Styles>
                 <ListBox.ItemTemplate>
                     <DataTemplate DataType="models:EntryViewModel">
-                        <Grid Margin="4,0"
+                        <Grid Margin="0,0"
                               ToolTip.Tip="{Binding Title}"
                               PointerReleased="EntryGrid_PointerReleased">
                             <Grid.RowDefinitions>
@@ -86,20 +97,18 @@
                                    Grid.Row="0"
                                    Grid.RowSpan="2"
                                    VerticalAlignment="Top"
-                                   Margin="0,8"
+                                   Margin="4 4 8 4"
                                    Width="16"
                                    Height="16"
                                    Source="{Binding Icon}" />
                             <TextBlock Grid.Column="1"
                                        Grid.Row="0"
-                                       Margin="4,0"
-                                       FontSize="14"
+                                       FontSize="18"
                                        FontWeight="SemiBold"
                                        TextTrimming="CharacterEllipsis"
                                        Text="{Binding Title}" />
                             <TextBlock Grid.Column="1"
                                        Grid.Row="1"
-                                       Margin="4,0"
                                        FontSize="12"
                                        Text="{Binding UserName}" />
                         </Grid>
@@ -108,11 +117,15 @@
             </ListBox>
 
             <ListBox Grid.Row="1"
-                     Margin="4,0"
                      ItemsSource="{Binding ViewModel.ContextActions}"
                      SelectedItem="{Binding ViewModel.SelectedContextAction}"
                      SelectionChanged="ListBox_SelectionChanged"
                      IsVisible="{Binding ViewModel.IsContextMenuOpen}">
+				<ListBox.Styles>
+					<Style Selector="ListBoxItem">
+						<Setter Property="Padding" Value="6" />
+					</Style>
+				</ListBox.Styles>
                 <ListBox.ItemTemplate>
                     <DataTemplate DataType="contracts:IAction">
                         <StackPanel Margin="4,0"
