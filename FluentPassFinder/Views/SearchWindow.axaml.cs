@@ -15,6 +15,7 @@ namespace FluentPassFinder.Views
 
         private bool _isClosing;
         private bool _isOpening;
+        private bool _pendingHide;
 
         public SearchWindow(SearchWindowViewModel viewModel)
         {
@@ -29,31 +30,47 @@ namespace FluentPassFinder.Views
         [CommunityToolkit.Mvvm.Input.RelayCommand]
         public void HideSearchWindow()
         {
-            if (!_isClosing && !_isOpening)
+            if (_isClosing || _isOpening) return;
+
+            _isClosing = true;
+            _pendingHide = true;
+
+            ViewModel.SearchText = string.Empty;
+            SearchBox.Text = string.Empty;
+            ViewModel.Entries.Clear();
+            ViewModel.IsContextMenuOpen = false;
+            ViewModel.SelectedEntry = null;
+
+            // Defer Hide() so Avalonia renders one frame with the cleared state first.
+            // That way the GPU frame buffer is already empty when the window is next shown.
+            Avalonia.Threading.Dispatcher.UIThread.Post(() =>
             {
-                _isClosing = true;
-                Hide();
-
-                ViewModel.SearchText = string.Empty;
-                ViewModel.Entries.Clear();
-                ViewModel.IsContextMenuOpen = false;
-                ViewModel.SelectedEntry = null;
-
                 _isClosing = false;
-            }
+                if (_pendingHide)
+                {
+                    _pendingHide = false;
+                    Hide();
+                }
+            }, Avalonia.Threading.DispatcherPriority.Background);
         }
 
         public void ShowSearchWindow(bool showOnPrimaryScreen)
         {
-            if (ViewModel.IsAnyDatabaseOpen)
-            {
-                _isOpening = true;
-                SetCenteredWindowPosition(showOnPrimaryScreen);
-                Show();
-                Activate();
-                SearchBox.Focus();
-                _isOpening = false;
-            }
+            if (!ViewModel.IsAnyDatabaseOpen) return;
+
+            _pendingHide = false; // cancel any deferred hide
+            _isOpening = true;
+
+            ViewModel.SearchText = string.Empty;
+            ViewModel.IsContextMenuOpen = false;
+            SearchBox.Text = string.Empty;
+
+            SetCenteredWindowPosition(showOnPrimaryScreen);
+            Show();
+            Activate();
+            SearchBox.Focus();
+
+            _isOpening = false;
         }
 
         private void SetCenteredWindowPosition(bool showOnPrimaryScreen)

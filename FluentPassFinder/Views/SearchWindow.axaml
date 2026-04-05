@@ -27,7 +27,6 @@
 
     <Window.Resources>
         <converters:InvertBoolConverter x:Key="InvertBoolConverter" />
-		<converters:BoolToCaretBrushConverter x:Key="BoolToCaretBrushConverter"/>
         <converters:StringEmptyConverter x:Key="StringEmptyConverter" />
     </Window.Resources>
 
@@ -54,9 +53,14 @@
                      Grid.Row="0"
                      Watermark="Search"
 					 FontSize="16"
+					 Classes.hideCaret="{Binding ViewModel.IsContextMenuOpen}"
                      IsReadOnly="{Binding ViewModel.IsContextMenuOpen}"
-					 CaretBrush="{Binding ViewModel.IsContextMenuOpen, Converter={StaticResource BoolToCaretBrushConverter}}" 
 					 Text="{Binding ViewModel.SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                <TextBox.Styles>
+                    <Style Selector="TextBox.hideCaret">
+                        <Setter Property="CaretBrush" Value="Transparent" />
+                    </Style>
+                </TextBox.Styles>
                 <TextBox.InnerRightContent>
                     <StackPanel Orientation="Horizontal"
                                 IsVisible="{Binding ViewModel.IsContextMenuOpen, Converter={StaticResource InvertBoolConverter}}">
