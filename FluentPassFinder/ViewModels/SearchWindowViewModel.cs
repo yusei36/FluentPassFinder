@@ -107,6 +107,12 @@ namespace FluentPassFinder.ViewModels
                 NavigateCollectionUp(Entries, SelectedEntry, x => SelectedEntry = x);
         }
 
+        [RelayCommand]
+        private void ClearSearch()
+        {
+            SearchText = string.Empty;
+        }
+
         partial void OnSearchTextChanged(string value)
         {
             if (IsContextMenuOpen) return;

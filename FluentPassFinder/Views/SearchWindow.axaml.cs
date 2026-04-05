@@ -81,6 +81,11 @@ namespace FluentPassFinder.Views
             Position = new PixelPoint(x, y);
         }
 
+        private void ClearSearchButton_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            SearchBox.Focus();
+        }
+
         private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (sender is ListBox lb && lb.SelectedItem != null)
