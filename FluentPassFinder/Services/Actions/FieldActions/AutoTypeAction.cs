@@ -7,6 +7,7 @@ namespace FluentPassFinder.Services.Actions.FieldActions
     internal class AutoTypeAction : FieldActionBase
     {
         public override int DefaultSortingIndex => 2000;
+        public override string ActionBadgePath => Icons.Keyboard;
         public override string ActionType => string.Format(Consts.AutoTypeActionPattern, FieldName);
         public override string DisplayName => $"Auto type '{FieldName}'";
 

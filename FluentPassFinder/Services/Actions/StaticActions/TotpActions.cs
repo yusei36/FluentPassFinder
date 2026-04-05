@@ -8,6 +8,7 @@ namespace FluentPassFinder.Services.Actions.StaticActions
         public override int DefaultSortingIndex => 100;
         public override string ActionType => string.Format(Consts.CopyActionPattern, Consts.Totp);
         public override string DisplayName => "Copy 'TOTP'";
+        public override string ActionBadgePath => Icons.Copy;
 
         public override void RunAction(EntrySearchResult searchResult)
         {
@@ -22,6 +23,7 @@ namespace FluentPassFinder.Services.Actions.StaticActions
         public override int DefaultSortingIndex => 150;
         public override string ActionType => string.Format(Consts.AutoTypeActionPattern, Consts.Totp);
         public override string DisplayName => "Auto type 'TOTP'";
+        public override string ActionBadgePath => Icons.Keyboard;
 
         public override void RunAction(EntrySearchResult searchResult)
         {
@@ -34,6 +36,8 @@ namespace FluentPassFinder.Services.Actions.StaticActions
 
     internal abstract class TotpActionBase : ActionBase, IStaticAction
     {
+        public override string IconPath => Icons.Clock;
+
         public override bool CanRunAction(EntrySearchResult searchResult)
         {
             return CanGeneratePluginTotp(searchResult) || CanGenerateNativeTotp(searchResult);

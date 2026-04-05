@@ -8,6 +8,7 @@ namespace FluentPassFinder.Services.Actions.StaticActions
         public override string DisplayName => "Select entry in main window";
         public override string ActionType => Consts.SelectEntry;
         public override int DefaultSortingIndex => 300;
+        public override string IconPath => Icons.Checkmark;
 
         public override void RunAction(EntrySearchResult searchResult)
         {

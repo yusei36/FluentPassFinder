@@ -13,6 +13,16 @@ namespace FluentPassFinder.Services.Actions.FieldActions
             Initialize(hostProxy, searchWindowInteractionService);
         }
 
+        public override string IconPath => FieldName switch
+        {
+            Consts.UserNameField => Icons.Person,
+            Consts.PasswordField => Icons.Lock,
+            Consts.TitleField    => Icons.Text,
+            Consts.NotesField    => Icons.Document,
+            Consts.UrlField      => Icons.Globe,
+            _                    => Icons.Tag,
+        };
+
         public override bool CanRunAction(EntrySearchResult searchResult)
         {
             if (!searchResult.Entry.Fields.TryGetValue(FieldName, out var field))
