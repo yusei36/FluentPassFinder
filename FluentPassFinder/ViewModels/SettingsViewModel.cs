@@ -13,6 +13,7 @@ namespace FluentPassFinder.ViewModels
         [ObservableProperty] private string theme;
         [ObservableProperty] private string globalHotkeyCurrentScreen;
         [ObservableProperty] private string globalHotkeyPrimaryScreen;
+        [ObservableProperty] private bool showActionsForCustomFields;
 
         // ── Search Fields ─────────────────────────────────────────────────────────
 
@@ -37,7 +38,6 @@ namespace FluentPassFinder.ViewModels
         [ObservableProperty] private string shiftAction;
         [ObservableProperty] private string controlAction;
         [ObservableProperty] private string altAction;
-        [ObservableProperty] private bool showActionsForCustomFields;
 
         // ── TOTP ──────────────────────────────────────────────────────────────────
 
