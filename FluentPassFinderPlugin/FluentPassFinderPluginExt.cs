@@ -24,7 +24,8 @@ namespace FluentPassFinderPlugin
             pipeServer = new PipeServer(pipeName, handler);
             pipeServer.Start();
 
-            appProcess = Process.Start(FindAppExePath(), pipeName);
+            var hostPid = Process.GetCurrentProcess().Id;
+            appProcess = Process.Start(FindAppExePath(), $"{pipeName} {hostPid}");
 
             return true;
         }

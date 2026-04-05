@@ -9,6 +9,7 @@ using FluentPassFinder.Services;
 using FluentPassFinder.ViewModels;
 using FluentPassFinder.Views;
 using SimpleInjector;
+using System.Diagnostics;
 using System.Reflection;
 
 namespace FluentPassFinder
@@ -45,6 +46,9 @@ namespace FluentPassFinder
                     desktop.Shutdown(1);
                     return;
                 }
+
+                if (args.Length >= 2 && int.TryParse(args[1], out var hostPid))
+                    WatchHostProcess(hostPid, desktop);
             }
 
             base.OnFrameworkInitializationCompleted();
@@ -74,6 +78,22 @@ namespace FluentPassFinder
             var settings = pipeClient.Settings;
             RegisterHotkeys(settings);
             RestoreTheme(settings);
+        }
+
+        private void WatchHostProcess(int hostPid, IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            Task.Run(async () =>
+            {
+                try
+                {
+                    using var host = Process.GetProcessById(hostPid);
+                    await host.WaitForExitAsync();
+                }
+                catch { /* process already gone */ }
+
+                await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
+                    desktop.Shutdown(0));
+            });
         }
 
         private void RegisterHotkeys(Settings settings)
