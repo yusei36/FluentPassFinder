@@ -9,7 +9,7 @@ namespace FluentPassFinder.Contracts
         int SortingIndex { get; }
         string DisplayName { get; }
         string IconPath { get; }
-        string ActionBadgePath { get; }
+        string BadgePath { get; }
 
         void Initialize(IPluginProxy hostProxy, ISearchWindowInteractionService searchWindowInteractionService);
         void RunAction(EntrySearchResult searchResult);

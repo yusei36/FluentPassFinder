@@ -27,7 +27,7 @@ namespace FluentPassFinder.Services.Actions
         public abstract string ActionType { get; }
         public abstract int DefaultSortingIndex { get; }
         public abstract string IconPath { get; }
-        public virtual string ActionBadgePath { get; }
+        public virtual string BadgePath { get; }
         public int SortingIndex
         {
             get

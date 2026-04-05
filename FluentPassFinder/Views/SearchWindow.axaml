@@ -183,13 +183,13 @@
                                           Height="16"
                                           HorizontalAlignment="Left"
                                           VerticalAlignment="Center" />
-                                <Border IsVisible="{Binding ActionBadgePath, Converter={StaticResource StringEmptyConverter}, ConverterParameter=Invert}"
+                                <Border IsVisible="{Binding BadgePath, Converter={StaticResource StringEmptyConverter}, ConverterParameter=Invert}"
                                         Width="11"
                                         Height="11"
                                         HorizontalAlignment="Right"
                                         VerticalAlignment="Bottom"
                                         CornerRadius="2">
-                                    <PathIcon Data="{Binding ActionBadgePath}"
+                                    <PathIcon Data="{Binding BadgePath}"
                                               Width="9"
                                               Height="9" />
                                 </Border>
