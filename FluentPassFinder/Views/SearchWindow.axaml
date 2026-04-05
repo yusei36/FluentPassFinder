@@ -59,7 +59,9 @@
                          FontSize="16"
                          Text="{Binding ViewModel.SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     <TextBox.InnerRightContent>
-                        <StackPanel Orientation="Horizontal">
+						<!--Margin-Right: 3 is to align with the buttons in settings-->
+                        <StackPanel Orientation="Horizontal" Margin="0 0 3 0">
+							
                             <Button Command="{Binding ViewModel.ClearSearchCommand}"
                                     Click="ClearSearchButton_Click"
                                     IsVisible="{Binding ViewModel.SearchText, Converter={StaticResource StringEmptyConverter}, ConverterParameter=Invert}"
@@ -87,10 +89,6 @@
                                           Height="14"
                                           Data="{x:Static icons:Icons.Settings}" />
                             </Button>
-                            <PathIcon Width="16"
-                                      Height="16"
-                                      Margin="0 0 8 0"
-                                      Data="{x:Static icons:Icons.Search}" />
                         </StackPanel>
                     </TextBox.InnerRightContent>
                     <TextBox.KeyBindings>
@@ -119,7 +117,7 @@
 
                 <!-- Settings header: title + Save / Reset buttons -->
                 <Grid IsVisible="{Binding ViewModel.IsSettingsOpen}"
-                      ColumnDefinitions="*,Auto,Auto"
+                      ColumnDefinitions="*,Auto,Auto,Auto"
                       Margin="12 0 4 0">
                     <TextBlock Grid.Column="0"
                                Text="Settings"
@@ -152,6 +150,19 @@
                                   Height="14"
                                   Data="{x:Static icons:Icons.Save}" />
                     </Button>
+                    <Button Grid.Column="3"
+                            Command="{Binding ViewModel.NavigateBackCommand}"
+                            Width="28"
+                            Height="28"
+                            Padding="0"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            VerticalAlignment="Center"
+                            ToolTip.Tip="Discard and go back">
+                        <PathIcon Width="14"
+                                  Height="14"
+                                  Data="{x:Static icons:Icons.Close}" />
+                    </Button>
                 </Grid>
 
             </Panel>
@@ -167,7 +178,8 @@
                      SelectedItem="{Binding ViewModel.SelectedEntry}"
                      SelectionChanged="ListBox_SelectionChanged"
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                     IsVisible="{Binding ViewModel.IsContextMenuOpen, Converter={StaticResource InvertBoolConverter}}">
+                     IsVisible="{Binding ViewModel.IsContextMenuOpen, Converter={StaticResource InvertBoolConverter}}"
+                     Background="{DynamicResource SystemAltHighColor}">
 				<ListBox.Styles>
 					<Style Selector="ListBoxItem">
 						<Setter Property="Padding" Value="6 2 2 2" />
@@ -222,7 +234,8 @@
             <ListBox ItemsSource="{Binding ViewModel.ContextActions}"
                      SelectedItem="{Binding ViewModel.SelectedContextAction}"
                      SelectionChanged="ListBox_SelectionChanged"
-                     IsVisible="{Binding ViewModel.IsContextMenuOpen}">
+                     IsVisible="{Binding ViewModel.IsContextMenuOpen}"
+                     Background="{DynamicResource SystemAltHighColor}">
 				<ListBox.Styles>
 					<Style Selector="ListBoxItem">
 						<Setter Property="Padding" Value="4" />
