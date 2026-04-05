@@ -100,6 +100,7 @@
                 <ListBox.ItemTemplate>
                     <DataTemplate DataType="models:EntryViewModel">
                         <Grid Margin="0,0"
+                              Background="Transparent"
                               ToolTip.Tip="{Binding Title}"
                               PointerReleased="EntryGrid_PointerReleased">
                             <Grid.RowDefinitions>
@@ -154,7 +155,8 @@
 				</ListBox.Styles>
                 <ListBox.ItemTemplate>
                     <DataTemplate DataType="contracts:IAction">
-                        <Grid PointerReleased="ActionPanel_PointerReleased">
+                        <Grid Background="Transparent"
+                              PointerReleased="ActionPanel_PointerReleased">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="3" />
                                 <ColumnDefinition Width="*" />
