@@ -1,6 +1,7 @@
+using Avalonia.Media.Imaging;
 using FluentPassFinder.Contracts;
 using FluentPassFinder.Contracts.Public;
-using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 
 namespace FluentPassFinder.ViewModels
@@ -17,7 +18,7 @@ namespace FluentPassFinder.ViewModels
         private string url;
 
         [ObservableProperty]
-        private Image icon;
+        private Bitmap icon;
 
         public EntrySearchResult SearchResult { get; }
 
@@ -32,17 +33,17 @@ namespace FluentPassFinder.ViewModels
             icon     = LoadIcon(entry.Icon);
         }
 
-        private static Image LoadIcon(byte[] iconBytes)
+        private static Bitmap LoadIcon(byte[] iconBytes)
         {
             if (iconBytes == null || iconBytes.Length == 0)
                 return null;
 
-            // GDI+ keeps a reference to the stream, so clone via Bitmap to detach
-            using (var ms = new MemoryStream(iconBytes))
-            using (var tmp = new Bitmap(ms))
-            {
-                return new Bitmap(tmp);
-            }
+            using var ms = new MemoryStream(iconBytes);
+            using var gdi = new System.Drawing.Bitmap(ms);
+            using var outMs = new MemoryStream();
+            gdi.Save(outMs, ImageFormat.Png);
+            outMs.Position = 0;
+            return new Bitmap(outMs);
         }
     }
 }

@@ -1,0 +1,128 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:FluentPassFinder.Views"
+        xmlns:models="clr-namespace:FluentPassFinder.ViewModels"
+        xmlns:contracts="clr-namespace:FluentPassFinder.Contracts"
+        xmlns:converters="clr-namespace:FluentPassFinder.Converters"
+        x:Class="FluentPassFinder.Views.SearchWindow"
+        x:ClassModifier="internal"
+        x:Name="WindowRoot"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance local:SearchWindow}"
+        Title="{Binding ViewModel.ApplicationTitle, Mode=OneWay}"
+        ShowInTaskbar="False"
+        CanResize="False"
+        WindowStartupLocation="Manual"
+        Width="500"
+        MinHeight="40"
+        Height="40"
+        SizeToContent="Height"
+        SystemDecorations="None"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaChromeHints="NoChrome"
+        Background="Transparent">
+
+    <Window.Resources>
+        <converters:InvertBoolConverter x:Key="InvertBoolConverter" />
+    </Window.Resources>
+
+    <Window.KeyBindings>
+        <KeyBinding Gesture="Escape"       Command="{Binding HideSearchWindowCommand}" />
+        <KeyBinding Gesture="Return"       Command="{Binding ViewModel.EnterActionCommand}" />
+        <KeyBinding Gesture="Shift+Return" Command="{Binding ViewModel.ShiftEnterActionCommand}" />
+        <KeyBinding Gesture="Ctrl+Return"  Command="{Binding ViewModel.ControlEnterActionCommand}" />
+        <KeyBinding Gesture="Alt+Return"   Command="{Binding ViewModel.AltEnterActionCommand}" />
+        <KeyBinding Gesture="Down"         Command="{Binding ViewModel.NavigateListDownCommand}" />
+        <KeyBinding Gesture="Up"           Command="{Binding ViewModel.NavigateListUpCommand}" />
+    </Window.KeyBindings>
+
+    <Border CornerRadius="8"
+            ClipToBounds="True"
+            Background="{DynamicResource SystemAltHighColor}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40" />
+                <RowDefinition Height="*" MaxHeight="500" />
+            </Grid.RowDefinitions>
+
+            <TextBox x:Name="SearchBox"
+                     Grid.Row="0"
+                     Watermark="Search"
+                     IsEnabled="{Binding ViewModel.IsContextMenuOpen, Converter={StaticResource InvertBoolConverter}}"
+                     Text="{Binding ViewModel.SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                <TextBox.InnerRightContent>
+                    <PathIcon Width="16" Height="16"
+                              Data="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+                </TextBox.InnerRightContent>
+                <TextBox.KeyBindings>
+                    <KeyBinding Gesture="Down" Command="{Binding ViewModel.NavigateListDownCommand}" />
+                    <KeyBinding Gesture="Up"   Command="{Binding ViewModel.NavigateListUpCommand}" />
+                </TextBox.KeyBindings>
+            </TextBox>
+
+            <ListBox Grid.Row="1"
+                     Margin="4,0"
+                     ItemsSource="{Binding ViewModel.Entries}"
+                     SelectedItem="{Binding ViewModel.SelectedEntry}"
+                     SelectionChanged="ListBox_SelectionChanged"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                     IsVisible="{Binding ViewModel.IsContextMenuOpen, Converter={StaticResource InvertBoolConverter}}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="models:EntryViewModel">
+                        <Grid Margin="4,0"
+                              ToolTip.Tip="{Binding Title}"
+                              PointerReleased="EntryGrid_PointerReleased">
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="24" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Image Grid.Column="0"
+                                   Grid.Row="0"
+                                   Grid.RowSpan="2"
+                                   VerticalAlignment="Top"
+                                   Margin="0,8"
+                                   Width="16"
+                                   Height="16"
+                                   Source="{Binding Icon}" />
+                            <TextBlock Grid.Column="1"
+                                       Grid.Row="0"
+                                       Margin="4,0"
+                                       FontSize="14"
+                                       FontWeight="SemiBold"
+                                       TextTrimming="CharacterEllipsis"
+                                       Text="{Binding Title}" />
+                            <TextBlock Grid.Column="1"
+                                       Grid.Row="1"
+                                       Margin="4,0"
+                                       FontSize="12"
+                                       Text="{Binding UserName}" />
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <ListBox Grid.Row="1"
+                     Margin="4,0"
+                     ItemsSource="{Binding ViewModel.ContextActions}"
+                     SelectedItem="{Binding ViewModel.SelectedContextAction}"
+                     SelectionChanged="ListBox_SelectionChanged"
+                     IsVisible="{Binding ViewModel.IsContextMenuOpen}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="contracts:IAction">
+                        <StackPanel Margin="4,0"
+                                    PointerReleased="ActionPanel_PointerReleased">
+                            <TextBlock FontSize="12"
+                                       Text="{Binding DisplayName}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+    </Border>
+</Window>
