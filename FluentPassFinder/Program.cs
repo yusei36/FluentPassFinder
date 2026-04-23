@@ -29,7 +29,6 @@ namespace FluentPassFinder
         public static AppBuilder BuildAvaloniaApp() =>
             AppBuilder.Configure<App>()
                       .UsePlatformDetect()
-                      .WithInterFont()
                       .LogToTrace();
 
         internal static void WriteLog(string label, string message)

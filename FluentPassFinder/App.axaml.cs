@@ -16,7 +16,7 @@ namespace FluentPassFinder
 {
     public partial class App : Application
     {
-        public static Container Container { get; private set; }
+        public static SimpleInjector.Container Container { get; private set; }
 
         private static App _instance;
         private SearchWindow _searchWindow;
@@ -62,7 +62,7 @@ namespace FluentPassFinder
             var pipeClient = new PipeClient(pipeName);
             pipeClient.Connect();
 
-            Container = new Container();
+            Container = new SimpleInjector.Container();
             Container.Register<SearchWindowViewModel, SearchWindowViewModel>();
             Container.RegisterSingleton<SettingsViewModel, SettingsViewModel>();
             Container.RegisterSingleton(() => new Lazy<SearchWindowViewModel>(() =>

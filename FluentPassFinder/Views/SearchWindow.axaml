@@ -43,7 +43,7 @@
 
     <Border CornerRadius="8"
             ClipToBounds="True"
-            Background="{DynamicResource SystemAltHighColor}">
+            Background="{DynamicResource SolidBackgroundFillColorBaseBrush}">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="40" />
@@ -184,7 +184,7 @@
                      SelectionChanged="ListBox_SelectionChanged"
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                      IsVisible="{Binding ViewModel.IsContextMenuOpen, Converter={StaticResource InvertBoolConverter}}"
-                     Background="{DynamicResource SystemAltHighColor}">
+                     Background="{DynamicResource SolidBackgroundFillColorBaseBrush}">
 				<ListBox.Styles>
 					<Style Selector="ListBoxItem">
 						<Setter Property="Padding" Value="6 2 2 2" />
@@ -201,19 +201,10 @@
                                 <RowDefinition />
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="3" />
                                 <ColumnDefinition Width="24" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <Border Grid.Column="0"
-                                    Grid.RowSpan="2"
-                                    Width="3"
-                                    Height="16"
-                                    CornerRadius="2"
-                                    VerticalAlignment="Center"
-                                    Background="{DynamicResource SystemAccentColorLight2}"
-                                    IsVisible="{Binding $parent[ListBoxItem].IsSelected}" />
-                            <Image Grid.Column="1"
+                            <Image Grid.Column="0"
                                    Grid.Row="0"
                                    Grid.RowSpan="2"
                                    VerticalAlignment="Top"
@@ -221,13 +212,13 @@
                                    Width="16"
                                    Height="16"
                                    Source="{Binding Icon}" />
-                            <TextBlock Grid.Column="2"
+                            <TextBlock Grid.Column="1"
                                        Grid.Row="0"
                                        FontSize="18"
                                        FontWeight="SemiBold"
                                        TextTrimming="CharacterEllipsis"
                                        Text="{Binding Title}" />
-                            <TextBlock Grid.Column="2"
+                            <TextBlock Grid.Column="1"
                                        Grid.Row="1"
                                        FontSize="12"
                                        Text="{Binding UserName}" />
@@ -240,7 +231,7 @@
                      SelectedItem="{Binding ViewModel.SelectedContextAction}"
                      SelectionChanged="ListBox_SelectionChanged"
                      IsVisible="{Binding ViewModel.IsContextMenuOpen}"
-                     Background="{DynamicResource SystemAltHighColor}">
+                     Background="{DynamicResource SolidBackgroundFillColorBaseBrush}">
 				<ListBox.Styles>
 					<Style Selector="ListBoxItem">
 						<Setter Property="Padding" Value="4" />
@@ -251,18 +242,10 @@
                         <Grid Background="Transparent"
                               PointerReleased="ActionPanel_PointerReleased">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="3" />
                                 <ColumnDefinition Width="26" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <Border Grid.Column="0"
-                                    Width="3"
-                                    Height="16"
-                                    CornerRadius="2"
-                                    VerticalAlignment="Center"
-                                    Background="{DynamicResource SystemAccentColorLight2}"
-                                    IsVisible="{Binding $parent[ListBoxItem].IsSelected}" />
-                            <Grid Grid.Column="1"
+                            <Grid Grid.Column="0"
                                   Width="26"
                                   Height="26"
                                   Margin="2,0">
@@ -282,7 +265,7 @@
                                               Height="9" />
                                 </Border>
                             </Grid>
-                            <TextBlock Grid.Column="2"
+                            <TextBlock Grid.Column="1"
                                        Margin="4,0"
                                        FontSize="12"
                                        VerticalAlignment="Center"
