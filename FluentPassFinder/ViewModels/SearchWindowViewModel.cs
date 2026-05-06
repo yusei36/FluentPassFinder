@@ -1,6 +1,10 @@
 using FluentPassFinder.Contracts;
 using FluentPassFinder.Contracts.Public;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace FluentPassFinder.ViewModels
 {
@@ -11,6 +15,7 @@ namespace FluentPassFinder.ViewModels
         private readonly IEntryActionService entryActionService;
         private readonly ISearchWindowInteractionService searchWindowInteractionService;
         private readonly SettingsViewModel settingsViewModel;
+        private CancellationTokenSource _searchCts;
 
         [ObservableProperty]
         private string applicationTitle = "FluentPassFinder";
@@ -161,15 +166,36 @@ namespace FluentPassFinder.ViewModels
 
         partial void OnSearchTextChanged(string value)
         {
+            _searchCts?.Cancel();
+            _searchCts = new CancellationTokenSource();
+            _ = SearchAsync(value, _searchCts.Token);
+        }
+
+        private async Task SearchAsync(string query, CancellationToken ct)
+        {
             if (IsContextMenuOpen) return;
 
             SelectedEntry = null;
             Entries.Clear();
 
-            if (!pluginProxy.IsAnyDatabaseOpen) return;
+            try { await Task.Delay(250, ct); }
+            catch (OperationCanceledException) { return; }
 
-            foreach (var result in entrySearchService.SearchEntries(value))
-                Entries.Add(new EntryViewModel(result));
+            List<EntryViewModel> results;
+            try
+            {
+                results = await Task.Run(() =>
+                {
+                    if (!pluginProxy.IsAnyDatabaseOpen) return null;
+                    return entrySearchService.SearchEntries(query).Select(r => new EntryViewModel(r)).ToList();
+                }, ct);
+            }
+            catch (OperationCanceledException) { return; }
+
+            if (results == null) return;
+
+            foreach (var entry in results)
+                Entries.Add(entry);
 
             SelectedEntry = Entries.Count > 0 ? Entries[0] : null;
         }
