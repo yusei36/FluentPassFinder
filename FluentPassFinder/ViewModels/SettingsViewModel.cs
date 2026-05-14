@@ -8,14 +8,10 @@ namespace FluentPassFinder.ViewModels
     {
         private readonly IPluginProxy pluginProxy;
 
-        // ── General ──────────────────────────────────────────────────────────────
-
         [ObservableProperty] private string theme;
         [ObservableProperty] private string globalHotkeyCurrentScreen;
         [ObservableProperty] private string globalHotkeyPrimaryScreen;
         [ObservableProperty] private bool showActionsForCustomFields;
-
-        // ── Search Fields ─────────────────────────────────────────────────────────
 
         [ObservableProperty] private bool includeTitleField;
         [ObservableProperty] private bool includeUserNameField;
@@ -26,20 +22,14 @@ namespace FluentPassFinder.ViewModels
         [ObservableProperty] private bool includeCustomFields;
         [ObservableProperty] private bool includeProtectedCustomFields;
 
-        // ── Search Behavior ───────────────────────────────────────────────────────
-
         [ObservableProperty] private bool excludeExpiredEntries;
         [ObservableProperty] private bool excludeGroupsBySearchSetting;
         [ObservableProperty] private bool resolveFieldReferences;
-
-        // ── Key Bindings ──────────────────────────────────────────────────────────
 
         [ObservableProperty] private string mainAction;
         [ObservableProperty] private string shiftAction;
         [ObservableProperty] private string controlAction;
         [ObservableProperty] private string altAction;
-
-        // ── TOTP ──────────────────────────────────────────────────────────────────
 
         [ObservableProperty] private string pluginTotpPlaceholder;
         [ObservableProperty] private string pluginTotpFieldConfig;

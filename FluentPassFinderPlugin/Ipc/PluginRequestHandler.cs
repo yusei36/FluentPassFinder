@@ -69,8 +69,6 @@ namespace FluentPassFinderPlugin.Ipc
             }
         }
 
-        // ── Search ────────────────────────────────────────────────────────────────
-
         private PipeResponse HandleSearchEntries(SearchEntriesRequest req)
         {
             var entries = pluginHostDispatcher.Invoke(() =>
@@ -103,8 +101,6 @@ namespace FluentPassFinderPlugin.Ipc
 
             return new SearchEntriesResponse { Success = true, Entries = entries.ToArray() };
         }
-
-        // ── Actions ───────────────────────────────────────────────────────────────
 
         private PipeResponse HandleGetPlaceholderValue(GetPlaceholderValueRequest req)
         {
@@ -215,8 +211,6 @@ namespace FluentPassFinderPlugin.Ipc
             return Ack();
         }
 
-        // ── Search helpers ────────────────────────────────────────────────────────
-
         private bool MatchesQuery(PwEntry entry, PwDatabase db, string query, SearchOptions opts)
         {
             foreach (var fieldName in GetSearchFieldNames(entry, opts))
@@ -290,8 +284,6 @@ namespace FluentPassFinderPlugin.Ipc
             return dto;
         }
 
-        // ── Helpers ───────────────────────────────────────────────────────────────
-
         private (PwEntry entry, PwDatabase database) ResolveEntry(string entryUuid, string databaseUuid)
         {
             if (string.IsNullOrEmpty(entryUuid) || string.IsNullOrEmpty(databaseUuid))
@@ -357,8 +349,6 @@ namespace FluentPassFinderPlugin.Ipc
                 return ms.ToArray();
             }
         }
-
-        // ── Settings ──────────────────────────────────────────────────────────────
 
         private PipeResponse HandleSaveSettings(SaveSettingsRequest req)
         {

@@ -26,8 +26,6 @@ namespace FluentPassFinder.Ipc
             cachedSettings = Send<GetSettingsRequest, GetSettingsResponse>(new GetSettingsRequest())?.Settings;
         }
 
-        // ── IPluginProxy ──────────────────────────────────────────────────────────
-
         public IEnumerable<EntryDto> SearchEntries(string query)
         {
             var response = Send<SearchEntriesRequest, SearchEntriesResponse>(
@@ -124,8 +122,6 @@ namespace FluentPassFinder.Ipc
             Send<SaveSettingsRequest, PipeResponse>(new SaveSettingsRequest { Settings = settings });
             cachedSettings = settings;
         }
-
-        // ── Internals ─────────────────────────────────────────────────────────────
 
         private Settings FetchSettings()
         {
