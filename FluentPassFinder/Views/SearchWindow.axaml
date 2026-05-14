@@ -16,7 +16,7 @@
         ShowInTaskbar="False"
         CanResize="False"
         WindowStartupLocation="Manual"
-        Width="500"
+        Width="450"
         MinHeight="40"
         SizeToContent="Height"
         SystemDecorations="None"
@@ -90,7 +90,7 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="40" />
-                <RowDefinition Height="*" MaxHeight="500" />
+                <RowDefinition Height="*" MaxHeight="400" />
             </Grid.RowDefinitions>
 
             <Panel Grid.Row="0">
