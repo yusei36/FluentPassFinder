@@ -51,8 +51,8 @@ namespace FluentPassFinderPlugin.Ipc
                     case SearchEntriesRequest req:             return HandleSearchEntries(req);
                     case GetPlaceholderValueRequest req:       return HandleGetPlaceholderValue(req);
                     case GetStringFromCustomConfigRequest req: return HandleGetStringFromCustomConfig(req);
-                    case GetSettingsRequest req:               return new GetSettingsResponse { Id = req.Id, Success = true, Settings = settings };
-                    case IsAnyDatabaseOpenRequest req:         return HandleIsAnyDatabaseOpen(req.Id);
+                    case GetSettingsRequest _:                 return new GetSettingsResponse { Success = true, Settings = settings };
+                    case IsAnyDatabaseOpenRequest req:         return HandleIsAnyDatabaseOpen(req);
                     case CopyFieldRequest req:                 return HandleCopyField(req);
                     case CopyToClipboardRequest req:           return HandleCopyToClipboard(req);
                     case AutoTypeFieldRequest req:             return HandleAutoTypeField(req);
@@ -60,12 +60,12 @@ namespace FluentPassFinderPlugin.Ipc
                     case OpenEntryUrlRequest req:              return HandleOpenEntryUrl(req);
                     case SelectEntryRequest req:               return HandleSelectEntry(req);
                     case SaveSettingsRequest req:              return HandleSaveSettings(req);
-                    default:                                   return Ack(request.Id, success: false, error: $"Unknown request type: {request.Type}");
+                    default:                                   return Ack(success: false, error: $"Unknown request type: {request.Type}");
                 }
             }
             catch (Exception ex)
             {
-                return Ack(request.Id, success: false, error: ex.Message);
+                return Ack(success: false, error: ex.Message);
             }
         }
 
@@ -101,7 +101,7 @@ namespace FluentPassFinderPlugin.Ipc
                 return results;
             });
 
-            return new SearchEntriesResponse { Id = req.Id, Success = true, Entries = entries.ToArray() };
+            return new SearchEntriesResponse { Success = true, Entries = entries.ToArray() };
         }
 
         // ── Actions ───────────────────────────────────────────────────────────────
@@ -115,21 +115,21 @@ namespace FluentPassFinderPlugin.Ipc
                 var flags = req.ResolveAll ? SprCompileFlags.All : SprCompileFlags.Deref;
                 return SprEngine.Compile(req.Placeholder, new SprContext(entry, db, flags, true, false));
             });
-            return new GetPlaceholderValueResponse { Id = req.Id, Success = true, Value = value };
+            return new GetPlaceholderValueResponse { Success = true, Value = value };
         }
 
         private PipeResponse HandleGetStringFromCustomConfig(GetStringFromCustomConfigRequest req)
         {
             var value = pluginHostDispatcher.Invoke(() =>
                 pluginHost.CustomConfig.GetString(req.ConfigId, req.DefaultValue));
-            return new GetStringFromCustomConfigResponse { Id = req.Id, Success = true, Value = value };
+            return new GetStringFromCustomConfigResponse { Success = true, Value = value };
         }
 
-        private PipeResponse HandleIsAnyDatabaseOpen(string requestId)
+        private PipeResponse HandleIsAnyDatabaseOpen(IsAnyDatabaseOpenRequest req)
         {
             var isOpen = pluginHostDispatcher.Invoke(() =>
                 mainWindow.DocumentManager.GetOpenDatabases().Any());
-            return new IsAnyDatabaseOpenResponse { Id = requestId, Success = true, IsOpen = isOpen };
+            return new IsAnyDatabaseOpenResponse { Success = true, IsOpen = isOpen };
         }
 
         private PipeResponse HandleCopyField(CopyFieldRequest req)
@@ -146,7 +146,7 @@ namespace FluentPassFinderPlugin.Ipc
                 if (ClipboardUtil.Copy(value, false, true, entry, db, IntPtr.Zero))
                     mainWindow.StartClipboardCountdown();
             });
-            return Ack(req.Id);
+            return Ack();
         }
 
         private PipeResponse HandleCopyToClipboard(CopyToClipboardRequest req)
@@ -159,7 +159,7 @@ namespace FluentPassFinderPlugin.Ipc
                 if (ClipboardUtil.Copy(req.Value, false, true, entry, db, IntPtr.Zero))
                     mainWindow.StartClipboardCountdown();
             });
-            return Ack(req.Id);
+            return Ack();
         }
 
         private PipeResponse HandleAutoTypeField(AutoTypeFieldRequest req)
@@ -175,7 +175,7 @@ namespace FluentPassFinderPlugin.Ipc
 
                 AutoType.PerformIntoCurrentWindow(entry, db, value + "{ENTER}");
             });
-            return Ack(req.Id);
+            return Ack();
         }
 
         private PipeResponse HandlePerformAutoType(PerformAutoTypeRequest req)
@@ -186,7 +186,7 @@ namespace FluentPassFinderPlugin.Ipc
                 if (entry != null)
                     AutoType.PerformIntoCurrentWindow(entry, db, req.Sequence);
             });
-            return Ack(req.Id);
+            return Ack();
         }
 
         private PipeResponse HandleOpenEntryUrl(OpenEntryUrlRequest req)
@@ -196,7 +196,7 @@ namespace FluentPassFinderPlugin.Ipc
                 var (entry, _) = ResolveEntry(req.EntryUuid, req.DatabaseUuid);
                 if (entry != null) WinUtil.OpenEntryUrl(entry);
             });
-            return Ack(req.Id);
+            return Ack();
         }
 
         private PipeResponse HandleSelectEntry(SelectEntryRequest req)
@@ -212,7 +212,7 @@ namespace FluentPassFinderPlugin.Ipc
                 mainWindow.UpdateUI(false, null, false, null, false, null, false);
                 mainWindow.EnsureVisibleForegroundWindow(true, true);
             });
-            return Ack(req.Id);
+            return Ack();
         }
 
         // ── Search helpers ────────────────────────────────────────────────────────
@@ -366,7 +366,7 @@ namespace FluentPassFinderPlugin.Ipc
             pluginHostDispatcher.Invoke(() =>
                 pluginHost.CustomConfig.SetString(nameof(FluentPassFinderPlugin),
                     JsonConvert.SerializeObject(settings, jsonSerializerSettings)));
-            return Ack(req.Id);
+            return Ack();
         }
 
         private Settings LoadOrCreateDefaultSettings()
@@ -392,7 +392,7 @@ namespace FluentPassFinderPlugin.Ipc
             return Settings.DefaultSettings;
         }
 
-        private static PipeResponse Ack(string id, bool success = true, string error = null) =>
-            new PipeResponse { Id = id, Success = success, Error = error };
+        private static PipeResponse Ack(bool success = true, string error = null) =>
+            new PipeResponse { Success = success, Error = error };
     }
 }

@@ -23,7 +23,7 @@ namespace FluentPassFinder.Ipc
             clientStream = new NamedPipeClientStream(".", pipeName, PipeDirection.InOut);
             clientStream.Connect(10000);
 
-            cachedSettings = Send<GetSettingsRequest, GetSettingsResponse>(new GetSettingsRequest { Id = NewId() })?.Settings;
+            cachedSettings = Send<GetSettingsRequest, GetSettingsResponse>(new GetSettingsRequest())?.Settings;
         }
 
         // ── IPluginProxy ──────────────────────────────────────────────────────────
@@ -31,7 +31,7 @@ namespace FluentPassFinder.Ipc
         public IEnumerable<EntryDto> SearchEntries(string query)
         {
             var response = Send<SearchEntriesRequest, SearchEntriesResponse>(
-                new SearchEntriesRequest { Id = NewId(), Query = query });
+                new SearchEntriesRequest { Query = query });
             return response?.Entries ?? Array.Empty<EntryDto>();
         }
 
@@ -40,7 +40,6 @@ namespace FluentPassFinder.Ipc
             var response = Send<GetPlaceholderValueRequest, GetPlaceholderValueResponse>(
                 new GetPlaceholderValueRequest
                 {
-                    Id           = NewId(),
                     Placeholder  = placeholder,
                     EntryUuid    = entryUuid,
                     DatabaseUuid = databaseUuid,
@@ -54,7 +53,6 @@ namespace FluentPassFinder.Ipc
             var response = Send<GetStringFromCustomConfigRequest, GetStringFromCustomConfigResponse>(
                 new GetStringFromCustomConfigRequest
                 {
-                    Id           = NewId(),
                     ConfigId     = configId,
                     DefaultValue = defaultValue,
                 });
@@ -68,7 +66,7 @@ namespace FluentPassFinder.Ipc
             get
             {
                 var response = Send<IsAnyDatabaseOpenRequest, IsAnyDatabaseOpenResponse>(
-                    new IsAnyDatabaseOpenRequest { Id = NewId() });
+                    new IsAnyDatabaseOpenRequest());
                 return response?.IsOpen ?? false;
             }
         }
@@ -77,7 +75,7 @@ namespace FluentPassFinder.Ipc
         {
             Send<CopyFieldRequest, PipeResponse>(new CopyFieldRequest
             {
-                Id = NewId(), EntryUuid = entryUuid, DatabaseUuid = databaseUuid, FieldName = fieldName,
+                EntryUuid = entryUuid, DatabaseUuid = databaseUuid, FieldName = fieldName,
             });
         }
 
@@ -85,7 +83,7 @@ namespace FluentPassFinder.Ipc
         {
             Send<AutoTypeFieldRequest, PipeResponse>(new AutoTypeFieldRequest
             {
-                Id = NewId(), EntryUuid = entryUuid, DatabaseUuid = databaseUuid, FieldName = fieldName,
+                EntryUuid = entryUuid, DatabaseUuid = databaseUuid, FieldName = fieldName,
             });
         }
 
@@ -93,7 +91,7 @@ namespace FluentPassFinder.Ipc
         {
             Send<CopyToClipboardRequest, PipeResponse>(new CopyToClipboardRequest
             {
-                Id = NewId(), Value = value, EntryUuid = entryUuid, DatabaseUuid = databaseUuid,
+                Value = value, EntryUuid = entryUuid, DatabaseUuid = databaseUuid,
             });
         }
 
@@ -101,7 +99,7 @@ namespace FluentPassFinder.Ipc
         {
             Send<PerformAutoTypeRequest, PipeResponse>(new PerformAutoTypeRequest
             {
-                Id = NewId(), EntryUuid = entryUuid, DatabaseUuid = databaseUuid, Sequence = sequence,
+                EntryUuid = entryUuid, DatabaseUuid = databaseUuid, Sequence = sequence,
             });
         }
 
@@ -109,7 +107,7 @@ namespace FluentPassFinder.Ipc
         {
             Send<OpenEntryUrlRequest, PipeResponse>(new OpenEntryUrlRequest
             {
-                Id = NewId(), EntryUuid = entryUuid, DatabaseUuid = databaseUuid,
+                EntryUuid = entryUuid, DatabaseUuid = databaseUuid,
             });
         }
 
@@ -117,13 +115,13 @@ namespace FluentPassFinder.Ipc
         {
             Send<SelectEntryRequest, PipeResponse>(new SelectEntryRequest
             {
-                Id = NewId(), EntryUuid = entryUuid, DatabaseUuid = databaseUuid,
+                EntryUuid = entryUuid, DatabaseUuid = databaseUuid,
             });
         }
 
         public void SaveSettings(Settings settings)
         {
-            Send<SaveSettingsRequest, PipeResponse>(new SaveSettingsRequest { Id = NewId(), Settings = settings });
+            Send<SaveSettingsRequest, PipeResponse>(new SaveSettingsRequest { Settings = settings });
             cachedSettings = settings;
         }
 
@@ -131,7 +129,7 @@ namespace FluentPassFinder.Ipc
 
         private Settings FetchSettings()
         {
-            return Send<GetSettingsRequest, GetSettingsResponse>(new GetSettingsRequest { Id = NewId() })?.Settings;
+            return Send<GetSettingsRequest, GetSettingsResponse>(new GetSettingsRequest())?.Settings;
         }
 
         private TRes Send<TReq, TRes>(TReq request)
@@ -144,8 +142,6 @@ namespace FluentPassFinder.Ipc
                 return PipeProtocol.ReadResponse<TRes>(clientStream);
             }
         }
-
-        private static string NewId() => Guid.NewGuid().ToString("N");
 
         public void Dispose()
         {
