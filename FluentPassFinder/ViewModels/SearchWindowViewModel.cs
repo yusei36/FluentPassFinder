@@ -161,7 +161,20 @@ namespace FluentPassFinder.ViewModels
             searchWindowInteractionService.FocusSearchBox();
         }
 
-        partial void OnIsContextMenuOpenChanged(bool value) => OnPropertyChanged(nameof(IsSearchBarVisible));
+        partial void OnIsContextMenuOpenChanged(bool value)
+        {
+            OnPropertyChanged(nameof(IsSearchBarVisible));
+            if (value && SelectedEntry != null)
+            {
+                ContextActions = new ObservableCollection<IAction>(entryActionService.GetActionsForEntry(SelectedEntry.SearchResult, false));
+                SelectedContextAction = ContextActions.Count > 0 ? ContextActions[0] : null;
+            }
+            else if (!value)
+            {
+                ContextActions = null;
+                SelectedContextAction = null;
+            }
+        }
         partial void OnIsSettingsOpenChanged(bool value) => OnPropertyChanged(nameof(IsSearchBarVisible));
 
         partial void OnSearchTextChanged(string value)
@@ -176,7 +189,7 @@ namespace FluentPassFinder.ViewModels
             if (IsContextMenuOpen) return;
 
             SelectedEntry = null;
-            Entries.Clear();
+            ClearEntries();
 
             try { await Task.Delay(250, ct); }
             catch (OperationCanceledException) { return; }
@@ -194,23 +207,15 @@ namespace FluentPassFinder.ViewModels
 
             if (results == null) return;
 
-            foreach (var entry in results)
-                Entries.Add(entry);
-
+            Entries = new ObservableCollection<EntryViewModel>(results);
             SelectedEntry = Entries.Count > 0 ? Entries[0] : null;
         }
 
-        partial void OnSelectedEntryChanged(EntryViewModel oldValue, EntryViewModel newValue)
+        internal void ClearEntries()
         {
-            if (newValue == null)
-            {
-                ContextActions?.Clear();
-                SelectedContextAction = null;
-                return;
-            }
-
-            ContextActions = new ObservableCollection<IAction>(entryActionService.GetActionsForEntry(newValue.SearchResult, false));
-            SelectedContextAction = ContextActions.Count > 0 ? ContextActions[0] : null;
+            foreach (var entry in Entries)
+                entry.Dispose();
+            Entries.Clear();
         }
 
         private static void NavigateCollectionDown<T>(ObservableCollection<T> collection, T selectedItem, System.Action<T> update)

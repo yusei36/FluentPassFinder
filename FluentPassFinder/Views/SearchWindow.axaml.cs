@@ -41,7 +41,7 @@ namespace FluentPassFinder.Views
 
             ViewModel.SearchText = string.Empty;
             SearchBox.Text = string.Empty;
-            ViewModel.Entries.Clear();
+            ViewModel.ClearEntries();
             ViewModel.IsContextMenuOpen = false;
             ViewModel.IsSettingsOpen = false;
             ViewModel.SelectedEntry = null;
@@ -107,12 +107,6 @@ namespace FluentPassFinder.Views
         private void ClearSearchButton_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
             SearchBox.Focus();
-        }
-
-        private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (sender is ListBox lb && lb.SelectedItem != null)
-                lb.ScrollIntoView(lb.SelectedItem);
         }
 
         private void EntryGrid_PointerReleased(object sender, PointerReleasedEventArgs e)
