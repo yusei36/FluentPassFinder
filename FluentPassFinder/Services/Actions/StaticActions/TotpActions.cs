@@ -14,7 +14,8 @@ namespace FluentPassFinder.Services.Actions.StaticActions
         {
             searchWindowInteractionService.Close();
             var totp = GenerateTotp(searchResult);
-            pluginProxy.CopyToClipboard(totp, searchResult.Entry.Uuid, searchResult.Entry.DatabaseUuid);
+            if (!string.IsNullOrEmpty(totp))
+                pluginProxy.CopyToClipboard(totp, searchResult.Entry.Uuid, searchResult.Entry.DatabaseUuid);
         }
     }
 
@@ -30,7 +31,8 @@ namespace FluentPassFinder.Services.Actions.StaticActions
             searchWindowInteractionService.Close();
             Task.Delay(100).Wait();
             var totp = GenerateTotp(searchResult);
-            pluginProxy.PerformAutoType(searchResult.Entry.Uuid, searchResult.Entry.DatabaseUuid, totp + Consts.AutoTypeEnterPlaceholder);
+            if (!string.IsNullOrEmpty(totp))
+                pluginProxy.PerformAutoType(searchResult.Entry.Uuid, searchResult.Entry.DatabaseUuid, totp + Consts.AutoTypeEnterPlaceholder);
         }
     }
 
