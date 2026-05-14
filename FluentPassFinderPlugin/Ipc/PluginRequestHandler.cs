@@ -42,51 +42,30 @@ namespace FluentPassFinderPlugin.Ipc
             settings = LoadOrCreateDefaultSettings();
         }
 
-        /// <summary>
-        /// Dispatch a raw JSON request string to the appropriate handler.
-        /// The <see cref="PipeRequest.Type"/> field is read first; then the JSON is
-        /// deserialized again to the exact concrete request type — no JObject wrapper needed.
-        /// </summary>
-        public PipeResponse Handle(string requestJson)
+        public PipeResponse Handle(PipeRequest request)
         {
-            // Peek at the base class to read Id and Type without full deserialization
-            var peek = PipeProtocol.DeserializeRequest<PipeRequest>(requestJson);
-
             try
             {
-                switch (peek.Type)
+                switch (request)
                 {
-                    case PipeRequestTypes.SearchEntries:
-                        return HandleSearchEntries(PipeProtocol.DeserializeRequest<SearchEntriesRequest>(requestJson));
-                    case PipeRequestTypes.GetPlaceholderValue:
-                        return HandleGetPlaceholderValue(PipeProtocol.DeserializeRequest<GetPlaceholderValueRequest>(requestJson));
-                    case PipeRequestTypes.GetStringFromCustomConfig:
-                        return HandleGetStringFromCustomConfig(PipeProtocol.DeserializeRequest<GetStringFromCustomConfigRequest>(requestJson));
-                    case PipeRequestTypes.GetSettings:
-                        return new GetSettingsResponse { Id = peek.Id, Success = true, Settings = settings };
-                    case PipeRequestTypes.IsAnyDatabaseOpen:
-                        return HandleIsAnyDatabaseOpen(peek.Id);
-                    case PipeRequestTypes.CopyField:
-                        return HandleCopyField(PipeProtocol.DeserializeRequest<CopyFieldRequest>(requestJson));
-                    case PipeRequestTypes.CopyToClipboard:
-                        return HandleCopyToClipboard(PipeProtocol.DeserializeRequest<CopyToClipboardRequest>(requestJson));
-                    case PipeRequestTypes.AutoTypeField:
-                        return HandleAutoTypeField(PipeProtocol.DeserializeRequest<AutoTypeFieldRequest>(requestJson));
-                    case PipeRequestTypes.PerformAutoType:
-                        return HandlePerformAutoType(PipeProtocol.DeserializeRequest<PerformAutoTypeRequest>(requestJson));
-                    case PipeRequestTypes.OpenEntryUrl:
-                        return HandleOpenEntryUrl(PipeProtocol.DeserializeRequest<OpenEntryUrlRequest>(requestJson));
-                    case PipeRequestTypes.SelectEntry:
-                        return HandleSelectEntry(PipeProtocol.DeserializeRequest<SelectEntryRequest>(requestJson));
-                    case PipeRequestTypes.SaveSettings:
-                        return HandleSaveSettings(PipeProtocol.DeserializeRequest<SaveSettingsRequest>(requestJson));
-                    default:
-                        return Ack(peek.Id, success: false, error: $"Unknown request type: {peek.Type}");
+                    case SearchEntriesRequest req:             return HandleSearchEntries(req);
+                    case GetPlaceholderValueRequest req:       return HandleGetPlaceholderValue(req);
+                    case GetStringFromCustomConfigRequest req: return HandleGetStringFromCustomConfig(req);
+                    case GetSettingsRequest req:               return new GetSettingsResponse { Id = req.Id, Success = true, Settings = settings };
+                    case IsAnyDatabaseOpenRequest req:         return HandleIsAnyDatabaseOpen(req.Id);
+                    case CopyFieldRequest req:                 return HandleCopyField(req);
+                    case CopyToClipboardRequest req:           return HandleCopyToClipboard(req);
+                    case AutoTypeFieldRequest req:             return HandleAutoTypeField(req);
+                    case PerformAutoTypeRequest req:           return HandlePerformAutoType(req);
+                    case OpenEntryUrlRequest req:              return HandleOpenEntryUrl(req);
+                    case SelectEntryRequest req:               return HandleSelectEntry(req);
+                    case SaveSettingsRequest req:              return HandleSaveSettings(req);
+                    default:                                   return Ack(request.Id, success: false, error: $"Unknown request type: {request.Type}");
                 }
             }
             catch (Exception ex)
             {
-                return Ack(peek.Id, success: false, error: ex.Message);
+                return Ack(request.Id, success: false, error: ex.Message);
             }
         }
 

@@ -1,9 +1,11 @@
+using Newtonsoft.Json;
+
 namespace FluentPassFinder.Contracts.Public.Ipc
 {
-    /// <summary>Base class for all pipe request messages.</summary>
-    public class PipeRequest
+    [JsonConverter(typeof(PipeRequestConverter))]
+    public abstract class PipeRequest
     {
         public string Id { get; set; }
-        public string Type { get; set; }
+        public abstract string Type { get; }
     }
 }
