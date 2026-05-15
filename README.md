@@ -1,5 +1,8 @@
 [![Build Plugin](https://github.com/yusei36/FluentPassFinder/actions/workflows/BuildPlugin.yml/badge.svg?branch=master)](https://github.com/yusei36/FluentPassFinder/actions/workflows/BuildPlugin.yml)
 
+## Status
+⚠️ **Early Stage / Personal Project**: This project was mostly developed for personal use and has never been properly released or maintained due to limited available time. A larger refactoring is currently in progress and may be released in the future.
+
 # FluentPassFinder
 KeePass Plugin with a fluent design search window to quickly find entries and autotype or copy passwords or other fields.
 Shortcut can be used to open the small search window from everywhere.
