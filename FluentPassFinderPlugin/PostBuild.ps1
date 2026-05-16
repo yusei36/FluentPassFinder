@@ -1,6 +1,6 @@
 param([string] $OutputSrcDir, [string] $AppBinDir, [string] $SolutionDir, [string] $Configuration)
 
-$buildPath = "$SolutionDir/Build/KeePass/Plugins"
+$buildPath = "$SolutionDir/build/KeePass/Plugins"
 $pluginOutputPath = "$buildPath/FluentPassFinder"
 if ((Test-Path -Path $pluginOutputPath )) {
     Remove-Item -Recurse $pluginOutputPath

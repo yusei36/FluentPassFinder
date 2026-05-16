@@ -4,7 +4,7 @@
     <UseWindowsForms>true</UseWindowsForms>
     <UseWPF>true</UseWPF>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
-	<OutDir>$(SolutionDir)Build/$(Configuration)/$(TargetFramework)/</OutDir>
+	<OutDir>$(SolutionDir)build/$(Configuration)/$(TargetFramework)/</OutDir>
   </PropertyGroup>
   <PropertyGroup>
 	<Product>KeePass Plugin</Product>
@@ -24,10 +24,10 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="KeePass">
-      <HintPath>..\Build\KeePass\KeePass.exe</HintPath>
+      <HintPath>..\build\KeePass\KeePass.exe</HintPath>
     </Reference>
   </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="powershell $(ProjectDir)PostBuild.ps1 -OutputSrcDir $(SolutionDir)Build/$(Configuration)/$(TargetFramework) -AppBinDir $(SolutionDir)Build/$(Configuration)/net10.0-windows/bin -SolutionDir $(SolutionDir) -Configuration $(Configuration)" />
+    <Exec Command="powershell $(ProjectDir)PostBuild.ps1 -OutputSrcDir $(SolutionDir)build/$(Configuration)/$(TargetFramework) -AppBinDir $(SolutionDir)build/$(Configuration)/net10.0-windows/bin -SolutionDir $(SolutionDir) -Configuration $(Configuration)" />
   </Target>
 </Project>
