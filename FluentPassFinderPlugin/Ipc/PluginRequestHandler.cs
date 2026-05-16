@@ -1,3 +1,5 @@
+// SPDX-FileCopyrightText: Copyright (C) 2023-2026 Uwe Koegel
+// SPDX-License-Identifier: GPL-3.0-or-later
 using FluentPassFinder.Contracts.Public;
 using FluentPassFinder.Contracts.Public.Ipc;
 using KeePass.Forms;
