@@ -1,14 +1,12 @@
-﻿using FluentPassFinder.Contracts;
+using Avalonia.Media.Imaging;
+using FluentPassFinder.Contracts;
 using FluentPassFinder.Contracts.Public;
-using System.Drawing;
+using System.IO;
 
 namespace FluentPassFinder.ViewModels
 {
-    internal partial class EntryViewModel : ObservableObject
+    internal partial class EntryViewModel : ObservableObject, IDisposable
     {
-        private readonly IPluginProxy pluginProxy;
-        private const char placeholderStartingChar = '{';
-
         [ObservableProperty]
         private string title;
 
@@ -19,42 +17,30 @@ namespace FluentPassFinder.ViewModels
         private string url;
 
         [ObservableProperty]
-        private Image icon;
+        private Bitmap icon;
 
         public EntrySearchResult SearchResult { get; }
 
-        public EntryViewModel(EntrySearchResult searchResult, IPluginProxy pluginProxy)
+        public EntryViewModel(EntrySearchResult searchResult)
         {
             SearchResult = searchResult;
-            this.pluginProxy = pluginProxy;
 
-            var searchOptions = pluginProxy.Settings.SearchOptions;
-            title = GetFieldValue(searchResult, PwDefs.TitleField, searchOptions.ResolveFieldReferences);
-            userName = GetFieldValue(searchResult, PwDefs.UserNameField, searchOptions.ResolveFieldReferences);
-            url = GetFieldValue(searchResult, PwDefs.UrlField, searchOptions.ResolveFieldReferences);
-            icon = GetEntryIcon(searchResult);
+            var entry = searchResult.Entry;
+            title    = entry.Title;
+            userName = entry.UserName;
+            url      = entry.Url;
+            icon     = LoadIcon(entry.Icon);
         }
 
-        private string GetFieldValue(EntrySearchResult searchResult, string fieldName, bool resolveFieldReference)
-        {
-            var fieldValue = searchResult.Entry.Strings.ReadSafe(fieldName);
-            if (resolveFieldReference && fieldValue.Contains(placeholderStartingChar))
-            {
-                fieldValue = pluginProxy.GetPlaceholderValue(fieldValue, searchResult.Entry, searchResult.Database, false);
-            }
+        public void Dispose() => Icon?.Dispose();
 
-            return fieldValue;
-        }
-
-        private Image GetEntryIcon(EntrySearchResult searchResult)
+        private static Bitmap LoadIcon(byte[] iconBytes)
         {
-            Image entryIcon = null;
-            if (!searchResult.Entry.CustomIconUuid.Equals(PwUuid.Zero))
-            {
-                entryIcon = searchResult.Database.GetCustomIcon(searchResult.Entry.CustomIconUuid, 24, 24);
-            }
-            entryIcon ??= pluginProxy.GetBuildInIcon(searchResult.Entry.IconId);
-            return entryIcon;
+            if (iconBytes == null || iconBytes.Length == 0)
+                return null;
+
+            using var ms = new MemoryStream(iconBytes);
+            return new Bitmap(ms);
         }
     }
 }

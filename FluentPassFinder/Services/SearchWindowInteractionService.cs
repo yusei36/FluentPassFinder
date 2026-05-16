@@ -15,5 +15,10 @@ namespace FluentPassFinder.Services
         {
             lazySearchWindow.Value.HideSearchWindow();
         }
+
+        public void FocusSearchBox()
+        {
+            lazySearchWindow.Value.FocusSearchBox();
+        }
     }
 }

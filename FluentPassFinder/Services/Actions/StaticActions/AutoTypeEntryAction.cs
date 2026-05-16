@@ -1,4 +1,4 @@
-﻿using FluentPassFinder.Contracts;
+using FluentPassFinder.Contracts;
 using FluentPassFinder.Contracts.Public;
 
 namespace FluentPassFinder.Services.Actions.StaticActions
@@ -6,13 +6,14 @@ namespace FluentPassFinder.Services.Actions.StaticActions
     internal class AutoTypeEntryAction : ActionBase, IStaticAction
     {
         public override int DefaultSortingIndex => 0;
-        public override string ActionType => ActionTypeConsts.AutoType;
+        public override string ActionType => Consts.AutoType;
         public override string DisplayName => "Auto type selected entry";
+        public override string IconPath => Icons.Keyboard;
 
         public override void RunAction(EntrySearchResult searchResult)
         {
             searchWindowInteractionService.Close();
-            pluginProxy.PerformAutoType(searchResult.Entry, searchResult.Database);
+            pluginProxy.PerformAutoType(searchResult.Entry.Uuid, searchResult.Entry.DatabaseUuid);
         }
     }
 }

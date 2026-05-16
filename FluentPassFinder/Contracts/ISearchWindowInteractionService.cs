@@ -3,5 +3,6 @@
     internal interface ISearchWindowInteractionService
     {
         void Close();
+        void FocusSearchBox();
     }
 }

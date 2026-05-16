@@ -1,11 +1,10 @@
-﻿using KeePassLib;
 using System.Collections.Generic;
 
 namespace FluentPassFinder.Contracts.Public
 {
     public class Settings
     {
-        public SearchOptions SearchOptions { get; set; } = new();
+        public SearchOptions SearchOptions { get; set; } = new SearchOptions();
         public string PluginTotpPlaceholder { get; set; }
         public string PluginTotpFieldConfig { get; set; }
 
@@ -14,15 +13,13 @@ namespace FluentPassFinder.Contracts.Public
         public string ControlAction { get; set; }
         public string AltAction { get; set; }
 
-        public Dictionary<string, int> ActionSorting { get; set; } = new();
+        public Dictionary<string, int> ActionSorting { get; set; } = new Dictionary<string, int>();
         public bool ShowActionsForCustomFields { get; set; }
-        public List<string> ExcludeActionsForFields { get; set; } = new();
-
+        public List<string> ExcludeActionsForFields { get; set; } = new List<string>();
 
         public string GlobalHotkeyCurrentScreen { get; set; }
         public string GlobalHotkeyPrimaryScreen { get; set; }
         public string Theme { get; set; }
-
 
         public static Settings DefaultSettings = new Settings()
         {
@@ -37,29 +34,26 @@ namespace FluentPassFinder.Contracts.Public
                 ExcludeGroupsBySearchSetting = true,
                 ResolveFieldReferences = true,
             },
-            PluginTotpPlaceholder = "{TOTP}",
-            PluginTotpFieldConfig = "totpsettings_stringname",
+            PluginTotpPlaceholder = Consts.PluginTotpPlaceholder,
+            PluginTotpFieldConfig = Consts.PluginTotpFieldConfigKey,
             GlobalHotkeyCurrentScreen = "Ctrl+Alt+S",
             GlobalHotkeyPrimaryScreen = "Ctrl+Alt+F",
-            MainAction = ActionTypeConsts.OpenContextMenu,
-            ShiftAction = string.Format(ActionTypeConsts.CopyActionPattern, PwDefs.UserNameField),
-            ControlAction = string.Format(ActionTypeConsts.CopyActionPattern, PwDefs.PasswordField),
-            AltAction = string.Format(ActionTypeConsts.CopyActionPattern, ActionTypeConsts.Totp),
+            MainAction = Consts.OpenContextMenu,
+            ShiftAction = string.Format(Consts.CopyActionPattern, Consts.UserNameField),
+            ControlAction = string.Format(Consts.CopyActionPattern, Consts.PasswordField),
+            AltAction = string.Format(Consts.CopyActionPattern, Consts.Totp),
             ActionSorting = new Dictionary<string, int>
-                {
-                    { string.Format(ActionTypeConsts.AutoTypeActionPattern, PwDefs.UserNameField), 1 },
-                    { string.Format(ActionTypeConsts.AutoTypeActionPattern, PwDefs.PasswordField), 2 },
-                    { string.Format(ActionTypeConsts.AutoTypeActionPattern, ActionTypeConsts.Totp), 3 },
+            {
+                { string.Format(Consts.AutoTypeActionPattern, Consts.UserNameField), 1 },
+                { string.Format(Consts.AutoTypeActionPattern, Consts.PasswordField), 2 },
+                { string.Format(Consts.AutoTypeActionPattern, Consts.Totp), 3 },
 
-                    { string.Format(ActionTypeConsts.CopyActionPattern, PwDefs.UserNameField), 101 },
-                    { string.Format(ActionTypeConsts.CopyActionPattern, PwDefs.PasswordField), 102 },
-                    { string.Format(ActionTypeConsts.CopyActionPattern, ActionTypeConsts.Totp), 103 },
-                },
+                { string.Format(Consts.CopyActionPattern, Consts.UserNameField), 101 },
+                { string.Format(Consts.CopyActionPattern, Consts.PasswordField), 102 },
+                { string.Format(Consts.CopyActionPattern, Consts.Totp), 103 },
+            },
             ShowActionsForCustomFields = true,
-            ExcludeActionsForFields = new List<string>()
-                {
-                    "_etm_template_uuid"
-                },
+            ExcludeActionsForFields = new List<string> { Consts.TemplateUuidField },
             Theme = "Dark"
         };
     }

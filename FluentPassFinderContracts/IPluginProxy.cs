@@ -1,19 +1,33 @@
-﻿using KeePassLib;
-using System.Drawing;
+using System.Collections.Generic;
 
 namespace FluentPassFinder.Contracts.Public
 {
     public interface IPluginProxy
     {
-        void CopyToClipboard(string strToCopy, bool bSprCompile, bool bIsEntryInfo, PwEntry peEntryInfo);
-        string GetPlaceholderValue(string placeholder, PwEntry entry, PwDatabase database, bool resolveAll);
-        Image GetBuildInIcon(PwIcon nuildInIconId); 
-        void PerformAutoType(PwEntry entry, PwDatabase database, string sequence = null);
-        void OpenEntryUrl(PwEntry entry);
-        void SelectEntry(PwEntry entry, PwDatabase database);
-        string GetStringFromCustomConfig(string configId, string defaultValue);
+        // Search — plugin side performs the search and returns display-ready DTOs
+        IEnumerable<EntryDto> SearchEntries(string query);
 
-        PwDatabase[] Databases { get; }
+        // Value resolution (used for TOTP placeholders and similar)
+        string GetPlaceholderValue(string placeholder, string entryUuid, string databaseUuid, bool resolveAll);
+
+        // Config
+        string GetStringFromCustomConfig(string configId, string defaultValue);
         Settings Settings { get; }
+        bool IsAnyDatabaseOpen { get; }
+
+        // Field actions — plugin reads, resolves and executes; no secret value crosses the boundary
+        void CopyField(string entryUuid, string databaseUuid, string fieldName);
+        void AutoTypeField(string entryUuid, string databaseUuid, string fieldName);
+
+        // Value actions — caller supplies an already-resolved value (e.g. TOTP)
+        void CopyToClipboard(string value, string entryUuid, string databaseUuid);
+        void PerformAutoType(string entryUuid, string databaseUuid, string sequence = null);
+
+        // Navigation actions
+        void OpenEntryUrl(string entryUuid, string databaseUuid);
+        void SelectEntry(string entryUuid, string databaseUuid);
+
+        // Settings persistence
+        void SaveSettings(Settings settings);
     }
 }

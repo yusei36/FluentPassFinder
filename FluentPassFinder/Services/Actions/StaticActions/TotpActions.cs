@@ -1,4 +1,4 @@
-﻿using FluentPassFinder.Contracts;
+using FluentPassFinder.Contracts;
 using FluentPassFinder.Contracts.Public;
 
 namespace FluentPassFinder.Services.Actions.StaticActions
@@ -6,38 +6,40 @@ namespace FluentPassFinder.Services.Actions.StaticActions
     internal class CopyTotpAction : TotpActionBase
     {
         public override int DefaultSortingIndex => 100;
-        public override string ActionType => string.Format(ActionTypeConsts.CopyActionPattern, ActionTypeConsts.Totp);
+        public override string ActionType => string.Format(Consts.CopyActionPattern, Consts.Totp);
         public override string DisplayName => "Copy 'TOTP'";
+        public override string BadgePath => Icons.Copy;
 
         public override void RunAction(EntrySearchResult searchResult)
         {
             searchWindowInteractionService.Close();
-
             var totp = GenerateTotp(searchResult);
-
-            pluginProxy.CopyToClipboard(totp, true, true, searchResult.Entry);
+            if (!string.IsNullOrEmpty(totp))
+                pluginProxy.CopyToClipboard(totp, searchResult.Entry.Uuid, searchResult.Entry.DatabaseUuid);
         }
     }
 
     internal class AutoTypeTotpAction : TotpActionBase
     {
         public override int DefaultSortingIndex => 150;
-        public override string ActionType => string.Format(ActionTypeConsts.AutoTypeActionPattern, ActionTypeConsts.Totp);
+        public override string ActionType => string.Format(Consts.AutoTypeActionPattern, Consts.Totp);
         public override string DisplayName => "Auto type 'TOTP'";
+        public override string BadgePath => Icons.Keyboard;
 
         public override void RunAction(EntrySearchResult searchResult)
         {
             searchWindowInteractionService.Close();
             Task.Delay(100).Wait();
-
             var totp = GenerateTotp(searchResult);
-
-            pluginProxy.PerformAutoType(searchResult.Entry, searchResult.Database, totp + Consts.AutoTypeEnterPlaceholder);
+            if (!string.IsNullOrEmpty(totp))
+                pluginProxy.PerformAutoType(searchResult.Entry.Uuid, searchResult.Entry.DatabaseUuid, totp + Consts.AutoTypeEnterPlaceholder);
         }
     }
 
     internal abstract class TotpActionBase : ActionBase, IStaticAction
     {
+        public override string IconPath => Icons.Clock;
+
         public override bool CanRunAction(EntrySearchResult searchResult)
         {
             return CanGeneratePluginTotp(searchResult) || CanGenerateNativeTotp(searchResult);
@@ -47,14 +49,23 @@ namespace FluentPassFinder.Services.Actions.StaticActions
         {
             string totp = null;
             var pluginTotpPlaceholder = Settings.PluginTotpPlaceholder;
+
             if (CanGeneratePluginTotp(searchResult))
             {
-                totp = pluginProxy.GetPlaceholderValue(pluginTotpPlaceholder, searchResult.Entry, searchResult.Database, true);
+                totp = pluginProxy.GetPlaceholderValue(
+                    pluginTotpPlaceholder,
+                    searchResult.Entry.Uuid,
+                    searchResult.Entry.DatabaseUuid,
+                    resolveAll: true);
             }
 
             if ((string.IsNullOrEmpty(totp) || totp == pluginTotpPlaceholder) && CanGenerateNativeTotp(searchResult))
             {
-                totp = pluginProxy.GetPlaceholderValue(Consts.NativeTotpPlacholder, searchResult.Entry, searchResult.Database, true);
+                totp = pluginProxy.GetPlaceholderValue(
+                    Consts.NativeTotpPlacholder,
+                    searchResult.Entry.Uuid,
+                    searchResult.Entry.DatabaseUuid,
+                    resolveAll: true);
             }
 
             return totp;
@@ -63,28 +74,22 @@ namespace FluentPassFinder.Services.Actions.StaticActions
         private bool CanGeneratePluginTotp(EntrySearchResult searchResult)
         {
             var pluginTotpPlaceholder = Settings.PluginTotpPlaceholder;
-            if (pluginTotpPlaceholder != null)
-            {
-                var pluginTotpFieldConfig = Settings.PluginTotpFieldConfig;
-                if (pluginTotpFieldConfig == null)
-                {
-                    return true;
-                }
-                else
-                {
-                    var configuredField = pluginProxy.GetStringFromCustomConfig(pluginTotpFieldConfig, null);
-                    if (!string.IsNullOrEmpty(configuredField) && searchResult.Entry.Strings.GetKeys().Contains(configuredField))
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
+            if (pluginTotpPlaceholder == null)
+                return false;
+
+            var pluginTotpFieldConfig = Settings.PluginTotpFieldConfig;
+            if (pluginTotpFieldConfig == null)
+                return true;
+
+            var configuredField = pluginProxy.GetStringFromCustomConfig(pluginTotpFieldConfig, null);
+            return !string.IsNullOrEmpty(configuredField)
+                   && searchResult.Entry.Fields.ContainsKey(configuredField);
         }
 
-        private bool CanGenerateNativeTotp(EntrySearchResult searchResult)
+        private static bool CanGenerateNativeTotp(EntrySearchResult searchResult)
         {
-            return searchResult.Entry.Strings.GetKeys().Any(x => x.StartsWith(Consts.NativeTotpFieldPrefix, StringComparison.InvariantCultureIgnoreCase));
+            return searchResult.Entry.Fields.Keys
+                .Any(k => k.StartsWith(Consts.NativeTotpFieldPrefix, System.StringComparison.InvariantCultureIgnoreCase));
         }
     }
 }
