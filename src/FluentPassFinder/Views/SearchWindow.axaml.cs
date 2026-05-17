@@ -20,6 +20,8 @@ namespace FluentPassFinder.Views
         private bool _isOpening;
         private bool _pendingHide;
 
+        public SearchWindow() { InitializeComponent(); }
+
         public SearchWindow(SearchWindowViewModel viewModel, SettingsView settingsView)
         {
             ViewModel = viewModel;

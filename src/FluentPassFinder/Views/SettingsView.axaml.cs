@@ -9,6 +9,8 @@ namespace FluentPassFinder.Views
     {
         public SettingsViewModel ViewModel { get; }
 
+        public SettingsView() { InitializeComponent(); }
+
         public SettingsView(SettingsViewModel viewModel)
         {
             ViewModel = viewModel;

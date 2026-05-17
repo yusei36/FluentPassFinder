@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 using FluentPassFinder.Contracts;
 using FluentPassFinder.Contracts.Public;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,11 +14,13 @@ namespace FluentPassFinder.Services
         private IEnumerable<IStaticAction> staticActions;
         private readonly IPluginProxy pluginProxy;
         private readonly ISearchWindowInteractionService searchWindowInteractionService;
+        private readonly IServiceProvider serviceProvider;
 
-        public EntryActionService(IEnumerable<IStaticAction> actions, IPluginProxy pluginProxy, ISearchWindowInteractionService searchWindowInteractionService)
+        public EntryActionService(IEnumerable<IStaticAction> actions, IPluginProxy pluginProxy, ISearchWindowInteractionService searchWindowInteractionService, IServiceProvider serviceProvider)
         {
             this.pluginProxy = pluginProxy;
             this.searchWindowInteractionService = searchWindowInteractionService;
+            this.serviceProvider = serviceProvider;
             InitializeActions(actions);
         }
 
@@ -53,7 +56,7 @@ namespace FluentPassFinder.Services
 
             foreach (var fieldName in GetFields(searchResult, includeHiddenActions))
             {
-                var fieldActions = App.Container.GetAllInstances<IFieldAction>();
+                var fieldActions = serviceProvider.GetServices<IFieldAction>();
                 foreach (var fieldAction in fieldActions)
                 {
                     fieldAction.Initialize(pluginProxy, searchWindowInteractionService, fieldName);

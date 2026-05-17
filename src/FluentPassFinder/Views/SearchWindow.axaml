@@ -11,6 +11,8 @@
         xmlns:icons="clr-namespace:FluentPassFinder.Services.Actions"
         x:Class="FluentPassFinder.Views.SearchWindow"
         x:ClassModifier="internal"
+        x:DataType="local:SearchWindow"
+        x:CompileBindings="True"
         x:Name="WindowRoot"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance local:SearchWindow}"
@@ -230,7 +232,7 @@
                      IsVisible="{Binding ViewModel.IsContextMenuOpen, Converter={StaticResource InvertBoolConverter}}"
                      Background="{DynamicResource SolidBackgroundFillColorBaseBrush}">
                 <ListBox.ItemTemplate>
-                    <DataTemplate DataType="models:EntryViewModel">
+                    <DataTemplate x:DataType="models:EntryViewModel">
                         <Grid Margin="0,0"
                               Background="Transparent"
                               ToolTip.Tip="{Binding Title}"
@@ -276,7 +278,7 @@
 					</Style>
 				</ListBox.Styles>
                 <ListBox.ItemTemplate>
-                    <DataTemplate DataType="contracts:IAction">
+                    <DataTemplate x:DataType="contracts:IAction">
                         <Grid Background="Transparent"
                               PointerReleased="ActionPanel_PointerReleased">
                             <Grid.ColumnDefinitions>

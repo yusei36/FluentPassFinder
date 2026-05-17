@@ -8,18 +8,17 @@ using FluentPassFinder.Contracts;
 using FluentPassFinder.Contracts.Public;
 using FluentPassFinder.Ipc;
 using FluentPassFinder.Services;
+using FluentPassFinder.Services.Actions.FieldActions;
+using FluentPassFinder.Services.Actions.StaticActions;
 using FluentPassFinder.ViewModels;
 using FluentPassFinder.Views;
-using SimpleInjector;
+using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics;
-using System.Reflection;
 
 namespace FluentPassFinder
 {
     public partial class App : Application
     {
-        public static SimpleInjector.Container Container { get; private set; }
-
         private static App _instance;
         private SearchWindow _searchWindow;
 
@@ -64,22 +63,29 @@ namespace FluentPassFinder
             var pipeClient = new PipeClient(pipeName);
             pipeClient.Connect();
 
-            Container = new SimpleInjector.Container();
-            Container.Register<SearchWindowViewModel, SearchWindowViewModel>();
-            Container.RegisterSingleton<SettingsViewModel, SettingsViewModel>();
-            Container.RegisterSingleton(() => new Lazy<SearchWindowViewModel>(() =>
-                _searchWindow?.ViewModel ?? throw new InvalidOperationException("Current search window view model is null.")));
-            Container.RegisterSingleton(() => new Lazy<SearchWindow>(() =>
+            var services = new ServiceCollection();
+            services.AddSingleton<IPluginProxy>(pipeClient);
+            services.AddSingleton<Lazy<SearchWindow>>(_ => new Lazy<SearchWindow>(() =>
                 _searchWindow ?? throw new InvalidOperationException("Current search window is null.")));
-            Container.RegisterSingleton<ISearchWindowInteractionService, SearchWindowInteractionService>();
-            Container.Register<IEntryActionService, EntryActionService>();
-            Container.Register<IEntrySearchService, EntrySearchService>();
-            Container.Collection.Register<IStaticAction>(Assembly.GetAssembly(typeof(App)));
-            Container.Collection.Register<IFieldAction>(Assembly.GetAssembly(typeof(App)));
-            Container.RegisterInstance<IPluginProxy>(pipeClient);
+            services.AddSingleton<Lazy<SearchWindowViewModel>>(_ => new Lazy<SearchWindowViewModel>(() =>
+                _searchWindow?.ViewModel ?? throw new InvalidOperationException("Current search window view model is null.")));
+            services.AddSingleton<SettingsViewModel>();
+            services.AddSingleton<ISearchWindowInteractionService, SearchWindowInteractionService>();
+            services.AddSingleton<IEntrySearchService, EntrySearchService>();
+            services.AddSingleton<IEntryActionService, EntryActionService>();
+            services.AddSingleton<SearchWindowViewModel>();
+            services.AddTransient<IStaticAction, AutoTypeEntryAction>();
+            services.AddTransient<IStaticAction, OpenContextMenuAction>();
+            services.AddTransient<IStaticAction, OpenUrlAction>();
+            services.AddTransient<IStaticAction, SelectEntryAction>();
+            services.AddTransient<IStaticAction, CopyTotpAction>();
+            services.AddTransient<IStaticAction, AutoTypeTotpAction>();
+            services.AddTransient<IFieldAction, AutoTypeAction>();
+            services.AddTransient<IFieldAction, CopyAction>();
+            var provider = services.BuildServiceProvider();
 
-            var viewModel = Container.GetInstance<SearchWindowViewModel>();
-            var settingsViewModel = Container.GetInstance<SettingsViewModel>();
+            var viewModel = provider.GetRequiredService<SearchWindowViewModel>();
+            var settingsViewModel = provider.GetRequiredService<SettingsViewModel>();
             var settingsView = new Views.SettingsView(settingsViewModel);
             _searchWindow = new SearchWindow(viewModel, settingsView);
 
