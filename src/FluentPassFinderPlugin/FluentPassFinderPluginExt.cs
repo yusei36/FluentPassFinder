@@ -22,12 +22,13 @@ namespace FluentPassFinderPlugin
 
             var handler = new PluginRequestHandler(host);
             var pipeName = "FluentPassFinder_" + Guid.NewGuid().ToString("N");
+            var appExePath = FindAppExePath();
 
-            pipeServer = new PipeServer(pipeName, handler);
+            pipeServer = new PipeServer(pipeName, handler, appExePath);
             pipeServer.Start();
 
             var hostPid = Process.GetCurrentProcess().Id;
-            appProcess = Process.Start(FindAppExePath(), $"{pipeName} {hostPid}");
+            appProcess = Process.Start(appExePath, $"{pipeName} {hostPid}");
 
             return true;
         }
@@ -48,14 +49,19 @@ namespace FluentPassFinderPlugin
 
         private string FindAppExePath()
         {
-            var pluginAssembly = Assembly.GetAssembly(typeof(FluentPassFinderPluginExt));
-            var fileInfo = new FileInfo(pluginAssembly.Location);
-            var files = Directory.GetFiles(fileInfo.Directory.FullName, applicationExeName, SearchOption.AllDirectories);
+            var pluginDir = Path.GetDirectoryName(Assembly.GetAssembly(typeof(FluentPassFinderPluginExt)).Location);
 
-            if (!files.Any())
-                throw new Exception($"{applicationExeName} was not found.");
+            // Installed layout: exe sits next to the plugin DLL
+            var sameDirPath = Path.Combine(pluginDir, applicationExeName);
+            if (File.Exists(sameDirPath))
+                return sameDirPath;
 
-            return files[0];
+            // Local dev layout: Debug build copies the app into a bin/ subdirectory
+            var files = Directory.GetFiles(pluginDir, applicationExeName, SearchOption.AllDirectories);
+            if (files.Any())
+                return files[0];
+
+            throw new Exception($"{applicationExeName} was not found.");
         }
     }
 }

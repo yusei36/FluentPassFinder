@@ -12,11 +12,11 @@
     4. Publishes FluentPassFinder as a single-file executable (dotnet publish).
     5. Produces a zip archive ready for distribution:
          FluentPassFinder-<version>.zip
-           FluentPassFinderPlugin/        FluentPassFinderPlugin.dll (merged)
-           FluentPassFinderPlugin/bin/    FluentPassFinder.exe (single-file) + native DLLs
-           README.md
-           LICENSE
-           THIRD_PARTY_NOTICES.txt
+           FluentPassFinderPlugin/    FluentPassFinderPlugin.dll (merged)
+                                      FluentPassFinder.exe (single-file) + native DLLs
+           README.md                  (zip root)
+           LICENSE                    (zip root)
+           THIRD_PARTY_NOTICES.txt    (zip root)
 
 .PARAMETER Configuration
     Build configuration: Debug or Release. Defaults to Release.
@@ -96,22 +96,21 @@ New-Item $stagingDir -ItemType Directory | Out-Null
 
 $stagingPluginDir = "$stagingDir\FluentPassFinderPlugin"
 New-Item $stagingPluginDir -ItemType Directory | Out-Null
-New-Item "$stagingPluginDir\bin" -ItemType Directory | Out-Null
 
 # Copy merged plugin DLL (and PDB for Debug)
 $pluginExtensions = if ($Configuration -eq 'Debug') { '.dll', '.pdb' } else { '.dll' }
 Get-ChildItem $PluginDir -File | Where-Object { $_.Extension -in $pluginExtensions } |
     Copy-Item -Destination $stagingPluginDir
 
-# Copy single-file finder exe + native DLLs (no PDB for Release)
+# Copy finder exe + native DLLs alongside the plugin DLL (no PDB for Release)
 $binExtensions = if ($Configuration -eq 'Debug') { '.exe', '.dll', '.pdb' } else { '.exe', '.dll' }
 Get-ChildItem $finderBinDir -File | Where-Object { $_.Extension -in $binExtensions } |
-    Copy-Item -Destination "$stagingPluginDir\bin\"
+    Copy-Item -Destination $stagingPluginDir
 
-# Copy documentation
-Copy-Item "$RepoRoot\README.md" "$stagingPluginDir\README.md"
-Copy-Item "$RepoRoot\LICENSE"   "$stagingPluginDir\LICENSE"
-Copy-Item $noticesPath          "$stagingPluginDir\THIRD_PARTY_NOTICES.txt"
+# Copy documentation to zip root
+Copy-Item "$RepoRoot\README.md" "$stagingDir\README.md"
+Copy-Item "$RepoRoot\LICENSE"   "$stagingDir\LICENSE"
+Copy-Item $noticesPath          "$stagingDir\THIRD_PARTY_NOTICES.txt"
 
 Compress-Archive -Path "$stagingDir\*" -DestinationPath $zipPath
 Remove-Item $stagingDir -Recurse -Force

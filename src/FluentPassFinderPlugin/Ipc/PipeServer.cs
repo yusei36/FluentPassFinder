@@ -3,6 +3,8 @@
 using FluentPassFinder.Contracts.Public.Ipc;
 using System;
 using System.IO.Pipes;
+using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading;
 
 namespace FluentPassFinderPlugin.Ipc
@@ -11,14 +13,30 @@ namespace FluentPassFinderPlugin.Ipc
     {
         private readonly string pipeName;
         private readonly PluginRequestHandler handler;
+        private readonly string expectedClientExe;
         private NamedPipeServerStream serverStream;
         private Thread readerThread;
         private volatile bool running;
 
-        public PipeServer(string pipeName, PluginRequestHandler handler)
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern bool GetNamedPipeClientProcessId(IntPtr Pipe, out uint ClientProcessId);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern IntPtr OpenProcess(uint dwDesiredAccess, bool bInheritHandle, uint dwProcessId);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern bool CloseHandle(IntPtr hObject);
+
+        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+        private static extern bool QueryFullProcessImageName(IntPtr hProcess, uint dwFlags, StringBuilder lpExeName, ref uint lpdwSize);
+
+        private const uint ProcessQueryLimitedInformation = 0x1000;
+
+        public PipeServer(string pipeName, PluginRequestHandler handler, string expectedClientExe)
         {
             this.pipeName = pipeName;
             this.handler = handler;
+            this.expectedClientExe = expectedClientExe;
         }
 
         public void Start()
@@ -41,6 +59,12 @@ namespace FluentPassFinderPlugin.Ipc
             {
                 serverStream.WaitForConnection();
 
+                if (!IsClientAuthorized())
+                {
+                    serverStream.Disconnect();
+                    return;
+                }
+
                 while (running && serverStream.IsConnected)
                 {
                     var request = PipeProtocol.ReadRequest(serverStream);
@@ -53,6 +77,30 @@ namespace FluentPassFinderPlugin.Ipc
             catch (Exception)
             {
                 // Connection closed or plugin shutting down — exit silently
+            }
+        }
+
+        private bool IsClientAuthorized()
+        {
+            if (!GetNamedPipeClientProcessId(serverStream.SafePipeHandle.DangerousGetHandle(), out var clientPid))
+                return false;
+
+            var hProcess = OpenProcess(ProcessQueryLimitedInformation, false, clientPid);
+            if (hProcess == IntPtr.Zero)
+                return false;
+
+            try
+            {
+                var sb = new StringBuilder(32767);
+                uint size = (uint)sb.Capacity;
+                if (!QueryFullProcessImageName(hProcess, 0, sb, ref size))
+                    return false;
+
+                return string.Equals(sb.ToString(), expectedClientExe, StringComparison.OrdinalIgnoreCase);
+            }
+            finally
+            {
+                CloseHandle(hProcess);
             }
         }
 
