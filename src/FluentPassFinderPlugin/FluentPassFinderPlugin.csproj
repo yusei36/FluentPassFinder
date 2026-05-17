@@ -11,10 +11,9 @@
 	<Description>KeePass Plugin with a fluent design search window to quickly find entries and autotype or copy passwords or other fields. Shortcut can be used to open the small search window from everywhere.</Description>
   </PropertyGroup>
   <ItemGroup>
-  	<UpToDateCheckInput Include="..\FluentPassFinder\**\*.*" />
-	<UpToDateCheckInput Include="..\FluentPassFinderContracts\**\*.*" />
-	<UpToDateCheckInput Include="..\FluentPassFinderPlugin\**\*.*" />
-	<UpToDateCheckInput Include=".\PostBuild.ps1" />
+    <UpToDateCheckInput Include="..\FluentPassFinder\**\*.*" />
+    <UpToDateCheckInput Include="..\FluentPassFinderContracts\**\*.*" />
+    <UpToDateCheckInput Include="..\FluentPassFinderPlugin\**\*.*" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
@@ -22,12 +21,40 @@
   <ItemGroup>
     <ProjectReference Include="..\FluentPassFinderContracts\FluentPassFinderContracts.csproj" />
   </ItemGroup>
-  <ItemGroup>
+  <!-- Local dev: build\KeePass\KeePass.exe (official build). CI fallback: NuGet (unsigned). -->
+  <ItemGroup Condition="Exists('..\..\build\KeePass\KeePass.exe')">
     <Reference Include="KeePass">
       <HintPath>..\..\build\KeePass\KeePass.exe</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="powershell $(ProjectDir)PostBuild.ps1 -OutputSrcDir $(SolutionDir)build/$(Configuration)/$(TargetFramework) -AppBinDir $(SolutionDir)build/$(Configuration)/net10.0-windows/bin -SolutionDir $(SolutionDir) -Configuration $(Configuration)" />
+  <ItemGroup Condition="!Exists('..\..\build\KeePass\KeePass.exe')">
+    <PackageReference Include="KeePass" Version="2.54.0.23169">
+      <IncludeAssets>compile</IncludeAssets>
+      <ExcludeAssets>runtime;build;native;contentfiles;analyzers;buildtransitive</ExcludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  <Target Name="CopyToKeePassPlugins" AfterTargets="Build">
+    <PropertyGroup>
+      <PluginOutputPath>$(SolutionDir)build\KeePass\Plugins\FluentPassFinder\</PluginOutputPath>
+      <AppBinDir>$(SolutionDir)build\$(Configuration)\net10.0-windows\bin\</AppBinDir>
+    </PropertyGroup>
+
+    <RemoveDir Directories="$(PluginOutputPath)" />
+    <MakeDir Directories="$(PluginOutputPath)bin\" />
+
+    <ItemGroup>
+      <_PluginFiles Include="$(OutDir)*.dll" Exclude="$(OutDir)KeePass*.dll" />
+      <_PluginFiles Include="$(OutDir)*.pdb" Condition="'$(Configuration)' == 'Debug'" />
+      <_AppDlls Include="$(AppBinDir)*.dll" Exclude="$(AppBinDir)KeePass*.dll" />
+      <_NativeAssets Include="$(AppBinDir)runtimes\win-x64\native\*.dll" />
+      <_AppFiles Include="$(AppBinDir)FluentPassFinder*" Condition="'$(Configuration)' == 'Debug'" />
+      <_AppFiles Include="$(AppBinDir)FluentPassFinder*" Exclude="$(AppBinDir)FluentPassFinder*.pdb" Condition="'$(Configuration)' != 'Debug'" />
+    </ItemGroup>
+
+    <Copy SourceFiles="@(_PluginFiles)" DestinationFolder="$(PluginOutputPath)" />
+    <Copy SourceFiles="@(_AppDlls)" DestinationFolder="$(PluginOutputPath)bin\" />
+    <Copy SourceFiles="@(_NativeAssets)" DestinationFolder="$(PluginOutputPath)bin\" />
+    <Copy SourceFiles="@(_AppFiles)" DestinationFolder="$(PluginOutputPath)bin\" />
   </Target>
 </Project>

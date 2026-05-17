@@ -20,16 +20,6 @@ jobs:
         with:
           dotnet-version: '10.x'
 
-      - name: Download KeePass
-        id: DownloadKeePass
-        uses: smorks/keepass-download-action@v0.0.5
-
-      - name: Extract KeePass
-        shell: pwsh
-        run: |
-          New-Item -ItemType Directory -Force -Path build/KeePass | Out-Null
-          7z x -o"build/KeePass" "${{ steps.DownloadKeePass.outputs.filename }}" KeePass.exe
-
       - name: Build and package
         shell: pwsh
         run: .\scripts\Publish-Package.ps1 -Configuration Debug

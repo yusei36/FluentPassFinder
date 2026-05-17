@@ -1,4 +1,4 @@
-[![Build Plugin](https://github.com/yusei36/FluentPassFinder/actions/workflows/BuildPlugin.yml/badge.svg?branch=master)](https://github.com/yusei36/FluentPassFinder/actions/workflows/BuildPlugin.yml)
+[![Build](https://github.com/yusei36/FluentPassFinder/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/yusei36/FluentPassFinder/actions/workflows/build.yml)
 
 ## Status
 ⚠️ **Early Stage / Personal Project**: This project was mostly developed for personal use and has never been properly released or maintained due to limited available time. A larger refactoring is currently in progress and may be released in the future.
@@ -8,23 +8,23 @@ KeePass Plugin with a fluent design search window to quickly find entries and au
 Shortcut can be used to open the small search window from everywhere.
 
 ## Requirements
-- KeePass2 Version 2.54 or never
-- .NET Framework 4.8
-- Only runs under Windows (tested with Windows 10 & 11)
+- KeePass2 Version 2.54 or newer
+- Windows 10 or 11
+- .NET 10 runtime (bundled — the app ships as a self-contained executable, no separate install needed)
 
 ## How to use
 
 ### General shortcuts:
-- Open FluentPassFinder on current screen: `Control + Alt + S` or `Alt Gr + S`
-- Open FluentPassFinder on main screen: `Control + Alt + F` or `Alt Gr + F`
+- Open FluentPassFinder on current screen: `Ctrl+Alt+S` (or `Alt Gr+S`)
+- Open FluentPassFinder on main screen: `Ctrl+Alt+F` (or `Alt Gr+F`)
 - Navigate up in list: `Arrow Up`
-- Navigate down in list `Arrow Down`
+- Navigate down in list: `Arrow Down`
 
 ### Entry shortcuts
 - Open entry context menu: `Enter`
-- Copy user name: `Shift + Enter`
-- Copy password: `Control + Enter`
-- Copy TOTP: `Alt + Enter`
+- Copy user name: `Shift+Enter`
+- Copy password: `Ctrl+Enter`
+- Copy TOTP: `Alt+Enter`
 - Select action in entry context menu: `Enter`
 
 ## Screenshots
@@ -36,11 +36,13 @@ Shortcut can be used to open the small search window from everywhere.
 
 
 ## Configuration
-WARNING: The configuration may undergo changes that are not compatible with the current naming and format until the settings window is implemented.
 
-Plugin can currently only be configured within the `KeePass.config.xml` configuration, but a settings window will be implemented later.
-After KeePass is closed for the first time after the plugin was installed the configuration file should contain the configuration for the FluentPassFinderPlugin.
-```
+Plugin settings can be changed via the built-in **settings panel** inside the FluentPassFinder window (gear icon), or by editing `KeePass.config.xml` directly.
+
+After KeePass is closed for the first time after the plugin was installed, the configuration file will contain an entry like this:
+(Note that this example may not be always up to date)
+
+```xml
 <Custom>
     <Item>
         <Key>FluentPassFinderPlugin</Key>
@@ -85,5 +87,20 @@ After KeePass is closed for the first time after the plugin was installed the co
 ```
 
 ## License
-- License GPL-3.0: [LICENSE](./LICENSE)
-- Third Party Licenses: [ThirdPartyNotices.md](./ThirdPartyNotices.md)
+
+Copyright © 2023 - 2026 Uwe Kögel
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+See [LICENSE](LICENSE) for the full license text.
