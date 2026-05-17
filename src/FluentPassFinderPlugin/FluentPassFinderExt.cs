@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: Copyright (C) 2023-2026 Uwe Koegel
 // SPDX-License-Identifier: GPL-3.0-or-later
-using FluentPassFinderPlugin.Ipc;
+using FluentPassFinder.Ipc;
 using KeePass.Plugins;
 using System;
 using System.Diagnostics;
@@ -8,9 +8,9 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
-namespace FluentPassFinderPlugin
+namespace FluentPassFinder
 {
-    public sealed class FluentPassFinderPluginExt : Plugin
+    public sealed class FluentPassFinderExt : Plugin
     {
         private const string applicationExeName = "FluentPassFinder.exe";
         private Process appProcess;
@@ -49,7 +49,7 @@ namespace FluentPassFinderPlugin
 
         private string FindAppExePath()
         {
-            var pluginDir = Path.GetDirectoryName(Assembly.GetAssembly(typeof(FluentPassFinderPluginExt)).Location);
+            var pluginDir = Path.GetDirectoryName(Assembly.GetAssembly(typeof(FluentPassFinderExt)).Location);
 
             // Installed layout: exe sits next to the plugin DLL
             var sameDirPath = Path.Combine(pluginDir, applicationExeName);

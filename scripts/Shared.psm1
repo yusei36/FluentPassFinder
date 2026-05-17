@@ -30,7 +30,7 @@ function Invoke-Build([string]$RepoRoot, [string]$Configuration) {
 }
 
 function Get-PluginVersion([string]$PluginDir) {
-    $dllPath = Join-Path $PluginDir 'FluentPassFinderPlugin.dll'
+    $dllPath = Join-Path $PluginDir 'FluentPassFinder.dll'
     if (-not (Test-Path $dllPath)) { throw "Plugin DLL not found: $dllPath" }
     return [System.Diagnostics.FileVersionInfo]::GetVersionInfo($dllPath).ProductVersion
 }

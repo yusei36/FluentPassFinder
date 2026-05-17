@@ -17,10 +17,12 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 
-namespace FluentPassFinderPlugin.Ipc
+namespace FluentPassFinder.Ipc
 {
     internal class PluginRequestHandler
     {
+        private const string ConfigKey = "FluentPassFinder";
+
         private readonly IPluginHost pluginHost;
         private readonly MainForm mainWindow;
         private readonly JsonSerializerSettings jsonSerializerSettings;
@@ -353,14 +355,14 @@ namespace FluentPassFinderPlugin.Ipc
         {
             settings = req.Settings;
             InvokeOnUiThread(() =>
-                pluginHost.CustomConfig.SetString(nameof(FluentPassFinderPlugin),
+                pluginHost.CustomConfig.SetString(ConfigKey,
                     JsonConvert.SerializeObject(settings, jsonSerializerSettings)));
             return Ack();
         }
 
         private Settings LoadOrCreateDefaultSettings()
         {
-            var configString = pluginHost.CustomConfig.GetString(nameof(FluentPassFinderPlugin));
+            var configString = pluginHost.CustomConfig.GetString(ConfigKey);
             if (configString == null)
                 return CreateDefaultSettings();
 
@@ -376,7 +378,7 @@ namespace FluentPassFinderPlugin.Ipc
 
         private Settings CreateDefaultSettings()
         {
-            pluginHost.CustomConfig.SetString(nameof(FluentPassFinderPlugin),
+            pluginHost.CustomConfig.SetString(ConfigKey,
                 JsonConvert.SerializeObject(Settings.DefaultSettings, jsonSerializerSettings));
             return Settings.DefaultSettings;
         }

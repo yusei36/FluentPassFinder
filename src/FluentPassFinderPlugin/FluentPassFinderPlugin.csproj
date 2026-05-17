@@ -3,6 +3,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Library</OutputType>
+    <AssemblyName>FluentPassFinder</AssemblyName>
+    <RootNamespace>FluentPassFinder</RootNamespace>
     <UseWindowsForms>true</UseWindowsForms>
 	<OutDir>$(SolutionDir)build/$(Configuration)/$(TargetFramework)/</OutDir>
   </PropertyGroup>

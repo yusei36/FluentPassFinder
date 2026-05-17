@@ -7,12 +7,12 @@
 
 .DESCRIPTION
     1. Generates third-party license notices.
-    2. Builds the plugin and WPF app.
-    3. Merges plugin DLLs into FluentPassFinderPlugin.dll via ILRepack.
+    2. Builds the plugin and Avalonia app.
+    3. Merges plugin DLLs into FluentPassFinder.dll via ILRepack.
     4. Publishes FluentPassFinder as a single-file executable (dotnet publish).
     5. Produces a zip archive ready for distribution:
          FluentPassFinder-<version>.zip
-           FluentPassFinderPlugin/    FluentPassFinderPlugin.dll (merged)
+           FluentPassFinderPlugin/    FluentPassFinder.dll (merged)
                                       FluentPassFinder.exe (single-file) + native DLLs
            README.md                  (zip root)
            LICENSE                    (zip root)
@@ -40,9 +40,11 @@ $ErrorActionPreference = 'Stop'
 
 Import-Module "$PSScriptRoot\Shared.psm1" -Force
 
-$RepoRoot   = Split-Path $PSScriptRoot -Parent
-$PluginDir  = "$RepoRoot\build\KeePass\Plugins\FluentPassFinder"
-$OutputDir  = "$RepoRoot\build"
+$RepoRoot       = Split-Path $PSScriptRoot -Parent
+$buildDir       = "$RepoRoot\build\$Configuration"
+$pluginBuildDir = "$buildDir\net48"
+$appPublishDir  = "$buildDir\publish"
+$OutputDir      = "$RepoRoot\build"
 
 $versions = Get-BuildVersions $RepoRoot
 Write-Host "FluentPassFinder $($versions.Version) ($Configuration)" -ForegroundColor White
@@ -59,13 +61,13 @@ if (-not $SkipBuild) {
     Invoke-Build -RepoRoot $RepoRoot -Configuration $Configuration
 }
 
-if (-not (Test-Path $PluginDir)) {
-    throw "Plugin output directory not found: $PluginDir`nRun a build first or omit -SkipBuild."
+if (-not (Test-Path $pluginBuildDir)) {
+    throw "Plugin build output not found: $pluginBuildDir`nRun a build first or omit -SkipBuild."
 }
 
 # -- 3. Merge plugin DLLs with ILRepack ----------------------------------------
 Write-Step "Merging plugin DLLs with ILRepack"
-Invoke-ILRepack -Dir $PluginDir -Primary 'FluentPassFinderPlugin.dll'
+Invoke-ILRepack -Dir $pluginBuildDir -Primary 'FluentPassFinder.dll' -ExcludePatterns 'KeePass*'
 
 # -- 4. Publish finder as single-file executable --------------------------------
 # ILRepack cannot merge Avalonia assemblies (duplicate CompiledAvaloniaXaml.!XamlLoader
@@ -73,11 +75,10 @@ Invoke-ILRepack -Dir $PluginDir -Primary 'FluentPassFinderPlugin.dll'
 # managed DLLs into the exe. Native DLLs (av_libglesv2, libSkiaSharp, etc.) remain
 # alongside and cannot be bundled.
 Write-Step "Publishing FluentPassFinder as single-file executable"
-$finderBinDir = "$PluginDir\bin"
-$finderProj   = "$RepoRoot\src\FluentPassFinder\FluentPassFinder.csproj"
-Remove-Item $finderBinDir -Recurse -Force -ErrorAction SilentlyContinue
-New-Item $finderBinDir -ItemType Directory -Force | Out-Null
-& dotnet publish $finderProj -c $Configuration -o $finderBinDir --nologo
+$finderProj = "$RepoRoot\src\FluentPassFinder\FluentPassFinder.csproj"
+Remove-Item $appPublishDir -Recurse -Force -ErrorAction SilentlyContinue
+New-Item $appPublishDir -ItemType Directory -Force | Out-Null
+& dotnet publish $finderProj -c $Configuration -o $appPublishDir --nologo
 if ($LASTEXITCODE -ne 0) { throw "dotnet publish failed with exit code $LASTEXITCODE" }
 
 # -- 5. Assemble zip ------------------------------------------------------------
@@ -99,12 +100,12 @@ New-Item $stagingPluginDir -ItemType Directory | Out-Null
 
 # Copy merged plugin DLL (and PDB for Debug)
 $pluginExtensions = if ($Configuration -eq 'Debug') { '.dll', '.pdb' } else { '.dll' }
-Get-ChildItem $PluginDir -File | Where-Object { $_.Extension -in $pluginExtensions } |
+Get-ChildItem $pluginBuildDir -File | Where-Object { $_.Extension -in $pluginExtensions } |
     Copy-Item -Destination $stagingPluginDir
 
 # Copy finder exe + native DLLs alongside the plugin DLL (no PDB for Release)
 $binExtensions = if ($Configuration -eq 'Debug') { '.exe', '.dll', '.pdb' } else { '.exe', '.dll' }
-Get-ChildItem $finderBinDir -File | Where-Object { $_.Extension -in $binExtensions } |
+Get-ChildItem $appPublishDir -File | Where-Object { $_.Extension -in $binExtensions } |
     Copy-Item -Destination $stagingPluginDir
 
 # Copy documentation to zip root
@@ -125,7 +126,7 @@ $zip.Dispose()
 $hash    = (Get-FileHash $zipPath -Algorithm SHA256).Hash
 $zipSize = [math]::Round((Get-Item $zipPath).Length / 1MB, 2)
 
-$productVersion = Get-PluginVersion -PluginDir $PluginDir
+$productVersion = Get-PluginVersion -PluginDir $pluginBuildDir
 Write-Host "  Version:  $productVersion ($Configuration)" -ForegroundColor Green
 Write-Host "  Archive:  $zipPath ($zipSize MB)" -ForegroundColor Green
 Write-Host "  SHA256:   $hash" -ForegroundColor Green

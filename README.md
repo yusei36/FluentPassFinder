@@ -44,7 +44,7 @@ After KeePass is closed for the first time after the plugin was installed, the c
 ```xml
 <Custom>
     <Item>
-        <Key>FluentPassFinderPlugin</Key>
+        <Key>FluentPassFinder</Key>
         <Value>{
   "SearchOptions": {
     "IncludeTitleField": true,

@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 
-namespace FluentPassFinderPlugin.Ipc
+namespace FluentPassFinder.Ipc
 {
     internal class PipeServer : IDisposable
     {
