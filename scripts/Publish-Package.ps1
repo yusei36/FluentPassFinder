@@ -74,7 +74,7 @@ Invoke-ILRepack -Dir $PluginDir -Primary 'FluentPassFinderPlugin.dll'
 # alongside and cannot be bundled.
 Write-Step "Publishing FluentPassFinder as single-file executable"
 $finderBinDir = "$PluginDir\bin"
-$finderProj   = "$RepoRoot\FluentPassFinder\FluentPassFinder.csproj"
+$finderProj   = "$RepoRoot\src\FluentPassFinder\FluentPassFinder.csproj"
 Remove-Item $finderBinDir -Recurse -Force -ErrorAction SilentlyContinue
 New-Item $finderBinDir -ItemType Directory -Force | Out-Null
 & dotnet publish $finderProj -c $Configuration -o $finderBinDir --nologo

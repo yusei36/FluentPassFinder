@@ -16,7 +16,6 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Windows.Threading;
 
 namespace FluentPassFinderPlugin.Ipc
 {
@@ -24,7 +23,6 @@ namespace FluentPassFinderPlugin.Ipc
     {
         private readonly IPluginHost pluginHost;
         private readonly MainForm mainWindow;
-        private readonly Dispatcher pluginHostDispatcher;
         private readonly JsonSerializerSettings jsonSerializerSettings;
         private readonly Dictionary<int, byte[]> builtInIconCache = new Dictionary<int, byte[]>();
 
@@ -33,7 +31,6 @@ namespace FluentPassFinderPlugin.Ipc
         public PluginRequestHandler(IPluginHost pluginHost)
         {
             this.pluginHost = pluginHost;
-            pluginHostDispatcher = Dispatcher.CurrentDispatcher;
             mainWindow = pluginHost.MainWindow;
 
             jsonSerializerSettings = new JsonSerializerSettings();
@@ -73,7 +70,7 @@ namespace FluentPassFinderPlugin.Ipc
 
         private PipeResponse HandleSearchEntries(SearchEntriesRequest req)
         {
-            var entries = pluginHostDispatcher.Invoke(() =>
+            var entries = InvokeOnUiThread(() =>
             {
                 var query = (req.Query ?? string.Empty).ToLowerInvariant();
                 var searchOptions = settings.SearchOptions;
@@ -106,7 +103,7 @@ namespace FluentPassFinderPlugin.Ipc
 
         private PipeResponse HandleGetPlaceholderValue(GetPlaceholderValueRequest req)
         {
-            var value = pluginHostDispatcher.Invoke(() =>
+            var value = InvokeOnUiThread(() =>
             {
                 var (entry, db) = ResolveEntry(req.EntryUuid, req.DatabaseUuid);
                 if (entry == null) return req.Placeholder;
@@ -118,21 +115,21 @@ namespace FluentPassFinderPlugin.Ipc
 
         private PipeResponse HandleGetStringFromCustomConfig(GetStringFromCustomConfigRequest req)
         {
-            var value = pluginHostDispatcher.Invoke(() =>
+            var value = InvokeOnUiThread(() =>
                 pluginHost.CustomConfig.GetString(req.ConfigId, req.DefaultValue));
             return new GetStringFromCustomConfigResponse { Success = true, Value = value };
         }
 
         private PipeResponse HandleIsAnyDatabaseOpen(IsAnyDatabaseOpenRequest req)
         {
-            var isOpen = pluginHostDispatcher.Invoke(() =>
+            var isOpen = InvokeOnUiThread(() =>
                 mainWindow.DocumentManager.GetOpenDatabases().Any());
             return new IsAnyDatabaseOpenResponse { Success = true, IsOpen = isOpen };
         }
 
         private PipeResponse HandleCopyField(CopyFieldRequest req)
         {
-            pluginHostDispatcher.Invoke(() =>
+            InvokeOnUiThread(() =>
             {
                 var (entry, db) = ResolveEntry(req.EntryUuid, req.DatabaseUuid);
                 if (entry == null) return;
@@ -149,7 +146,7 @@ namespace FluentPassFinderPlugin.Ipc
 
         private PipeResponse HandleCopyToClipboard(CopyToClipboardRequest req)
         {
-            pluginHostDispatcher.Invoke(() =>
+            InvokeOnUiThread(() =>
             {
                 var (entry, db) = ResolveEntry(req.EntryUuid, req.DatabaseUuid);
                 if (entry == null) return;
@@ -162,7 +159,7 @@ namespace FluentPassFinderPlugin.Ipc
 
         private PipeResponse HandleAutoTypeField(AutoTypeFieldRequest req)
         {
-            pluginHostDispatcher.Invoke(() =>
+            InvokeOnUiThread(() =>
             {
                 var (entry, db) = ResolveEntry(req.EntryUuid, req.DatabaseUuid);
                 if (entry == null) return;
@@ -178,7 +175,7 @@ namespace FluentPassFinderPlugin.Ipc
 
         private PipeResponse HandlePerformAutoType(PerformAutoTypeRequest req)
         {
-            pluginHostDispatcher.Invoke(() =>
+            InvokeOnUiThread(() =>
             {
                 var (entry, db) = ResolveEntry(req.EntryUuid, req.DatabaseUuid);
                 if (entry != null)
@@ -189,7 +186,7 @@ namespace FluentPassFinderPlugin.Ipc
 
         private PipeResponse HandleOpenEntryUrl(OpenEntryUrlRequest req)
         {
-            pluginHostDispatcher.Invoke(() =>
+            InvokeOnUiThread(() =>
             {
                 var (entry, _) = ResolveEntry(req.EntryUuid, req.DatabaseUuid);
                 if (entry != null) WinUtil.OpenEntryUrl(entry);
@@ -199,7 +196,7 @@ namespace FluentPassFinderPlugin.Ipc
 
         private PipeResponse HandleSelectEntry(SelectEntryRequest req)
         {
-            pluginHostDispatcher.Invoke(() =>
+            InvokeOnUiThread(() =>
             {
                 var (entry, db) = ResolveEntry(req.EntryUuid, req.DatabaseUuid);
                 if (entry == null) return;
@@ -355,7 +352,7 @@ namespace FluentPassFinderPlugin.Ipc
         private PipeResponse HandleSaveSettings(SaveSettingsRequest req)
         {
             settings = req.Settings;
-            pluginHostDispatcher.Invoke(() =>
+            InvokeOnUiThread(() =>
                 pluginHost.CustomConfig.SetString(nameof(FluentPassFinderPlugin),
                     JsonConvert.SerializeObject(settings, jsonSerializerSettings)));
             return Ack();
@@ -383,6 +380,12 @@ namespace FluentPassFinderPlugin.Ipc
                 JsonConvert.SerializeObject(Settings.DefaultSettings, jsonSerializerSettings));
             return Settings.DefaultSettings;
         }
+
+        private void InvokeOnUiThread(Action action) =>
+            mainWindow.Invoke(action);
+
+        private T InvokeOnUiThread<T>(Func<T> func) =>
+            (T)mainWindow.Invoke(func);
 
         private static PipeResponse Ack(bool success = true, string error = null) =>
             new PipeResponse { Success = success, Error = error };

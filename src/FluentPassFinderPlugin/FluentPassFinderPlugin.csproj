@@ -4,8 +4,6 @@
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <UseWindowsForms>true</UseWindowsForms>
-    <UseWPF>true</UseWPF>
-    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
 	<OutDir>$(SolutionDir)build/$(Configuration)/$(TargetFramework)/</OutDir>
   </PropertyGroup>
   <PropertyGroup>
@@ -26,7 +24,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="KeePass">
-      <HintPath>..\build\KeePass\KeePass.exe</HintPath>
+      <HintPath>..\..\build\KeePass\KeePass.exe</HintPath>
     </Reference>
   </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
