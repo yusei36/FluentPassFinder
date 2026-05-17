@@ -8,9 +8,8 @@ KeePass Plugin with a fluent design search window to quickly find entries and au
 Shortcut can be used to open the small search window from everywhere.
 
 ## Requirements
-- KeePass2 Version 2.54 or newer
+- [KeePass](https://keepass.info/) 2.54 or later
 - Windows 10 or 11
-- .NET 10 runtime (bundled — the app ships as a self-contained executable, no separate install needed)
 
 ## How to use
 
