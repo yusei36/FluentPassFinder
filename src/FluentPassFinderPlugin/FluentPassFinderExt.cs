@@ -49,14 +49,12 @@ namespace FluentPassFinder
 
         private string FindAppExePath()
         {
+            // exe needs to sit next to the plugin DLL or in a subdirectory, otherwise the app won't be able to find the plugin DLL
             var pluginDir = Path.GetDirectoryName(Assembly.GetAssembly(typeof(FluentPassFinderExt)).Location);
-
-            // Installed layout: exe sits next to the plugin DLL
             var sameDirPath = Path.Combine(pluginDir, applicationExeName);
             if (File.Exists(sameDirPath))
                 return sameDirPath;
 
-            // Local dev layout: Debug build copies the app into a bin/ subdirectory
             var files = Directory.GetFiles(pluginDir, applicationExeName, SearchOption.AllDirectories);
             if (files.Any())
                 return files[0];
