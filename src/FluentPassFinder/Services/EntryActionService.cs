@@ -3,9 +3,6 @@
 using FluentPassFinder.Contracts;
 using FluentPassFinder.Contracts.Public;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace FluentPassFinder.Services
 {

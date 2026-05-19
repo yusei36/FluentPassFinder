@@ -3,7 +3,6 @@
 using FluentPassFinder.Contracts;
 using FluentPassFinder.Contracts.Public;
 using FluentPassFinder.ViewModels;
-using System;
 
 namespace FluentPassFinder.Services.Actions.StaticActions
 {
