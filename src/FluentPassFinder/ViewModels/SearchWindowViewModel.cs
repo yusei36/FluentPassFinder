@@ -190,10 +190,14 @@ namespace FluentPassFinder.ViewModels
         {
             if (IsContextMenuOpen) return;
 
-            SelectedEntry = null;
-            ClearEntries();
+            if (string.IsNullOrEmpty(query))
+            {
+                SelectedEntry = null;
+                ClearEntries();
+                return;
+            }
 
-            try { await Task.Delay(250, ct); }
+            try { await Task.Delay(150, ct); }
             catch (OperationCanceledException) { return; }
 
             List<EntryViewModel> results;
@@ -206,6 +210,9 @@ namespace FluentPassFinder.ViewModels
                 }, ct);
             }
             catch (OperationCanceledException) { return; }
+
+            SelectedEntry = null;
+            ClearEntries();
 
             if (results == null) return;
 

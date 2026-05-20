@@ -21,7 +21,7 @@
         CanResize="False"
         WindowStartupLocation="Manual"
         Width="450"
-        MinHeight="40"
+        MinHeight="36"
         SizeToContent="Height"
         SystemDecorations="None"
         ExtendClientAreaToDecorationsHint="True"
@@ -93,7 +93,7 @@
             Background="{DynamicResource SolidBackgroundFillColorBaseBrush}">
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="40" />
+                <RowDefinition Height="36" />
                 <RowDefinition Height="*" MaxHeight="400" />
             </Grid.RowDefinitions>
 
