@@ -2,11 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 using FluentPassFinder.Contracts;
 using FluentPassFinder.Contracts.Public;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace FluentPassFinder.ViewModels
 {

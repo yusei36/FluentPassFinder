@@ -2,8 +2,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 using Avalonia.Media.Imaging;
 using FluentPassFinder.Contracts;
-using FluentPassFinder.Contracts.Public;
-using System.IO;
 
 namespace FluentPassFinder.ViewModels
 {
