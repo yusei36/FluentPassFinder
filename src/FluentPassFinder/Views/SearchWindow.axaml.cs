@@ -19,6 +19,7 @@ namespace FluentPassFinder.Views
         private bool _isClosing;
         private bool _isOpening;
         private bool _pendingHide;
+        private readonly Timer _preserveTimer;
 
         public SearchWindow() { InitializeComponent(); }
 
@@ -27,6 +28,15 @@ namespace FluentPassFinder.Views
             ViewModel = viewModel;
             SettingsView = settingsView;
             DataContext = this;
+
+            _preserveTimer = new Timer(_ =>
+            {
+                Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+                {
+                    if (!IsVisible && !_isOpening)
+                        ViewModel.SearchText = string.Empty;
+                });
+            }, null, Timeout.Infinite, Timeout.Infinite);
 
             InitializeComponent();
 
@@ -43,12 +53,21 @@ namespace FluentPassFinder.Views
             _isClosing = true;
             _pendingHide = true;
 
-            ViewModel.SearchText = string.Empty;
-            SearchBox.Text = string.Empty;
-            ViewModel.ClearEntries();
-            ViewModel.IsContextMenuOpen = false;
             ViewModel.IsSettingsOpen = false;
-            ViewModel.SelectedEntry = null;
+
+            if (ViewModel.Settings.PreserveLastSearch && !string.IsNullOrEmpty(ViewModel.SearchText))
+            {
+                _preserveTimer.Change(ViewModel.Settings.PreserveLastSearchTimeoutMilliseconds, Timeout.Infinite);
+            }
+            else
+            {
+                _preserveTimer.Change(Timeout.Infinite, Timeout.Infinite);
+                ViewModel.IsContextMenuOpen = false;
+                ViewModel.SearchText = string.Empty;
+                SearchBox.Text = string.Empty;
+                ViewModel.ClearEntries();
+                ViewModel.SelectedEntry = null;
+            }
 
             // Defer Hide() so Avalonia renders one frame with the cleared state first.
             // That way the GPU frame buffer is already empty when the window is next shown.
@@ -70,10 +89,18 @@ namespace FluentPassFinder.Views
             _pendingHide = false; // cancel any deferred hide
             _isOpening = true;
 
-            ViewModel.SearchText = string.Empty;
-            ViewModel.IsContextMenuOpen = false;
             ViewModel.IsSettingsOpen = false;
-            SearchBox.Text = string.Empty;
+
+            if (ViewModel.Settings.PreserveLastSearch && !string.IsNullOrEmpty(ViewModel.SearchText))
+            {
+                _preserveTimer.Change(Timeout.Infinite, Timeout.Infinite);
+            }
+            else
+            {
+                ViewModel.IsContextMenuOpen = false;
+                ViewModel.SearchText = string.Empty;
+                SearchBox.Text = string.Empty;
+            }
 
             SetCenteredWindowPosition(showOnPrimaryScreen);
             Show();

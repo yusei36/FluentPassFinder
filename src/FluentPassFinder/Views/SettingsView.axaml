@@ -55,6 +55,36 @@
 
             <Separator Margin="0 6" />
 
+            <!-- Behaviour -->
+            <TextBlock Text="Behaviour"
+                       FontSize="11"
+                       FontWeight="SemiBold"
+                       Opacity="0.6"
+                       Margin="0 0 0 2" />
+
+            <CheckBox IsChecked="{Binding ViewModel.EscAlwaysClosesWindow}"
+                      Content="Esc closes window instead of navigating back"
+                      FontSize="13"
+                      Margin="0 2" />
+
+            <CheckBox IsChecked="{Binding ViewModel.PreserveLastSearch}"
+                      Content="Preserve last search when reopening"
+                      FontSize="13"
+                      Margin="0 2" />
+
+            <Grid ColumnDefinitions="*,*" Margin="0 2"
+                  IsEnabled="{Binding ViewModel.PreserveLastSearch}">
+                <TextBlock Grid.Column="0" Text="Clear after (seconds)" VerticalAlignment="Center" FontSize="13" />
+                <NumericUpDown Grid.Column="1"
+                               Value="{Binding ViewModel.PreserveLastSearchTimeoutSeconds}"
+                               Minimum="5"
+                               Maximum="300"
+                               Increment="5"
+                               FontSize="13" />
+            </Grid>
+
+            <Separator Margin="0 6" />
+
             <!-- Search Fields -->
             <TextBlock Text="Search Fields"
                        FontSize="11"

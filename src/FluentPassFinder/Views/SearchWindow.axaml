@@ -80,6 +80,8 @@
 
     <Window.KeyBindings>
         <KeyBinding Gesture="Escape"       Command="{Binding ViewModel.NavigateBackCommand}" />
+        <KeyBinding Gesture="Back"         Command="{Binding ViewModel.CloseContextMenuCommand}" />
+        <KeyBinding Gesture="Left"         Command="{Binding ViewModel.CloseContextMenuCommand}" />
         <KeyBinding Gesture="Return"       Command="{Binding ViewModel.EnterActionCommand}" />
         <KeyBinding Gesture="Shift+Return" Command="{Binding ViewModel.ShiftEnterActionCommand}" />
         <KeyBinding Gesture="Ctrl+Return"  Command="{Binding ViewModel.ControlEnterActionCommand}" />

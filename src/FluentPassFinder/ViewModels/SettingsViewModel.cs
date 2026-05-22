@@ -34,6 +34,10 @@ namespace FluentPassFinder.ViewModels
         [ObservableProperty] private string pluginTotpPlaceholder;
         [ObservableProperty] private string pluginTotpFieldConfig;
 
+        [ObservableProperty] private bool preserveLastSearch;
+        [ObservableProperty] private decimal? preserveLastSearchTimeoutSeconds;
+        [ObservableProperty] private bool escAlwaysClosesWindow;
+
         public static System.Collections.Generic.IReadOnlyList<string> AvailableThemes { get; } =
             new[] { "Dark", "Light" };
 
@@ -90,6 +94,9 @@ namespace FluentPassFinder.ViewModels
                 ShowActionsForCustomFields = ShowActionsForCustomFields,
                 PluginTotpPlaceholder = PluginTotpPlaceholder,
                 PluginTotpFieldConfig = PluginTotpFieldConfig,
+                PreserveLastSearch = PreserveLastSearch,
+                PreserveLastSearchTimeoutMilliseconds = (int)(PreserveLastSearchTimeoutSeconds ?? 30) * 1000,
+                EscAlwaysClosesWindow = EscAlwaysClosesWindow,
                 // Preserve fields without UI editors
                 ActionSorting = original.ActionSorting,
                 ExcludeActionsForFields = original.ExcludeActionsForFields,
@@ -131,6 +138,10 @@ namespace FluentPassFinder.ViewModels
 
             PluginTotpPlaceholder = s.PluginTotpPlaceholder;
             PluginTotpFieldConfig = s.PluginTotpFieldConfig;
+
+            PreserveLastSearch = s.PreserveLastSearch;
+            PreserveLastSearchTimeoutSeconds = s.PreserveLastSearchTimeoutMilliseconds / 1000;
+            EscAlwaysClosesWindow = s.EscAlwaysClosesWindow;
         }
     }
 }

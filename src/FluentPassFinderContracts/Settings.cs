@@ -23,6 +23,10 @@ namespace FluentPassFinder.Contracts.Public
         public string GlobalHotkeyPrimaryScreen { get; set; }
         public string Theme { get; set; }
 
+        public bool PreserveLastSearch { get; set; }
+        public int PreserveLastSearchTimeoutMilliseconds { get; set; }
+        public bool EscAlwaysClosesWindow { get; set; }
+
         public static Settings DefaultSettings = new Settings()
         {
             SearchOptions = new SearchOptions()
@@ -56,7 +60,10 @@ namespace FluentPassFinder.Contracts.Public
             },
             ShowActionsForCustomFields = true,
             ExcludeActionsForFields = new List<string> { Consts.TemplateUuidField },
-            Theme = "Dark"
+            Theme = "Dark",
+            PreserveLastSearch = false,
+            PreserveLastSearchTimeoutMilliseconds = 30_000,
+            EscAlwaysClosesWindow = false,
         };
     }
 }

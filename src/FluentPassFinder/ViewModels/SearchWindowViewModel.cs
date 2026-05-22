@@ -42,6 +42,7 @@ namespace FluentPassFinder.ViewModels
         private IAction selectedContextAction;
 
         public bool IsAnyDatabaseOpen => pluginProxy.IsAnyDatabaseOpen;
+        internal Settings Settings => pluginProxy.Settings;
 
         public SearchWindowViewModel(IPluginProxy pluginProxy, IEntrySearchService entrySearchService, IEntryActionService entryActionService, ISearchWindowInteractionService searchWindowInteractionService, SettingsViewModel settingsViewModel)
         {
@@ -139,16 +140,22 @@ namespace FluentPassFinder.ViewModels
                 IsSettingsOpen = false;
                 searchWindowInteractionService.FocusSearchBox();
             }
-            // TODO: think about a option to navigate back from context menu or make it the default behavior
-            //else if (IsContextMenuOpen)
-            //{
-            //    IsContextMenuOpen = false;
-            //    searchWindowInteractionService.FocusSearchBox();
-            //}
+            else if (IsContextMenuOpen && !Settings.EscAlwaysClosesWindow)
+            {
+                IsContextMenuOpen = false;
+                searchWindowInteractionService.FocusSearchBox();
+            }
             else
             {
                 searchWindowInteractionService.Close();
             }
+        }
+
+        [RelayCommand(CanExecute = nameof(IsContextMenuOpen))]
+        private void CloseContextMenu()
+        {
+            IsContextMenuOpen = false;
+            searchWindowInteractionService.FocusSearchBox();
         }
 
         [RelayCommand]
@@ -162,6 +169,7 @@ namespace FluentPassFinder.ViewModels
         partial void OnIsContextMenuOpenChanged(bool value)
         {
             OnPropertyChanged(nameof(IsSearchBarVisible));
+            CloseContextMenuCommand.NotifyCanExecuteChanged();
             if (value && SelectedEntry != null)
             {
                 ContextActions = new ObservableCollection<IAction>(entryActionService.GetActionsForEntry(SelectedEntry.SearchResult, false));
