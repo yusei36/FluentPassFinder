@@ -20,7 +20,7 @@
         CanResize="False"
         WindowStartupLocation="Manual"
         Width="450"
-        MinHeight="36"
+        MinHeight="40"
         SizeToContent="Height"
         SystemDecorations="None"
         ExtendClientAreaToDecorationsHint="True"
@@ -94,7 +94,7 @@
             Background="{DynamicResource SolidBackgroundFillColorBaseBrush}">
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="36" />
+                <RowDefinition Height="40" />
                 <RowDefinition Height="*" MaxHeight="400" />
             </Grid.RowDefinitions>
 
@@ -104,7 +104,7 @@
                 <TextBox x:Name="SearchBox"
                          IsVisible="{Binding ViewModel.IsSearchBarVisible}"
                          Watermark="Search"
-                         FontSize="16"
+                         FontSize="18"
                          Text="{Binding ViewModel.SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
 					<TextBox.Styles>
 						<Style Selector="TextBox:focus-within /template/ Border#PART_BorderElement">
@@ -162,7 +162,7 @@
                            VerticalAlignment="Center" />
                     <TextBlock Grid.Column="1"
                                Text="{Binding ViewModel.SelectedEntry.Title}"
-                               FontSize="16"
+                               FontSize="18"
                                FontWeight="SemiBold"
                                VerticalAlignment="Center"
                                TextTrimming="CharacterEllipsis" />
@@ -174,7 +174,7 @@
                       Margin="12 0 4 0">
                     <TextBlock Grid.Column="0"
                                Text="Settings"
-                               FontSize="16"
+                               FontSize="18"
                                FontWeight="SemiBold"
                                VerticalAlignment="Center" />
                     <Button Grid.Column="1"
