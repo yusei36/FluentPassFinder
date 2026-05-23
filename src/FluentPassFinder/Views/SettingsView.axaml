@@ -9,7 +9,6 @@
              x:Class="FluentPassFinder.Views.SettingsView"
              x:ClassModifier="internal"
              x:DataType="local:SettingsView"
-             x:CompileBindings="True"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance local:SettingsView}">
 

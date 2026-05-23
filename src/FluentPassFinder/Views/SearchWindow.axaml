@@ -12,7 +12,6 @@
         x:Class="FluentPassFinder.Views.SearchWindow"
         x:ClassModifier="internal"
         x:DataType="local:SearchWindow"
-        x:CompileBindings="True"
         x:Name="WindowRoot"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance local:SearchWindow}"
