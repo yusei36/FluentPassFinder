@@ -6,11 +6,16 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:FluentPassFinder.Views"
              xmlns:models="clr-namespace:FluentPassFinder.ViewModels"
+             xmlns:converters="clr-namespace:FluentPassFinder.Converters"
              x:Class="FluentPassFinder.Views.SettingsView"
              x:ClassModifier="internal"
              x:DataType="local:SettingsView"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance local:SettingsView}">
+
+    <UserControl.Resources>
+        <converters:WindowAnchorConverter x:Key="WindowAnchorConverter" />
+    </UserControl.Resources>
 
     <ScrollViewer MaxHeight="500"
                   HorizontalScrollBarVisibility="Disabled"
@@ -31,27 +36,6 @@
                           SelectedItem="{Binding ViewModel.Theme}"
                           HorizontalAlignment="Stretch"
                           FontSize="13" />
-            </Grid>
-
-            <Grid ColumnDefinitions="*,*" Margin="0 2">
-                <TextBlock Grid.Column="0" Text="Window width" VerticalAlignment="Center" FontSize="13" />
-                <NumericUpDown Grid.Column="1"
-                               Value="{Binding ViewModel.WindowWidth}"
-                               Minimum="200"
-                               Maximum="2000"
-                               Increment="10"
-                               FontSize="13" />
-            </Grid>
-
-            <Grid ColumnDefinitions="*,*" Margin="0 2"
-                  ToolTip.Tip="Maximum height of the results area (excludes the 40 px search bar)">
-                <TextBlock Grid.Column="0" Text="Window height" VerticalAlignment="Center" FontSize="13" />
-                <NumericUpDown Grid.Column="1"
-                               Value="{Binding ViewModel.MaxResultsHeight}"
-                               Minimum="50"
-                               Maximum="2000"
-                               Increment="10"
-                               FontSize="13" />
             </Grid>
 
             <Separator Margin="0 6" />
@@ -121,6 +105,42 @@
                        FontWeight="SemiBold"
                        Opacity="0.6"
                        Margin="0 0 0 2" />
+
+            <Grid ColumnDefinitions="*,*" Margin="0 2">
+                <TextBlock Grid.Column="0" Text="Window anchor" VerticalAlignment="Center" FontSize="13" />
+                <ComboBox Grid.Column="1"
+                          ItemsSource="{x:Static models:SettingsViewModel.AvailableWindowAnchors}"
+                          SelectedItem="{Binding ViewModel.WindowAnchor}"
+                          HorizontalAlignment="Stretch"
+                          FontSize="13">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Converter={StaticResource WindowAnchorConverter}}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </Grid>
+
+            <Grid ColumnDefinitions="*,*" Margin="0 2">
+                <TextBlock Grid.Column="0" Text="Window width" VerticalAlignment="Center" FontSize="13" />
+                <NumericUpDown Grid.Column="1"
+                               Value="{Binding ViewModel.WindowWidth}"
+                               Minimum="200"
+                               Maximum="2000"
+                               Increment="10"
+                               FontSize="13" />
+            </Grid>
+
+            <Grid ColumnDefinitions="*,*" Margin="0 2"
+                  ToolTip.Tip="Maximum height of the results area (excludes the 40 px search bar)">
+                <TextBlock Grid.Column="0" Text="Window height" VerticalAlignment="Center" FontSize="13" />
+                <NumericUpDown Grid.Column="1"
+                               Value="{Binding ViewModel.WindowHeight}"
+                               Minimum="50"
+                               Maximum="2000"
+                               Increment="10"
+                               FontSize="13" />
+            </Grid>
 
             <CheckBox IsChecked="{Binding ViewModel.EscAlwaysClosesWindow}"
                       Content="Esc closes window instead of navigating back"

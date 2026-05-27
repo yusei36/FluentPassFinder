@@ -137,7 +137,7 @@ namespace FluentPassFinder
             if (_instance?._searchWindow == null) return;
             var defaults = Settings.DefaultSettings;
             var width = settings.WindowWidth > 0 ? settings.WindowWidth : defaults.WindowWidth;
-            var maxResultsH = settings.MaxResultsHeight > 0 ? settings.MaxResultsHeight : defaults.MaxResultsHeight;
+            var maxResultsH = settings.WindowHeight > 0 ? settings.WindowHeight : defaults.WindowHeight;
             _instance._searchWindow.Width = width;
             _instance._searchWindow.MaxHeight = SearchWindow.HeaderSize + maxResultsH;
             _instance._searchWindow.RecenterIfVisible();

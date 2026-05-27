@@ -5,6 +5,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Platform;
 using FluentPassFinder.Contracts;
+using FluentPassFinder.Contracts.Public;
 using FluentPassFinder.ViewModels;
 using System.Runtime.InteropServices;
 
@@ -20,6 +21,10 @@ namespace FluentPassFinder.Views
         private bool _isOpening;
         private bool _pendingHide;
         private readonly Timer _preserveTimer;
+
+        private bool _isBottomAnchor;
+        private int _targetHeaderTopY;
+        private double _anchorScaling = 1.0;
 
         public SearchWindow() { InitializeComponent(); }
 
@@ -41,6 +46,7 @@ namespace FluentPassFinder.Views
             InitializeComponent();
 
             Deactivated += (_, _) => HideSearchWindow();
+            SizeChanged += OnWindowSizeChanged;
         }
 
         public void FocusSearchBox() => SearchBox.Focus();
@@ -102,12 +108,14 @@ namespace FluentPassFinder.Views
                 SearchBox.Text = string.Empty;
             }
 
-            SetCenteredWindowPosition(showOnPrimaryScreen);
+            SetWindowPosition(showOnPrimaryScreen);
             Show();
+            var anchor = ViewModel?.Settings?.WindowAnchor ?? WindowAnchor.CenterCenter;
+            ApplyBottomAnchorLayout(anchor.IsBottom());
             Activate();
             SearchBox.Focus();
-
             _isOpening = false;
+
         }
 
         public void RecenterIfVisible()
@@ -115,12 +123,24 @@ namespace FluentPassFinder.Views
             if (!IsVisible) return;
             var screen = Screens.ScreenFromPoint(Position) ?? Screens.Primary;
             if (screen == null) return;
+            var anchor = ViewModel?.Settings?.WindowAnchor ?? WindowAnchor.CenterCenter;
+            var (hFrac, vFrac) = ParseAnchor(anchor);
+            bool isBottom = anchor.IsBottom();
+            ApplyBottomAnchorLayout(isBottom);
             var wa = screen.WorkingArea;
-            int x = wa.X + (int)((wa.Width - Width * screen.Scaling) / 2.0);
-            Position = new PixelPoint(x, Position.Y);
+            double scaling = screen.Scaling;
+            int x = wa.X + (int)(hFrac * (wa.Width - Width * scaling));
+            int y = wa.Y + (int)(vFrac * (wa.Height - HeaderSize * scaling));
+            if (isBottom)
+            {
+                _targetHeaderTopY = y;  
+                _anchorScaling = scaling;
+                y -= (int)((Bounds.Height - HeaderSize) * scaling);
+            }
+            Position = new PixelPoint(x, y);
         }
 
-        private void SetCenteredWindowPosition(bool showOnPrimaryScreen)
+        private void SetWindowPosition(bool showOnPrimaryScreen)
         {
             var screens = Screens;
             Screen screen;
@@ -136,14 +156,67 @@ namespace FluentPassFinder.Views
 
             if (screen == null) return;
 
-            var wa = screen.WorkingArea; // physical pixels
+            var anchor = ViewModel?.Settings?.WindowAnchor ?? WindowAnchor.CenterCenter;
+            var (hFrac, vFrac) = ParseAnchor(anchor);
+            var wa = screen.WorkingArea;
             double scaling = screen.Scaling;
 
-            int x = wa.X + (int)((wa.Width - Width * scaling) / 2.0);
-            int y = wa.Y + (int)((wa.Height - HeaderSize * scaling) / 2.0) - (int)(HeaderSize * scaling);
+            int x = wa.X + (int)(hFrac * (wa.Width - Width * scaling));
+            int y = wa.Y + (int)(vFrac * (wa.Height - HeaderSize * scaling));
+
+            bool isBottom = anchor.IsBottom();
+            if (isBottom)
+            {
+                _targetHeaderTopY = y;
+                _anchorScaling = scaling;
+            }
 
             Position = new PixelPoint(x, y);
         }
+
+        private void ApplyBottomAnchorLayout(bool isBottom)
+        {
+            if (isBottom == _isBottomAnchor) return;
+            _isBottomAnchor = isBottom;
+            if (isBottom)
+            {
+                MainGrid.RowDefinitions[0].Height = GridLength.Star;
+                MainGrid.RowDefinitions[1].Height = new GridLength(HeaderSize);
+                Grid.SetRow(HeaderPanel, 1);
+                Grid.SetRow(SettingsContent, 0);
+                Grid.SetRow(ResultsPanel, 0);
+            }
+            else
+            {
+                MainGrid.RowDefinitions[0].Height = new GridLength(HeaderSize);
+                MainGrid.RowDefinitions[1].Height = GridLength.Star;
+                Grid.SetRow(HeaderPanel, 0);
+                Grid.SetRow(SettingsContent, 1);
+                Grid.SetRow(ResultsPanel, 1);
+            }
+        }
+
+        private void OnWindowSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (!_isBottomAnchor || !IsVisible || _isClosing) return;
+            int newY = _targetHeaderTopY - (int)((Bounds.Height - HeaderSize) * _anchorScaling);
+            if (Position.Y != newY)
+                Position = new PixelPoint(Position.X, newY);
+        }
+
+        private static (double h, double v) ParseAnchor(WindowAnchor anchor) => anchor switch
+        {
+            WindowAnchor.LeftTop      => (0.0, 0.0),
+            WindowAnchor.CenterTop    => (0.5, 0.0),
+            WindowAnchor.RightTop     => (1.0, 0.0),
+            WindowAnchor.LeftCenter   => (0.0, 0.5),
+            WindowAnchor.CenterCenter => (0.5, 0.5),
+            WindowAnchor.RightCenter  => (1.0, 0.5),
+            WindowAnchor.LeftBottom   => (0.0, 1.0),
+            WindowAnchor.CenterBottom => (0.5, 1.0),
+            WindowAnchor.RightBottom  => (1.0, 1.0),
+            _                         => (0.5, 0.5),
+        };
 
         private void ClearSearchButton_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
         {

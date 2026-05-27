@@ -39,7 +39,15 @@ namespace FluentPassFinder.ViewModels
         [ObservableProperty] private bool escAlwaysClosesWindow;
 
         [ObservableProperty] private decimal? windowWidth;
-        [ObservableProperty] private decimal? maxResultsHeight;
+        [ObservableProperty] private decimal? windowHeight;
+        [ObservableProperty] private WindowAnchor windowAnchor;
+
+        public static WindowAnchor[] AvailableWindowAnchors { get; } = new[]
+        {
+            WindowAnchor.CenterCenter, WindowAnchor.CenterTop, WindowAnchor.CenterBottom,
+            WindowAnchor.LeftCenter,   WindowAnchor.LeftTop,   WindowAnchor.LeftBottom,
+            WindowAnchor.RightCenter,  WindowAnchor.RightTop,  WindowAnchor.RightBottom,
+        };
 
         public static System.Collections.Generic.IReadOnlyList<string> AvailableThemes { get; } =
             new[] { "Dark", "Light" };
@@ -101,7 +109,8 @@ namespace FluentPassFinder.ViewModels
                 PreserveLastSearchTimeoutMilliseconds = (int)(PreserveLastSearchTimeoutSeconds ?? 30) * 1000,
                 EscAlwaysClosesWindow = EscAlwaysClosesWindow,
                 WindowWidth = (int)(WindowWidth ?? Settings.DefaultSettings.WindowWidth),
-                MaxResultsHeight = (int)(MaxResultsHeight ?? Settings.DefaultSettings.MaxResultsHeight),
+                WindowHeight = (int)(WindowHeight ?? Settings.DefaultSettings.WindowHeight),
+                WindowAnchor = WindowAnchor,
                 // Preserve fields without UI editors
                 ActionSorting = original.ActionSorting,
                 ExcludeActionsForFields = original.ExcludeActionsForFields,
@@ -150,7 +159,8 @@ namespace FluentPassFinder.ViewModels
 
             var defaults = Settings.DefaultSettings;
             WindowWidth = s.WindowWidth > 0 ? s.WindowWidth : defaults.WindowWidth;
-            MaxResultsHeight = s.MaxResultsHeight > 0 ? s.MaxResultsHeight : defaults.MaxResultsHeight;
+            WindowHeight = s.WindowHeight > 0 ? s.WindowHeight : defaults.WindowHeight;
+            WindowAnchor = s.WindowAnchor;
         }
     }
 }

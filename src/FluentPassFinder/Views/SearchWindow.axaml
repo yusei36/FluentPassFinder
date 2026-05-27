@@ -92,13 +92,13 @@
     <Border CornerRadius="8"
             ClipToBounds="True"
             Background="{DynamicResource SolidBackgroundFillColorBaseBrush}">
-        <Grid>
+        <Grid x:Name="MainGrid">
             <Grid.RowDefinitions>
                 <RowDefinition Height="40" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <Panel Grid.Row="0">
+            <Panel x:Name="HeaderPanel" Grid.Row="0">
 
                 <!-- Normal search bar -->
                 <TextBox x:Name="SearchBox"
@@ -220,11 +220,13 @@
 
             </Panel>
 
-            <ContentControl Grid.Row="1"
+            <ContentControl x:Name="SettingsContent"
+                            Grid.Row="1"
                             Content="{Binding SettingsView}"
                             IsVisible="{Binding ViewModel.IsSettingsOpen}" />
 
-            <Panel Grid.Row="1"
+            <Panel x:Name="ResultsPanel"
+                   Grid.Row="1"
                    IsVisible="{Binding ViewModel.IsSettingsOpen, Converter={StaticResource InvertBoolConverter}}">
 
             <ListBox ItemsSource="{Binding ViewModel.Entries}"
