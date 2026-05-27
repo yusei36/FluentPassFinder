@@ -110,6 +110,16 @@ namespace FluentPassFinder.Views
             _isOpening = false;
         }
 
+        public void RecenterIfVisible()
+        {
+            if (!IsVisible) return;
+            var screen = Screens.ScreenFromPoint(Position) ?? Screens.Primary;
+            if (screen == null) return;
+            var wa = screen.WorkingArea;
+            int x = wa.X + (int)((wa.Width - Width * screen.Scaling) / 2.0);
+            Position = new PixelPoint(x, Position.Y);
+        }
+
         private void SetCenteredWindowPosition(bool showOnPrimaryScreen)
         {
             var screens = Screens;

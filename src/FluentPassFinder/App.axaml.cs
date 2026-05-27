@@ -140,6 +140,7 @@ namespace FluentPassFinder
             var maxResultsH = settings.MaxResultsHeight > 0 ? settings.MaxResultsHeight : defaults.MaxResultsHeight;
             _instance._searchWindow.Width = width;
             _instance._searchWindow.MaxHeight = SearchWindow.HeaderSize + maxResultsH;
+            _instance._searchWindow.RecenterIfVisible();
         }
 
         private void RegisterHotkeys(Settings settings)
