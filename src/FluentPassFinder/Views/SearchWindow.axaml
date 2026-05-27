@@ -17,6 +17,7 @@
         d:DataContext="{d:DesignInstance local:SearchWindow}"
         Title="{Binding ViewModel.ApplicationTitle, Mode=OneWay}"
         ShowInTaskbar="False"
+        Topmost="True"
         CanResize="False"
         WindowStartupLocation="Manual"
         Width="450"
