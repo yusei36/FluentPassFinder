@@ -17,8 +17,8 @@
                   VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="12 8 12 12" Spacing="4">
 
-            <!-- General -->
-            <TextBlock Text="General"
+            <!-- Appearance -->
+            <TextBlock Text="Appearance"
                        FontSize="11"
                        FontWeight="SemiBold"
                        Opacity="0.6"
@@ -37,21 +37,31 @@
                 <TextBlock Grid.Column="0" Text="Window width" VerticalAlignment="Center" FontSize="13" />
                 <NumericUpDown Grid.Column="1"
                                Value="{Binding ViewModel.WindowWidth}"
-                               Minimum="300"
-                               Maximum="1200"
+                               Minimum="200"
+                               Maximum="2000"
                                Increment="10"
                                FontSize="13" />
             </Grid>
 
-            <Grid ColumnDefinitions="*,*" Margin="0 2">
-                <TextBlock Grid.Column="0" Text="Max results height" VerticalAlignment="Center" FontSize="13" />
+            <Grid ColumnDefinitions="*,*" Margin="0 2"
+                  ToolTip.Tip="Maximum height of the results area (excludes the 40 px search bar)">
+                <TextBlock Grid.Column="0" Text="Window height" VerticalAlignment="Center" FontSize="13" />
                 <NumericUpDown Grid.Column="1"
                                Value="{Binding ViewModel.MaxResultsHeight}"
-                               Minimum="100"
-                               Maximum="1000"
-                               Increment="50"
+                               Minimum="50"
+                               Maximum="2000"
+                               Increment="10"
                                FontSize="13" />
             </Grid>
+
+            <Separator Margin="0 6" />
+
+            <!-- Key Bindings -->
+            <TextBlock Text="Key Bindings"
+                       FontSize="11"
+                       FontWeight="SemiBold"
+                       Opacity="0.6"
+                       Margin="0 0 0 2" />
 
             <Grid ColumnDefinitions="*,*" Margin="0 2">
                 <TextBlock Grid.Column="0" Text="Hotkey (current screen)" VerticalAlignment="Center" FontSize="13" />
@@ -66,81 +76,6 @@
                          Text="{Binding ViewModel.GlobalHotkeyPrimaryScreen}"
                          FontSize="13" />
             </Grid>
-
-			<CheckBox IsChecked="{Binding ViewModel.ShowActionsForCustomFields}"
-                      Content="Show actions for custom fields"
-                      FontSize="13"
-                      Margin="0 2" />
-
-            <Separator Margin="0 6" />
-
-            <!-- Behaviour -->
-            <TextBlock Text="Behaviour"
-                       FontSize="11"
-                       FontWeight="SemiBold"
-                       Opacity="0.6"
-                       Margin="0 0 0 2" />
-
-            <CheckBox IsChecked="{Binding ViewModel.EscAlwaysClosesWindow}"
-                      Content="Esc closes window instead of navigating back"
-                      FontSize="13"
-                      Margin="0 2" />
-
-            <CheckBox IsChecked="{Binding ViewModel.PreserveLastSearch}"
-                      Content="Preserve last search when reopening"
-                      FontSize="13"
-                      Margin="0 2" />
-
-            <Grid ColumnDefinitions="*,*" Margin="0 2"
-                  IsEnabled="{Binding ViewModel.PreserveLastSearch}">
-                <TextBlock Grid.Column="0" Text="Clear after (seconds)" VerticalAlignment="Center" FontSize="13" />
-                <NumericUpDown Grid.Column="1"
-                               Value="{Binding ViewModel.PreserveLastSearchTimeoutSeconds}"
-                               Minimum="5"
-                               Maximum="300"
-                               Increment="5"
-                               FontSize="13" />
-            </Grid>
-
-            <Separator Margin="0 6" />
-
-            <!-- Search Fields -->
-            <TextBlock Text="Search Fields"
-                       FontSize="11"
-                       FontWeight="SemiBold"
-                       Opacity="0.6"
-                       Margin="0 0 0 2" />
-
-            <CheckBox IsChecked="{Binding ViewModel.IncludeTitleField}"     Content="Title"                    FontSize="13" />
-            <CheckBox IsChecked="{Binding ViewModel.IncludeUserNameField}"  Content="Username"                 FontSize="13" />
-            <CheckBox IsChecked="{Binding ViewModel.IncludePasswordField}"  Content="Password"                 FontSize="13" />
-            <CheckBox IsChecked="{Binding ViewModel.IncludeUrlField}"       Content="URL"                      FontSize="13" />
-            <CheckBox IsChecked="{Binding ViewModel.IncludeNotesField}"     Content="Notes"                    FontSize="13" />
-            <CheckBox IsChecked="{Binding ViewModel.IncludeTags}"           Content="Tags"                     FontSize="13" />
-            <CheckBox IsChecked="{Binding ViewModel.IncludeCustomFields}"   Content="Custom fields"            FontSize="13" />
-            <CheckBox IsChecked="{Binding ViewModel.IncludeProtectedCustomFields}" Content="Protected custom fields" FontSize="13" />
-
-            <Separator Margin="0 6" />
-
-            <!-- Search Behavior -->
-            <TextBlock Text="Search Behavior"
-                       FontSize="11"
-                       FontWeight="SemiBold"
-                       Opacity="0.6"
-                       Margin="0 0 0 2" />
-
-            <CheckBox IsChecked="{Binding ViewModel.ExcludeExpiredEntries}"       Content="Exclude expired entries"          FontSize="13" />
-            <CheckBox IsChecked="{Binding ViewModel.ExcludeGroupsBySearchSetting}" Content="Respect group search setting"    FontSize="13" />
-            <CheckBox IsChecked="{Binding ViewModel.ResolveFieldReferences}"      Content="Resolve field references"         FontSize="13" />
-
-            <Separator Margin="0 6" />
-
-            <!-- Key Bindings -->
-            <TextBlock Text="Key Bindings"
-                       FontSize="11"
-                       FontWeight="SemiBold"
-                       Opacity="0.6"
-                       Margin="0 0 0 2" />
 
             <Grid ColumnDefinitions="*,*" Margin="0 2">
                 <TextBlock Grid.Column="0" Text="Enter" VerticalAlignment="Center" FontSize="13" />
@@ -177,6 +112,72 @@
                           HorizontalAlignment="Stretch"
                           FontSize="12" />
             </Grid>
+
+            <Separator Margin="0 6" />
+
+            <!-- Window Behavior -->
+            <TextBlock Text="Window Behavior"
+                       FontSize="11"
+                       FontWeight="SemiBold"
+                       Opacity="0.6"
+                       Margin="0 0 0 2" />
+
+            <CheckBox IsChecked="{Binding ViewModel.EscAlwaysClosesWindow}"
+                      Content="Esc closes window instead of navigating back"
+                      FontSize="13"
+                      Margin="0 2" />
+
+            <CheckBox IsChecked="{Binding ViewModel.PreserveLastSearch}"
+                      Content="Preserve last search when reopening"
+                      FontSize="13"
+                      Margin="0 2" />
+
+            <Grid ColumnDefinitions="*,*" Margin="0 2"
+                  IsEnabled="{Binding ViewModel.PreserveLastSearch}">
+                <TextBlock Grid.Column="0" Text="Clear after (seconds)" VerticalAlignment="Center" FontSize="13" />
+                <NumericUpDown Grid.Column="1"
+                               Value="{Binding ViewModel.PreserveLastSearchTimeoutSeconds}"
+                               Minimum="5"
+                               Maximum="300"
+                               Increment="5"
+                               FontSize="13" />
+            </Grid>
+
+            <Separator Margin="0 6" />
+
+            <!-- Search Behavior -->
+            <TextBlock Text="Search Behavior"
+                       FontSize="11"
+                       FontWeight="SemiBold"
+                       Opacity="0.6"
+                       Margin="0 0 0 2" />
+
+            <CheckBox IsChecked="{Binding ViewModel.ShowActionsForCustomFields}"
+                      Content="Show actions for custom fields"
+                      FontSize="13"
+                      Margin="0 2" />
+
+            <CheckBox IsChecked="{Binding ViewModel.ExcludeExpiredEntries}"        Content="Exclude expired entries"       FontSize="13" />
+            <CheckBox IsChecked="{Binding ViewModel.ExcludeGroupsBySearchSetting}" Content="Respect group search setting"  FontSize="13" />
+            <CheckBox IsChecked="{Binding ViewModel.ResolveFieldReferences}"       Content="Resolve field references"      FontSize="13" />
+
+            <Separator Margin="0 6" />
+
+            <!-- Search Fields -->
+            <TextBlock Text="Search Fields"
+                       FontSize="11"
+                       FontWeight="SemiBold"
+                       Opacity="0.6"
+                       Margin="0 0 0 2" />
+
+            <CheckBox IsChecked="{Binding ViewModel.IncludeTitleField}"     Content="Title"                    FontSize="13" />
+            <CheckBox IsChecked="{Binding ViewModel.IncludeUserNameField}"  Content="Username"                 FontSize="13" />
+            <CheckBox IsChecked="{Binding ViewModel.IncludePasswordField}"  Content="Password"                 FontSize="13" />
+            <CheckBox IsChecked="{Binding ViewModel.IncludeUrlField}"       Content="URL"                      FontSize="13" />
+            <CheckBox IsChecked="{Binding ViewModel.IncludeNotesField}"     Content="Notes"                    FontSize="13" />
+            <CheckBox IsChecked="{Binding ViewModel.IncludeTags}"           Content="Tags"                     FontSize="13" />
+            <CheckBox IsChecked="{Binding ViewModel.IncludeCustomFields}"   Content="Custom fields"            FontSize="13" />
+            <CheckBox IsChecked="{Binding ViewModel.IncludeProtectedCustomFields}" Content="Protected custom fields" FontSize="13" />
 
             <Separator Margin="0 6" />
 
