@@ -38,6 +38,9 @@ namespace FluentPassFinder.ViewModels
         [ObservableProperty] private decimal? preserveLastSearchTimeoutSeconds;
         [ObservableProperty] private bool escAlwaysClosesWindow;
 
+        [ObservableProperty] private decimal? windowWidth;
+        [ObservableProperty] private decimal? maxResultsHeight;
+
         public static System.Collections.Generic.IReadOnlyList<string> AvailableThemes { get; } =
             new[] { "Dark", "Light" };
 
@@ -97,6 +100,8 @@ namespace FluentPassFinder.ViewModels
                 PreserveLastSearch = PreserveLastSearch,
                 PreserveLastSearchTimeoutMilliseconds = (int)(PreserveLastSearchTimeoutSeconds ?? 30) * 1000,
                 EscAlwaysClosesWindow = EscAlwaysClosesWindow,
+                WindowWidth = (int)(WindowWidth ?? Settings.DefaultSettings.WindowWidth),
+                MaxResultsHeight = (int)(MaxResultsHeight ?? Settings.DefaultSettings.MaxResultsHeight),
                 // Preserve fields without UI editors
                 ActionSorting = original.ActionSorting,
                 ExcludeActionsForFields = original.ExcludeActionsForFields,
@@ -142,6 +147,10 @@ namespace FluentPassFinder.ViewModels
             PreserveLastSearch = s.PreserveLastSearch;
             PreserveLastSearchTimeoutSeconds = s.PreserveLastSearchTimeoutMilliseconds / 1000;
             EscAlwaysClosesWindow = s.EscAlwaysClosesWindow;
+
+            var defaults = Settings.DefaultSettings;
+            WindowWidth = s.WindowWidth > 0 ? s.WindowWidth : defaults.WindowWidth;
+            MaxResultsHeight = s.MaxResultsHeight > 0 ? s.MaxResultsHeight : defaults.MaxResultsHeight;
         }
     }
 }

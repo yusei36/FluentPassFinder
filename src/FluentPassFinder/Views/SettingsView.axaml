@@ -34,6 +34,26 @@
             </Grid>
 
             <Grid ColumnDefinitions="*,*" Margin="0 2">
+                <TextBlock Grid.Column="0" Text="Window width" VerticalAlignment="Center" FontSize="13" />
+                <NumericUpDown Grid.Column="1"
+                               Value="{Binding ViewModel.WindowWidth}"
+                               Minimum="300"
+                               Maximum="1200"
+                               Increment="10"
+                               FontSize="13" />
+            </Grid>
+
+            <Grid ColumnDefinitions="*,*" Margin="0 2">
+                <TextBlock Grid.Column="0" Text="Max results height" VerticalAlignment="Center" FontSize="13" />
+                <NumericUpDown Grid.Column="1"
+                               Value="{Binding ViewModel.MaxResultsHeight}"
+                               Minimum="100"
+                               Maximum="1000"
+                               Increment="50"
+                               FontSize="13" />
+            </Grid>
+
+            <Grid ColumnDefinitions="*,*" Margin="0 2">
                 <TextBlock Grid.Column="0" Text="Hotkey (current screen)" VerticalAlignment="Center" FontSize="13" />
                 <TextBox Grid.Column="1"
                          Text="{Binding ViewModel.GlobalHotkeyCurrentScreen}"

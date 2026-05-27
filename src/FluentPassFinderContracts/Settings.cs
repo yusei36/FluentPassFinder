@@ -27,6 +27,9 @@ namespace FluentPassFinder.Contracts.Public
         public int PreserveLastSearchTimeoutMilliseconds { get; set; }
         public bool EscAlwaysClosesWindow { get; set; }
 
+        public int WindowWidth { get; set; }
+        public int MaxResultsHeight { get; set; }
+
         public static Settings DefaultSettings = new Settings()
         {
             SearchOptions = new SearchOptions()
@@ -64,6 +67,8 @@ namespace FluentPassFinder.Contracts.Public
             PreserveLastSearch = false,
             PreserveLastSearchTimeoutMilliseconds = 30_000,
             EscAlwaysClosesWindow = false,
+            WindowWidth = 450,
+            MaxResultsHeight = 400,
         };
     }
 }
