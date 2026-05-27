@@ -30,6 +30,8 @@ namespace FluentPassFinder.Contracts.Public
         public int WindowWidth { get; set; }
         public int WindowHeight { get; set; }
         public WindowAnchor WindowAnchor { get; set; }
+        public int WindowOffsetX { get; set; }
+        public int WindowOffsetY { get; set; }
 
         public static Settings DefaultSettings = new Settings()
         {

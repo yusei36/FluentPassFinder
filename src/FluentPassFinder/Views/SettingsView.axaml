@@ -126,7 +126,7 @@
                 <NumericUpDown Grid.Column="1"
                                Value="{Binding ViewModel.WindowWidth}"
                                Minimum="200"
-                               Maximum="2000"
+                               Maximum="4000"
                                Increment="10"
                                FontSize="13" />
             </Grid>
@@ -137,7 +137,27 @@
                 <NumericUpDown Grid.Column="1"
                                Value="{Binding ViewModel.WindowHeight}"
                                Minimum="50"
-                               Maximum="2000"
+                               Maximum="4000"
+                               Increment="10"
+                               FontSize="13" />
+            </Grid>
+
+            <Grid ColumnDefinitions="*,*" Margin="0 2">
+                <TextBlock Grid.Column="0" Text="Window offset X" VerticalAlignment="Center" FontSize="13" />
+                <NumericUpDown Grid.Column="1"
+                               Value="{Binding ViewModel.WindowOffsetX}"
+                               Minimum="-4000"
+                               Maximum="4000"
+                               Increment="10"
+                               FontSize="13" />
+            </Grid>
+
+            <Grid ColumnDefinitions="*,*" Margin="0 2">
+                <TextBlock Grid.Column="0" Text="Window offset Y" VerticalAlignment="Center" FontSize="13" />
+                <NumericUpDown Grid.Column="1"
+                               Value="{Binding ViewModel.WindowOffsetY}"
+                               Minimum="-4000"
+                               Maximum="4000"
                                Increment="10"
                                FontSize="13" />
             </Grid>

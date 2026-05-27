@@ -41,6 +41,8 @@ namespace FluentPassFinder.ViewModels
         [ObservableProperty] private decimal? windowWidth;
         [ObservableProperty] private decimal? windowHeight;
         [ObservableProperty] private WindowAnchor windowAnchor;
+        [ObservableProperty] private decimal? windowOffsetX;
+        [ObservableProperty] private decimal? windowOffsetY;
 
         public static WindowAnchor[] AvailableWindowAnchors { get; } = new[]
         {
@@ -111,6 +113,8 @@ namespace FluentPassFinder.ViewModels
                 WindowWidth = (int)(WindowWidth ?? Settings.DefaultSettings.WindowWidth),
                 WindowHeight = (int)(WindowHeight ?? Settings.DefaultSettings.WindowHeight),
                 WindowAnchor = WindowAnchor,
+                WindowOffsetX = (int)(WindowOffsetX ?? 0),
+                WindowOffsetY = (int)(WindowOffsetY ?? 0),
                 // Preserve fields without UI editors
                 ActionSorting = original.ActionSorting,
                 ExcludeActionsForFields = original.ExcludeActionsForFields,
@@ -161,6 +165,8 @@ namespace FluentPassFinder.ViewModels
             WindowWidth = s.WindowWidth > 0 ? s.WindowWidth : defaults.WindowWidth;
             WindowHeight = s.WindowHeight > 0 ? s.WindowHeight : defaults.WindowHeight;
             WindowAnchor = s.WindowAnchor;
+            WindowOffsetX = s.WindowOffsetX;
+            WindowOffsetY = s.WindowOffsetY;
         }
     }
 }

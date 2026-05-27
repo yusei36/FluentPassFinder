@@ -123,17 +123,18 @@ namespace FluentPassFinder.Views
             if (!IsVisible) return;
             var screen = Screens.ScreenFromPoint(Position) ?? Screens.Primary;
             if (screen == null) return;
-            var anchor = ViewModel?.Settings?.WindowAnchor ?? WindowAnchor.CenterCenter;
+            var settings = ViewModel?.Settings;
+            var anchor = settings?.WindowAnchor ?? WindowAnchor.CenterCenter;
             var (hFrac, vFrac) = ParseAnchor(anchor);
             bool isBottom = anchor.IsBottom();
             ApplyBottomAnchorLayout(isBottom);
             var wa = screen.WorkingArea;
             double scaling = screen.Scaling;
-            int x = wa.X + (int)(hFrac * (wa.Width - Width * scaling));
-            int y = wa.Y + (int)(vFrac * (wa.Height - HeaderSize * scaling));
+            int x = wa.X + (int)(hFrac * (wa.Width - Width * scaling)) + (settings?.WindowOffsetX ?? 0);
+            int y = wa.Y + (int)(vFrac * (wa.Height - HeaderSize * scaling)) + (settings?.WindowOffsetY ?? 0);
             if (isBottom)
             {
-                _targetHeaderTopY = y;  
+                _targetHeaderTopY = y;
                 _anchorScaling = scaling;
                 y -= (int)((Bounds.Height - HeaderSize) * scaling);
             }
@@ -156,13 +157,14 @@ namespace FluentPassFinder.Views
 
             if (screen == null) return;
 
-            var anchor = ViewModel?.Settings?.WindowAnchor ?? WindowAnchor.CenterCenter;
+            var settings = ViewModel?.Settings;
+            var anchor = settings?.WindowAnchor ?? WindowAnchor.CenterCenter;
             var (hFrac, vFrac) = ParseAnchor(anchor);
             var wa = screen.WorkingArea;
             double scaling = screen.Scaling;
 
-            int x = wa.X + (int)(hFrac * (wa.Width - Width * scaling));
-            int y = wa.Y + (int)(vFrac * (wa.Height - HeaderSize * scaling));
+            int x = wa.X + (int)(hFrac * (wa.Width - Width * scaling)) + (settings?.WindowOffsetX ?? 0);
+            int y = wa.Y + (int)(vFrac * (wa.Height - HeaderSize * scaling)) + (settings?.WindowOffsetY ?? 0);
 
             bool isBottom = anchor.IsBottom();
             if (isBottom)
