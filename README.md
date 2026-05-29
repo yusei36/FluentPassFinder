@@ -79,7 +79,15 @@ After KeePass is closed for the first time after the plugin was installed, the c
   ],
   "GlobalHotkeyCurrentScreen": "Ctrl+Alt+S",
   "GlobalHotkeyPrimaryScreen": "Ctrl+Alt+F",
-  "Theme": "Dark"
+  "Theme": "Dark",
+  "PreserveLastSearch": false,
+  "PreserveLastSearchTimeoutMilliseconds": 30000,
+  "EscAlwaysClosesWindow": false,
+  "WindowWidth": 450,
+  "WindowHeight": 400,
+  "WindowAnchor": "CenterCenter",
+  "WindowOffsetX": 0,
+  "WindowOffsetY": 0
 }</Value>
     </Item>
 </Custom>
