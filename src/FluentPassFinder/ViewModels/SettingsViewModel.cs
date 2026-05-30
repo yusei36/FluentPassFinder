@@ -36,6 +36,9 @@ namespace FluentPassFinder.ViewModels
 
         public ObservableCollection<string> ExcludeFields { get; } = new ObservableCollection<string>();
 
+        [ObservableProperty] private string newSortingAction;
+        public ObservableCollection<SortingActionItem> SortingActions { get; } = new ObservableCollection<SortingActionItem>();
+
         [ObservableProperty] private string totpPlaceholder;
 
         [ObservableProperty] private bool preserveLastSearch;
@@ -117,8 +120,9 @@ namespace FluentPassFinder.ViewModels
                     Alt = AltAction,
                     ShowForCustomFields = ShowActionsForCustomFields,
                     ExcludeFields = ExcludeFields.Distinct().ToList(),
-                    // Preserve fields without UI editors
-                    Sorting = original.Actions.Sorting,
+                    Sorting = SortingActions
+                        .Where(a => !string.IsNullOrWhiteSpace(a.ActionType))
+                        .ToDictionary(a => a.ActionType.Trim(), a => (int)(a.Index ?? 0)),
                 },
                 Otp = new OtpOptions
                 {
@@ -164,6 +168,30 @@ namespace FluentPassFinder.ViewModels
         }
 
         [RelayCommand]
+        private void AddSortingAction()
+        {
+            var actionType = NewSortingAction?.Trim();
+            if (string.IsNullOrEmpty(actionType)) return;
+
+            if (!SortingActions.Any(a => a.ActionType.Equals(actionType, StringComparison.OrdinalIgnoreCase)))
+            {
+                var nextIndex = SortingActions.Count == 0
+                    ? 1
+                    : (int)SortingActions.Max(a => a.Index ?? 0) + 1;
+                SortingActions.Add(new SortingActionItem { ActionType = actionType, Index = nextIndex });
+            }
+
+            NewSortingAction = string.Empty;
+        }
+
+        [RelayCommand]
+        private void RemoveSortingAction(SortingActionItem item)
+        {
+            if (item != null)
+                SortingActions.Remove(item);
+        }
+
+        [RelayCommand]
         private void ResetToDefaults()
         {
             LoadFromSettings(Settings.CreateDefault());
@@ -197,6 +225,12 @@ namespace FluentPassFinder.ViewModels
             foreach (var field in s.Actions.ExcludeFields)
                 ExcludeFields.Add(field);
             NewExcludeField = string.Empty;
+
+            SortingActions.Clear();
+            if (s.Actions.Sorting != null)
+                foreach (var kv in s.Actions.Sorting.OrderBy(kv => kv.Value))
+                    SortingActions.Add(new SortingActionItem { ActionType = kv.Key, Index = kv.Value });
+            NewSortingAction = string.Empty;
 
             TotpPlaceholder = s.Otp.TotpPlaceholder;
 
