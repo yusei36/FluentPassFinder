@@ -19,8 +19,10 @@ namespace FluentPassFinder.Views
 
         private bool _isClosing;
         private bool _isOpening;
+        private bool _isWarmingUp;
         private bool _pendingHide;
         private readonly Timer _preserveTimer;
+        private Timer _warmUpTimer;
 
         private bool _isBottomAnchor;
         private int _targetHeaderTopY;
@@ -45,16 +47,44 @@ namespace FluentPassFinder.Views
 
             InitializeComponent();
 
-            Deactivated += (_, _) => HideSearchWindow();
+            Deactivated += (_, _) => { if (!_isWarmingUp) HideSearchWindow(); };
             SizeChanged += OnWindowSizeChanged;
         }
 
         public void FocusSearchBox() => SearchBox.Focus();
 
+        /// <summary>
+        /// Renders the window once off-screen at startup so the first real
+        /// <see cref="ShowSearchWindow"/> doesn't flash an unrendered "skeleton"
+        /// (window border with no composited background). The native surface,
+        /// GPU swapchain, glyph caches and render resources are all created
+        /// lazily on the first <see cref="Window.Show()"/>; doing that work
+        /// off-screen ahead of time makes the first visible show instant.
+        /// </summary>
+        public void WarmUp()
+        {
+            _isWarmingUp = true;
+            ShowActivated = false; // don't steal focus while warming up
+            Position = new PixelPoint(-32000, -32000);
+            Show();
+
+            // Keep it shown off-screen briefly so the render thread composites
+            // the first frame, then hide it ready for the first real show.
+            _warmUpTimer = new Timer(_ =>
+            {
+                Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+                {
+                    Hide();
+                    ShowActivated = true;
+                    _isWarmingUp = false;
+                });
+            }, null, 200, Timeout.Infinite);
+        }
+
         [CommunityToolkit.Mvvm.Input.RelayCommand]
         public void HideSearchWindow()
         {
-            if (_isClosing || _isOpening) return;
+            if (_isClosing || _isOpening || _isWarmingUp) return;
 
             _isClosing = true;
             _pendingHide = true;

@@ -93,6 +93,10 @@ namespace FluentPassFinder
             RegisterHotkeys(settings);
             RestoreTheme(settings);
             ApplyWindowSize(settings);
+
+            // Render the window once off-screen so the first hotkey press shows a
+            // fully composited window instead of an unrendered "skeleton" frame.
+            _searchWindow.WarmUp();
         }
 
         private void WatchHostProcess(int hostPid, IClassicDesktopStyleApplicationLifetime desktop)
