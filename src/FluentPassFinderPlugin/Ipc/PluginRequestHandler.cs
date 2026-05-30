@@ -50,7 +50,6 @@ namespace FluentPassFinder.Ipc
                 switch (request)
                 {
                     case SearchEntriesRequest req:             return HandleSearchEntries(req);
-                    case GetPlaceholderValueRequest req:       return HandleGetPlaceholderValue(req);
                     case HasTotpRequest req:                   return HandleHasTotp(req);
                     case GetSettingsRequest _:                 return new GetSettingsResponse { Success = true, Settings = settings };
                     case IsAnyDatabaseOpenRequest req:         return HandleIsAnyDatabaseOpen(req);
@@ -103,18 +102,6 @@ namespace FluentPassFinder.Ipc
             return new SearchEntriesResponse { Success = true, Entries = entries.ToArray() };
         }
 
-        private PipeResponse HandleGetPlaceholderValue(GetPlaceholderValueRequest req)
-        {
-            var value = InvokeOnUiThread(() =>
-            {
-                var (entry, db) = ResolveEntry(req.EntryUuid, req.DatabaseUuid);
-                if (entry == null) return req.Placeholder;
-                var flags = req.ResolveAll ? SprCompileFlags.All : SprCompileFlags.Deref;
-                return SprEngine.Compile(req.Placeholder, new SprContext(entry, db, flags, true, false));
-            });
-            return new GetPlaceholderValueResponse { Success = true, Value = value };
-        }
-
         private PipeResponse HandleHasTotp(HasTotpRequest req)
         {
             var hasTotp = InvokeOnUiThread(() =>
@@ -158,7 +145,11 @@ namespace FluentPassFinder.Ipc
                 var (entry, db) = ResolveEntry(req.EntryUuid, req.DatabaseUuid);
                 if (entry == null) return;
 
-                if (ClipboardUtil.Copy(req.Value, false, true, entry, db, IntPtr.Zero))
+                var value = req.Value;
+                if (!string.IsNullOrEmpty(value) && value.IndexOf('{') >= 0)
+                    value = SprEngine.Compile(value, new SprContext(entry, db, SprCompileFlags.All, true, false));
+
+                if (ClipboardUtil.Copy(value, false, true, entry, db, IntPtr.Zero))
                     mainWindow.StartClipboardCountdown();
             });
             return Ack();

@@ -5,7 +5,6 @@ namespace FluentPassFinder.Contracts.Public.Ipc
     public static class PipeRequestTypes
     {
         public const string SearchEntries             = "SearchEntries";
-        public const string GetPlaceholderValue       = "GetPlaceholderValue";
         public const string HasTotp                   = "HasTotp";
         public const string GetSettings               = "GetSettings";
         public const string IsAnyDatabaseOpen         = "IsAnyDatabaseOpen";

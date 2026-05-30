@@ -33,19 +33,6 @@ namespace FluentPassFinder.Ipc
             return response?.Entries ?? Array.Empty<EntryDto>();
         }
 
-        public string GetPlaceholderValue(string placeholder, string entryUuid, string databaseUuid, bool resolveAll)
-        {
-            var response = Send<GetPlaceholderValueRequest, GetPlaceholderValueResponse>(
-                new GetPlaceholderValueRequest
-                {
-                    Placeholder  = placeholder,
-                    EntryUuid    = entryUuid,
-                    DatabaseUuid = databaseUuid,
-                    ResolveAll   = resolveAll,
-                });
-            return response?.Value;
-        }
-
         public bool HasTotp(string placeholder, string entryUuid, string databaseUuid)
         {
             var response = Send<HasTotpRequest, HasTotpResponse>(

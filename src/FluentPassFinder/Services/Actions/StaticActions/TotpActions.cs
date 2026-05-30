@@ -14,10 +14,12 @@ namespace FluentPassFinder.Services.Actions.StaticActions
 
         public override void RunAction(EntrySearchResult searchResult)
         {
+            var placeholder = Settings.Otp.TotpPlaceholder;
+            if (string.IsNullOrEmpty(placeholder))
+                return;
+
             searchWindowInteractionService.Close();
-            var totp = GenerateTotp(searchResult);
-            if (!string.IsNullOrEmpty(totp))
-                pluginProxy.CopyToClipboard(totp, searchResult.Entry.Uuid, searchResult.Entry.DatabaseUuid);
+            pluginProxy.CopyToClipboard(placeholder, searchResult.Entry.Uuid, searchResult.Entry.DatabaseUuid);
         }
     }
 
@@ -30,11 +32,13 @@ namespace FluentPassFinder.Services.Actions.StaticActions
 
         public override void RunAction(EntrySearchResult searchResult)
         {
+            var placeholder = Settings.Otp.TotpPlaceholder;
+            if (string.IsNullOrEmpty(placeholder))
+                return;
+
             searchWindowInteractionService.Close();
             Task.Delay(100).Wait();
-            var totp = GenerateTotp(searchResult);
-            if (!string.IsNullOrEmpty(totp))
-                pluginProxy.PerformAutoType(searchResult.Entry.Uuid, searchResult.Entry.DatabaseUuid, totp + Consts.AutoTypeEnterPlaceholder);
+            pluginProxy.PerformAutoType(searchResult.Entry.Uuid, searchResult.Entry.DatabaseUuid, placeholder + Consts.AutoTypeEnterPlaceholder);
         }
     }
 
@@ -52,21 +56,6 @@ namespace FluentPassFinder.Services.Actions.StaticActions
                 placeholder,
                 searchResult.Entry.Uuid,
                 searchResult.Entry.DatabaseUuid);
-        }
-
-        protected string GenerateTotp(EntrySearchResult searchResult)
-        {
-            var placeholder = Settings.Otp.TotpPlaceholder;
-            if (string.IsNullOrEmpty(placeholder))
-                return null;
-
-            var totp = pluginProxy.GetPlaceholderValue(
-                placeholder,
-                searchResult.Entry.Uuid,
-                searchResult.Entry.DatabaseUuid,
-                resolveAll: true);
-
-            return string.IsNullOrEmpty(totp) || totp == placeholder ? null : totp;
         }
     }
 }

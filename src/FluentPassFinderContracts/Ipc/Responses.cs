@@ -8,12 +8,6 @@ namespace FluentPassFinder.Contracts.Public.Ipc
         public EntryDto[] Entries { get; set; }
     }
 
-    public class GetPlaceholderValueResponse : PipeResponse
-    {
-        public override string Type => PipeRequestTypes.GetPlaceholderValue;
-        public string Value { get; set; }
-    }
-
     public class HasTotpResponse : PipeResponse
     {
         public override string Type => PipeRequestTypes.HasTotp;

@@ -20,7 +20,6 @@ namespace FluentPassFinder.Contracts.Public.Ipc
             switch (type)
             {
                 case PipeRequestTypes.SearchEntries:             target = new SearchEntriesRequest();            break;
-                case PipeRequestTypes.GetPlaceholderValue:       target = new GetPlaceholderValueRequest();      break;
                 case PipeRequestTypes.HasTotp:                   target = new HasTotpRequest();                  break;
                 case PipeRequestTypes.GetSettings:               target = new GetSettingsRequest();              break;
                 case PipeRequestTypes.IsAnyDatabaseOpen:         target = new IsAnyDatabaseOpenRequest();        break;

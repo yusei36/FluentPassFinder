@@ -8,15 +8,6 @@ namespace FluentPassFinder.Contracts.Public.Ipc
         public string Query { get; set; }
     }
 
-    public class GetPlaceholderValueRequest : PipeRequest
-    {
-        public override string Type => PipeRequestTypes.GetPlaceholderValue;
-        public string Placeholder { get; set; }
-        public string EntryUuid { get; set; }
-        public string DatabaseUuid { get; set; }
-        public bool ResolveAll { get; set; }
-    }
-
     public class HasTotpRequest : PipeRequest
     {
         public override string Type => PipeRequestTypes.HasTotp;

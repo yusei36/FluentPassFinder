@@ -9,9 +9,6 @@ namespace FluentPassFinder.Contracts.Public
         // Search entries. Plugin side performs the search and returns display-ready DTOs
         IEnumerable<EntryDto> SearchEntries(string query);
 
-        // Value resolution (used for TOTP placeholders and similar)
-        string GetPlaceholderValue(string placeholder, string entryUuid, string databaseUuid, bool resolveAll);
-
         // TOTP availability check. Resolves plugin-side and returns only whether a value exists.
         bool HasTotp(string placeholder, string entryUuid, string databaseUuid);
 
@@ -23,7 +20,7 @@ namespace FluentPassFinder.Contracts.Public
         void CopyField(string entryUuid, string databaseUuid, string fieldName);
         void AutoTypeField(string entryUuid, string databaseUuid, string fieldName);
 
-        // Value actions: caller supplies an already-resolved value (e.g. TOTP)
+        // Value actions: caller supplies a value that may contain placeholders (e.g. TOTP); resolved plugin-side
         void CopyToClipboard(string value, string entryUuid, string databaseUuid);
         void PerformAutoType(string entryUuid, string databaseUuid, string sequence = null);
 
