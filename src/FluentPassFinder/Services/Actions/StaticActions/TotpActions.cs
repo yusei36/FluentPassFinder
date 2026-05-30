@@ -36,9 +36,8 @@ namespace FluentPassFinder.Services.Actions.StaticActions
             if (string.IsNullOrEmpty(placeholder))
                 return;
 
-            searchWindowInteractionService.Close();
-            Task.Delay(100).Wait();
-            pluginProxy.PerformAutoType(searchResult.Entry.Uuid, searchResult.Entry.DatabaseUuid, placeholder + Consts.AutoTypeEnterPlaceholder);
+            searchWindowInteractionService.CloseThen(() =>
+                pluginProxy.PerformAutoType(searchResult.Entry.Uuid, searchResult.Entry.DatabaseUuid, placeholder + Consts.AutoTypeEnterPlaceholder));
         }
     }
 

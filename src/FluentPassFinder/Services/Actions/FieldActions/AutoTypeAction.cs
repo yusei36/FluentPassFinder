@@ -14,9 +14,9 @@ namespace FluentPassFinder.Services.Actions.FieldActions
 
         public override void RunAction(EntrySearchResult searchResult)
         {
-            searchWindowInteractionService.Close();
-            Task.Delay(100).Wait();
-            pluginProxy.AutoTypeField(searchResult.Entry.Uuid, searchResult.Entry.DatabaseUuid, FieldName);
+            var fieldName = FieldName;
+            searchWindowInteractionService.CloseThen(() =>
+                pluginProxy.AutoTypeField(searchResult.Entry.Uuid, searchResult.Entry.DatabaseUuid, fieldName));
         }
     }
 }

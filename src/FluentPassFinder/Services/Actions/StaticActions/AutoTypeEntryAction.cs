@@ -14,8 +14,8 @@ namespace FluentPassFinder.Services.Actions.StaticActions
 
         public override void RunAction(EntrySearchResult searchResult)
         {
-            searchWindowInteractionService.Close();
-            pluginProxy.PerformAutoType(searchResult.Entry.Uuid, searchResult.Entry.DatabaseUuid);
+            searchWindowInteractionService.CloseThen(() =>
+                pluginProxy.PerformAutoType(searchResult.Entry.Uuid, searchResult.Entry.DatabaseUuid));
         }
     }
 }

@@ -5,6 +5,7 @@ namespace FluentPassFinder.Contracts
     internal interface ISearchWindowInteractionService
     {
         void Close();
+        void CloseThen(System.Action action);
         void FocusSearchBox();
     }
 }
