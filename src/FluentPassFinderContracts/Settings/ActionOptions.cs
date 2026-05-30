@@ -23,7 +23,7 @@ namespace FluentPassFinder.Contracts.Public
         public bool ShowForCustomFields { get; set; } = true;
 
         /// <summary>Field names for which no actions are shown.</summary>
-        public List<string> ExcludeForFields { get; set; } = new List<string> { Consts.TemplateUuidField };
+        public List<string> ExcludeFields { get; set; } = new List<string> { Consts.TemplateUuidField };
 
         /// <summary>Per-action sort order, keyed by action type. Lower sorts first.</summary>
         public Dictionary<string, int> Sorting { get; set; } = CreateDefaultSorting();

@@ -69,7 +69,7 @@ After KeePass is closed for the first time after the plugin was installed, the c
     "Control": "Copy_Password",
     "Alt": "Copy_Totp",
     "ShowForCustomFields": true,
-    "ExcludeForFields": [
+    "ExcludeFields": [
       "_etm_template_uuid"
     ],
     "Sorting": {

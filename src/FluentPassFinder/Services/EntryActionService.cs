@@ -85,7 +85,7 @@ namespace FluentPassFinder.Services
             }
 
             if (!includeHiddenActions)
-                return fields.Where(f => !settings.Actions.ExcludeForFields.Any(ex => f.Equals(ex)));
+                return fields.Where(f => !settings.Actions.ExcludeFields.Any(ex => f.Equals(ex)));
 
             return fields;
         }

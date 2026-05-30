@@ -39,6 +39,9 @@ namespace FluentPassFinder.Ipc
             jsonSerializerSettings.Converters.Add(new StringEnumConverter());
             jsonSerializerSettings.Formatting = Formatting.Indented;
             jsonSerializerSettings.MissingMemberHandling = MissingMemberHandling.Ignore;
+            // Replace default-initialized collections instead of appending to them,
+            // otherwise default entries (e.g. ExcludeFields) duplicate on every load/save round-trip.
+            jsonSerializerSettings.ObjectCreationHandling = ObjectCreationHandling.Replace;
 
             settings = LoadOrCreateDefaultSettings();
         }

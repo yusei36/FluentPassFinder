@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: Copyright (C) 2023-2026 Uwe Koegel
 // SPDX-License-Identifier: GPL-3.0-or-later
 using System;
+using System.Collections.ObjectModel;
 using FluentPassFinder.Contracts.Public;
 
 namespace FluentPassFinder.ViewModels
@@ -31,6 +32,9 @@ namespace FluentPassFinder.ViewModels
         [ObservableProperty] private string shiftAction;
         [ObservableProperty] private string controlAction;
         [ObservableProperty] private string altAction;
+        [ObservableProperty] private string newExcludeField;
+
+        public ObservableCollection<string> ExcludeFields { get; } = new ObservableCollection<string>();
 
         [ObservableProperty] private string totpPlaceholder;
 
@@ -112,9 +116,9 @@ namespace FluentPassFinder.ViewModels
                     Control = ControlAction,
                     Alt = AltAction,
                     ShowForCustomFields = ShowActionsForCustomFields,
+                    ExcludeFields = ExcludeFields.Distinct().ToList(),
                     // Preserve fields without UI editors
                     Sorting = original.Actions.Sorting,
-                    ExcludeForFields = original.Actions.ExcludeForFields,
                 },
                 Otp = new OtpOptions
                 {
@@ -138,6 +142,25 @@ namespace FluentPassFinder.ViewModels
 
             pluginProxy.SaveSettings(newSettings);
             App.ApplySettings(newSettings);
+        }
+
+        [RelayCommand]
+        private void AddExcludeField()
+        {
+            var field = NewExcludeField?.Trim();
+            if (string.IsNullOrEmpty(field)) return;
+
+            if (!ExcludeFields.Any(f => f.Equals(field, StringComparison.OrdinalIgnoreCase)))
+                ExcludeFields.Add(field);
+
+            NewExcludeField = string.Empty;
+        }
+
+        [RelayCommand]
+        private void RemoveExcludeField(string field)
+        {
+            if (field != null)
+                ExcludeFields.Remove(field);
         }
 
         [RelayCommand]
@@ -169,6 +192,11 @@ namespace FluentPassFinder.ViewModels
             ControlAction = s.Actions.Control;
             AltAction = s.Actions.Alt;
             ShowActionsForCustomFields = s.Actions.ShowForCustomFields;
+
+            ExcludeFields.Clear();
+            foreach (var field in s.Actions.ExcludeFields)
+                ExcludeFields.Add(field);
+            NewExcludeField = string.Empty;
 
             TotpPlaceholder = s.Otp.TotpPlaceholder;
 

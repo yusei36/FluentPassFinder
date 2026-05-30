@@ -7,6 +7,7 @@
              xmlns:local="clr-namespace:FluentPassFinder.Views"
              xmlns:models="clr-namespace:FluentPassFinder.ViewModels"
              xmlns:converters="clr-namespace:FluentPassFinder.Converters"
+             xmlns:icons="clr-namespace:FluentPassFinder.Services.Actions"
              x:Class="FluentPassFinder.Views.SettingsView"
              x:ClassModifier="internal"
              x:DataType="local:SettingsView"
@@ -17,8 +18,7 @@
         <converters:WindowAnchorConverter x:Key="WindowAnchorConverter" />
     </UserControl.Resources>
 
-    <ScrollViewer MaxHeight="500"
-                  HorizontalScrollBarVisibility="Disabled"
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled"
                   VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="12 8 12 12" Spacing="4">
 
@@ -200,15 +200,79 @@
                        FontWeight="SemiBold"
                        Opacity="0.6"
                        Margin="0 0 0 2" />
+			<CheckBox IsChecked="{Binding ViewModel.ExcludeExpiredEntries}"        Content="Exclude expired entries"       FontSize="13" />
+			<CheckBox IsChecked="{Binding ViewModel.ExcludeGroupsBySearchSetting}" Content="Respect group search setting"  FontSize="13" />
+			<CheckBox IsChecked="{Binding ViewModel.ResolveFieldReferences}"       Content="Resolve field references"      FontSize="13" />
 
             <CheckBox IsChecked="{Binding ViewModel.ShowActionsForCustomFields}"
                       Content="Show actions for custom fields"
                       FontSize="13"
                       Margin="0 2" />
 
-            <CheckBox IsChecked="{Binding ViewModel.ExcludeExpiredEntries}"        Content="Exclude expired entries"       FontSize="13" />
-            <CheckBox IsChecked="{Binding ViewModel.ExcludeGroupsBySearchSetting}" Content="Respect group search setting"  FontSize="13" />
-            <CheckBox IsChecked="{Binding ViewModel.ResolveFieldReferences}"       Content="Resolve field references"      FontSize="13" />
+            <StackPanel Margin="0 2" Spacing="6">
+                <TextBlock Text="Hide actions for fields" FontSize="13" />
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6">
+                    <TextBox Grid.Column="0"
+                             Height="32"
+                             Text="{Binding ViewModel.NewExcludeField}"
+                             Watermark="Field name"
+                             VerticalContentAlignment="Center"
+                             FontSize="13">
+                        <TextBox.KeyBindings>
+                            <KeyBinding Gesture="Return" Command="{Binding ViewModel.AddExcludeFieldCommand}" />
+                        </TextBox.KeyBindings>
+                    </TextBox>
+                    <Button Grid.Column="1"
+                            Command="{Binding ViewModel.AddExcludeFieldCommand}"
+                            Width="32"
+                            Height="32"
+                            Padding="0"
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            ToolTip.Tip="Add field">
+                        <PathIcon Width="14" Height="14" Data="{x:Static icons:Icons.Add}" />
+                    </Button>
+                </Grid>
+                <ItemsControl ItemsSource="{Binding ViewModel.ExcludeFields}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Spacing="3" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                                    BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="4"
+                                    Padding="10 0 4 0"
+                                    Height="32">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <TextBlock Grid.Column="0"
+                                               Text="{Binding}"
+                                               VerticalAlignment="Center"
+                                               FontSize="13"
+                                               TextTrimming="CharacterEllipsis" />
+                                    <Button Grid.Column="1"
+                                            Command="{Binding $parent[ItemsControl].((local:SettingsView)DataContext).ViewModel.RemoveExcludeFieldCommand}"
+                                            CommandParameter="{Binding}"
+                                            Width="24"
+                                            Height="24"
+                                            Padding="0"
+                                            VerticalAlignment="Center"
+                                            HorizontalContentAlignment="Center"
+                                            VerticalContentAlignment="Center"
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            ToolTip.Tip="Remove">
+                                        <PathIcon Width="10" Height="10" Data="{x:Static icons:Icons.Close}" />
+                                    </Button>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
 
             <Separator Margin="0 6" />
 

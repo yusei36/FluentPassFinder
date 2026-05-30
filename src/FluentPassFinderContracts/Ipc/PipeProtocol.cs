@@ -12,6 +12,9 @@ namespace FluentPassFinder.Contracts.Public.Ipc
         private static readonly JsonSerializerSettings SerializerSettings = new JsonSerializerSettings
         {
             NullValueHandling = NullValueHandling.Ignore,
+            // Replace default-initialized collections instead of appending to them,
+            // otherwise default entries (e.g. ExcludeFields) duplicate on every pipe round-trip.
+            ObjectCreationHandling = ObjectCreationHandling.Replace,
             Converters = { new StringEnumConverter() }
         };
 
