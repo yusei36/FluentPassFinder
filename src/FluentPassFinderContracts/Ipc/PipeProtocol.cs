@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: Copyright (C) 2023-2026 Uwe Koegel
 // SPDX-License-Identifier: GPL-3.0-or-later
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System.IO.Pipes;
 using System.Text;
 
@@ -10,7 +11,8 @@ namespace FluentPassFinder.Contracts.Public.Ipc
     {
         private static readonly JsonSerializerSettings SerializerSettings = new JsonSerializerSettings
         {
-            NullValueHandling = NullValueHandling.Ignore
+            NullValueHandling = NullValueHandling.Ignore,
+            Converters = { new StringEnumConverter() }
         };
 
         public static void WriteRequest(PipeStream stream, PipeRequest message)

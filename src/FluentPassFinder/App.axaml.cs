@@ -113,10 +113,9 @@ namespace FluentPassFinder
 
         internal static void ApplySettings(Settings settings)
         {
-            var isDark = settings.Theme != AppTheme.Light;
             Avalonia.Threading.Dispatcher.UIThread.Post(() =>
             {
-                Current.RequestedThemeVariant = isDark ? ThemeVariant.Dark : ThemeVariant.Light;
+                Current.RequestedThemeVariant = ToThemeVariant(settings.Theme);
                 ApplyWindowSize(settings);
             });
 
@@ -158,8 +157,14 @@ namespace FluentPassFinder
 
         private void RestoreTheme(Settings settings)
         {
-            var isDark = settings.Theme != AppTheme.Light;
-            RequestedThemeVariant = isDark ? ThemeVariant.Dark : ThemeVariant.Light;
+            RequestedThemeVariant = ToThemeVariant(settings.Theme);
         }
+
+        private static ThemeVariant ToThemeVariant(AppTheme theme) => theme switch
+        {
+            AppTheme.Dark => ThemeVariant.Dark,
+            AppTheme.Light => ThemeVariant.Light,
+            _ => ThemeVariant.Default,
+        };
     }
 }

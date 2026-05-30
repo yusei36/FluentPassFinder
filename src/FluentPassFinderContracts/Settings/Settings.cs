@@ -18,7 +18,7 @@ namespace FluentPassFinder.Contracts.Public
         public HotkeyOptions Hotkeys { get; set; } = new HotkeyOptions();
         public WindowOptions Window { get; set; } = new WindowOptions();
         public BehaviorOptions Behavior { get; set; } = new BehaviorOptions();
-        public AppTheme Theme { get; set; } = AppTheme.Dark;
+        public AppTheme Theme { get; set; } = AppTheme.System;
 
         /// <summary>Returns a fresh, fully-defaulted settings instance.</summary>
         public static Settings CreateDefault() => new Settings();

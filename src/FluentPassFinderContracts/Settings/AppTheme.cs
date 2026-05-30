@@ -5,7 +5,8 @@ namespace FluentPassFinder.Contracts.Public
     /// <summary>Color theme applied to the search window.</summary>
     public enum AppTheme
     {
-        Dark = 0,
+        System = 0,
+        Dark,
         Light,
     }
 }

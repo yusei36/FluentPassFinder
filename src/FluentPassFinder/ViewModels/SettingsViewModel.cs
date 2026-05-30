@@ -52,7 +52,7 @@ namespace FluentPassFinder.ViewModels
         };
 
         public static System.Collections.Generic.IReadOnlyList<string> AvailableThemes { get; } =
-            new[] { "Dark", "Light" };
+            Enum.GetNames(typeof(AppTheme));
 
         public static System.Collections.Generic.IReadOnlyList<string> AvailableActions { get; } =
             new[]
@@ -85,7 +85,7 @@ namespace FluentPassFinder.ViewModels
             var newSettings = new Settings
             {
                 Version = original.Version,
-                Theme = Enum.TryParse<AppTheme>(Theme, out var theme) ? theme : AppTheme.Dark,
+                Theme = Enum.TryParse<AppTheme>(Theme, out var theme) ? theme : AppTheme.System,
                 Hotkeys = new HotkeyOptions
                 {
                     CurrentScreen = GlobalHotkeyCurrentScreen,
