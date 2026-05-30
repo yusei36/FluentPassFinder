@@ -14,10 +14,10 @@ namespace FluentPassFinder.Contracts.Public.Ipc
         public string Value { get; set; }
     }
 
-    public class GetStringFromCustomConfigResponse : PipeResponse
+    public class HasTotpResponse : PipeResponse
     {
-        public override string Type => PipeRequestTypes.GetStringFromCustomConfig;
-        public string Value { get; set; }
+        public override string Type => PipeRequestTypes.HasTotp;
+        public bool HasTotp { get; set; }
     }
 
     public class GetSettingsResponse : PipeResponse
@@ -33,5 +33,5 @@ namespace FluentPassFinder.Contracts.Public.Ipc
     }
 
     // Void action responses (CopyField, AutoTypeField, CopyToClipboard, PerformAutoType,
-    // OpenEntryUrl, SelectEntry) use the base PipeResponse directly — Success/Error is enough.
+    // OpenEntryUrl, SelectEntry) use the base PipeResponse directly; Success/Error is enough.
 }

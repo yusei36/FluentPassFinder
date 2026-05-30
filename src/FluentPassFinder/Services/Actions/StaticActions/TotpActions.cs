@@ -44,54 +44,29 @@ namespace FluentPassFinder.Services.Actions.StaticActions
 
         public override bool CanRunAction(EntrySearchResult searchResult)
         {
-            return CanGeneratePluginTotp(searchResult) || CanGenerateNativeTotp(searchResult);
+            var placeholder = Settings.Otp.TotpPlaceholder;
+            if (string.IsNullOrEmpty(placeholder))
+                return false;
+
+            return pluginProxy.HasTotp(
+                placeholder,
+                searchResult.Entry.Uuid,
+                searchResult.Entry.DatabaseUuid);
         }
 
         protected string GenerateTotp(EntrySearchResult searchResult)
         {
-            string totp = null;
-            var pluginTotpPlaceholder = Settings.Totp.Placeholder;
+            var placeholder = Settings.Otp.TotpPlaceholder;
+            if (string.IsNullOrEmpty(placeholder))
+                return null;
 
-            if (CanGeneratePluginTotp(searchResult))
-            {
-                totp = pluginProxy.GetPlaceholderValue(
-                    pluginTotpPlaceholder,
-                    searchResult.Entry.Uuid,
-                    searchResult.Entry.DatabaseUuid,
-                    resolveAll: true);
-            }
+            var totp = pluginProxy.GetPlaceholderValue(
+                placeholder,
+                searchResult.Entry.Uuid,
+                searchResult.Entry.DatabaseUuid,
+                resolveAll: true);
 
-            if ((string.IsNullOrEmpty(totp) || totp == pluginTotpPlaceholder) && CanGenerateNativeTotp(searchResult))
-            {
-                totp = pluginProxy.GetPlaceholderValue(
-                    Consts.NativeTotpPlacholder,
-                    searchResult.Entry.Uuid,
-                    searchResult.Entry.DatabaseUuid,
-                    resolveAll: true);
-            }
-
-            return totp;
-        }
-
-        private bool CanGeneratePluginTotp(EntrySearchResult searchResult)
-        {
-            var pluginTotpPlaceholder = Settings.Totp.Placeholder;
-            if (pluginTotpPlaceholder == null)
-                return false;
-
-            var pluginTotpFieldConfig = Settings.Totp.FieldConfigKey;
-            if (pluginTotpFieldConfig == null)
-                return true;
-
-            var configuredField = pluginProxy.GetStringFromCustomConfig(pluginTotpFieldConfig, null);
-            return !string.IsNullOrEmpty(configuredField)
-                   && searchResult.Entry.Fields.ContainsKey(configuredField);
-        }
-
-        private static bool CanGenerateNativeTotp(EntrySearchResult searchResult)
-        {
-            return searchResult.Entry.Fields.Keys
-                .Any(k => k.StartsWith(Consts.NativeTotpFieldPrefix, System.StringComparison.InvariantCultureIgnoreCase));
+            return string.IsNullOrEmpty(totp) || totp == placeholder ? null : totp;
         }
     }
 }

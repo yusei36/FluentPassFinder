@@ -17,11 +17,12 @@ namespace FluentPassFinder.Contracts.Public.Ipc
         public bool ResolveAll { get; set; }
     }
 
-    public class GetStringFromCustomConfigRequest : PipeRequest
+    public class HasTotpRequest : PipeRequest
     {
-        public override string Type => PipeRequestTypes.GetStringFromCustomConfig;
-        public string ConfigId { get; set; }
-        public string DefaultValue { get; set; }
+        public override string Type => PipeRequestTypes.HasTotp;
+        public string Placeholder { get; set; }
+        public string EntryUuid { get; set; }
+        public string DatabaseUuid { get; set; }
     }
 
     public class GetSettingsRequest : PipeRequest

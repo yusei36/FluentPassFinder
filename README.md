@@ -60,9 +60,8 @@ After KeePass is closed for the first time after the plugin was installed, the c
     "ExcludeGroupsBySearchSetting": true,
     "ResolveFieldReferences": true
   },
-  "Totp": {
-    "Placeholder": "{TOTP}",
-    "FieldConfigKey": "totpsettings_stringname"
+  "Otp": {
+    "TotpPlaceholder": "{TIMEOTP}"
   },
   "Actions": {
     "Main": "OpenContextMenu",

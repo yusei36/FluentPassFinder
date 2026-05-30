@@ -76,7 +76,7 @@ namespace FluentPassFinder.Ipc
             }
             catch (Exception)
             {
-                // Connection closed or plugin shutting down — exit silently
+                // Connection closed or plugin shutting down. Exit silently
             }
         }
 

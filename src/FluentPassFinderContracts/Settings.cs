@@ -13,7 +13,7 @@ namespace FluentPassFinder.Contracts.Public
         public int Version { get; set; } = 1;
 
         public SearchOptions Search { get; set; } = new SearchOptions();
-        public TotpOptions Totp { get; set; } = new TotpOptions();
+        public OtpOptions Otp { get; set; } = new OtpOptions();
         public ActionOptions Actions { get; set; } = new ActionOptions();
         public HotkeyOptions Hotkeys { get; set; } = new HotkeyOptions();
         public WindowOptions Window { get; set; } = new WindowOptions();

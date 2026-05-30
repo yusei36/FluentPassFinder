@@ -26,10 +26,7 @@ namespace FluentPassFinder.Contracts.Public
         public const string UrlField = "URL";
 
         public const string TemplateUuidField = "_etm_template_uuid";
-        public const string NativeTotpFieldPrefix = "TimeOtp-";
-        public const string NativeTotpPlacholder = "{TIMEOTP}";
-        public const string PluginTotpPlaceholder = "{TOTP}";
-        public const string PluginTotpFieldConfigKey = "totpsettings_stringname"; // Key to the configuration (in KeePass.config.xml) of the field which is used by the totp plugin (actual field should be something like 'TOTP Settings')
+        public const string NativeTotpPlaceholder = "{TIMEOTP}";
 
         public const string AutoTypeEnterPlaceholder = "{ENTER}";
 

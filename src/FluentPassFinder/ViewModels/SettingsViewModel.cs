@@ -32,8 +32,7 @@ namespace FluentPassFinder.ViewModels
         [ObservableProperty] private string controlAction;
         [ObservableProperty] private string altAction;
 
-        [ObservableProperty] private string pluginTotpPlaceholder;
-        [ObservableProperty] private string pluginTotpFieldConfig;
+        [ObservableProperty] private string totpPlaceholder;
 
         [ObservableProperty] private bool preserveLastSearch;
         [ObservableProperty] private decimal? preserveLastSearchTimeoutSeconds;
@@ -117,10 +116,9 @@ namespace FluentPassFinder.ViewModels
                     Sorting = original.Actions.Sorting,
                     ExcludeForFields = original.Actions.ExcludeForFields,
                 },
-                Totp = new TotpOptions
+                Otp = new OtpOptions
                 {
-                    Placeholder = PluginTotpPlaceholder,
-                    FieldConfigKey = PluginTotpFieldConfig,
+                    TotpPlaceholder = TotpPlaceholder,
                 },
                 Behavior = new BehaviorOptions
                 {
@@ -172,8 +170,7 @@ namespace FluentPassFinder.ViewModels
             AltAction = s.Actions.Alt;
             ShowActionsForCustomFields = s.Actions.ShowForCustomFields;
 
-            PluginTotpPlaceholder = s.Totp.Placeholder;
-            PluginTotpFieldConfig = s.Totp.FieldConfigKey;
+            TotpPlaceholder = s.Otp.TotpPlaceholder;
 
             PreserveLastSearch = s.Behavior.PreserveLastSearch;
             PreserveLastSearchTimeoutSeconds = s.Behavior.PreserveLastSearchTimeoutMilliseconds / 1000;

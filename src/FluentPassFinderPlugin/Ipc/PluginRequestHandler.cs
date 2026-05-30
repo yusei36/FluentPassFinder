@@ -51,7 +51,7 @@ namespace FluentPassFinder.Ipc
                 {
                     case SearchEntriesRequest req:             return HandleSearchEntries(req);
                     case GetPlaceholderValueRequest req:       return HandleGetPlaceholderValue(req);
-                    case GetStringFromCustomConfigRequest req: return HandleGetStringFromCustomConfig(req);
+                    case HasTotpRequest req:                   return HandleHasTotp(req);
                     case GetSettingsRequest _:                 return new GetSettingsResponse { Success = true, Settings = settings };
                     case IsAnyDatabaseOpenRequest req:         return HandleIsAnyDatabaseOpen(req);
                     case CopyFieldRequest req:                 return HandleCopyField(req);
@@ -115,11 +115,16 @@ namespace FluentPassFinder.Ipc
             return new GetPlaceholderValueResponse { Success = true, Value = value };
         }
 
-        private PipeResponse HandleGetStringFromCustomConfig(GetStringFromCustomConfigRequest req)
+        private PipeResponse HandleHasTotp(HasTotpRequest req)
         {
-            var value = InvokeOnUiThread(() =>
-                pluginHost.CustomConfig.GetString(req.ConfigId, req.DefaultValue));
-            return new GetStringFromCustomConfigResponse { Success = true, Value = value };
+            var hasTotp = InvokeOnUiThread(() =>
+            {
+                var (entry, db) = ResolveEntry(req.EntryUuid, req.DatabaseUuid);
+                if (entry == null) return false;
+                var value = SprEngine.Compile(req.Placeholder, new SprContext(entry, db, SprCompileFlags.All, true, false));
+                return !string.IsNullOrEmpty(value) && value != req.Placeholder;
+            });
+            return new HasTotpResponse { Success = true, HasTotp = hasTotp };
         }
 
         private PipeResponse HandleIsAnyDatabaseOpen(IsAnyDatabaseOpenRequest req)

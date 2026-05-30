@@ -46,15 +46,16 @@ namespace FluentPassFinder.Ipc
             return response?.Value;
         }
 
-        public string GetStringFromCustomConfig(string configId, string defaultValue)
+        public bool HasTotp(string placeholder, string entryUuid, string databaseUuid)
         {
-            var response = Send<GetStringFromCustomConfigRequest, GetStringFromCustomConfigResponse>(
-                new GetStringFromCustomConfigRequest
+            var response = Send<HasTotpRequest, HasTotpResponse>(
+                new HasTotpRequest
                 {
-                    ConfigId     = configId,
-                    DefaultValue = defaultValue,
+                    Placeholder  = placeholder,
+                    EntryUuid    = entryUuid,
+                    DatabaseUuid = databaseUuid,
                 });
-            return response?.Value ?? defaultValue;
+            return response?.HasTotp ?? false;
         }
 
         public Settings Settings => cachedSettings ?? (cachedSettings = FetchSettings());

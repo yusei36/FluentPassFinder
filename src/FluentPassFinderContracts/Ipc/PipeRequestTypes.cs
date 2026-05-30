@@ -6,7 +6,7 @@ namespace FluentPassFinder.Contracts.Public.Ipc
     {
         public const string SearchEntries             = "SearchEntries";
         public const string GetPlaceholderValue       = "GetPlaceholderValue";
-        public const string GetStringFromCustomConfig = "GetStringFromCustomConfig";
+        public const string HasTotp                   = "HasTotp";
         public const string GetSettings               = "GetSettings";
         public const string IsAnyDatabaseOpen         = "IsAnyDatabaseOpen";
         public const string CopyField                 = "CopyField";

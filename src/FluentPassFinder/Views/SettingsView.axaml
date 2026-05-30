@@ -230,24 +230,17 @@
 
             <Separator Margin="0 6" />
 
-            <!-- TOTP (Advanced) -->
-            <TextBlock Text="TOTP (Advanced)"
+            <!-- TOTP -->
+            <TextBlock Text="TOTP"
                        FontSize="11"
                        FontWeight="SemiBold"
                        Opacity="0.6"
                        Margin="0 0 0 2" />
 
             <Grid ColumnDefinitions="*,*" Margin="0 2">
-                <TextBlock Grid.Column="0" Text="Plugin placeholder" VerticalAlignment="Center" FontSize="13" />
+                <TextBlock Grid.Column="0" Text="TOTP placeholder" VerticalAlignment="Center" FontSize="13" />
                 <TextBox Grid.Column="1"
-                         Text="{Binding ViewModel.PluginTotpPlaceholder}"
-                         FontSize="13" />
-            </Grid>
-
-            <Grid ColumnDefinitions="*,*" Margin="0 2">
-                <TextBlock Grid.Column="0" Text="Field config key" VerticalAlignment="Center" FontSize="13" />
-                <TextBox Grid.Column="1"
-                         Text="{Binding ViewModel.PluginTotpFieldConfig}"
+                         Text="{Binding ViewModel.TotpPlaceholder}"
                          FontSize="13" />
             </Grid>
         </StackPanel>
