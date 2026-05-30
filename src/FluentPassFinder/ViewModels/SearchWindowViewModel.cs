@@ -172,7 +172,7 @@ namespace FluentPassFinder.ViewModels
             CloseContextMenuCommand.NotifyCanExecuteChanged();
             if (value && SelectedEntry != null)
             {
-                ContextActions = new ObservableCollection<IAction>(entryActionService.GetActionsForEntry(SelectedEntry.SearchResult, false));
+                ContextActions = new ObservableCollection<IAction>(entryActionService.GetActionsForEntry(SelectedEntry.SearchResult));
                 SelectedContextAction = ContextActions.Count > 0 ? ContextActions[0] : null;
             }
             else if (!value)

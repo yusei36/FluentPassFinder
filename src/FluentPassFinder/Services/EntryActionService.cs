@@ -32,7 +32,7 @@ namespace FluentPassFinder.Services
         {
             if (searchResult == null) throw new ArgumentNullException(nameof(searchResult));
 
-            var action = GetActionsForEntry(searchResult, true).FirstOrDefault(a => a.ActionType == actionType);
+            var action = BuildActions(searchResult, includeHiddenActions: true).FirstOrDefault(a => a.ActionType == actionType);
             if (action != null)
                 action.RunAction(searchResult);
             else
@@ -46,7 +46,12 @@ namespace FluentPassFinder.Services
             action.RunAction(searchResult);
         }
 
-        public IEnumerable<IAction> GetActionsForEntry(EntrySearchResult searchResult, bool includeHiddenActions)
+        public IEnumerable<IAction> GetActionsForEntry(EntrySearchResult searchResult)
+        {
+            return BuildActions(searchResult, includeHiddenActions: false);
+        }
+
+        private IEnumerable<IAction> BuildActions(EntrySearchResult searchResult, bool includeHiddenActions)
         {
             var actions = new List<IAction>();
             actions.AddRange(staticActions);
