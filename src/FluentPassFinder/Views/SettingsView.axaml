@@ -209,71 +209,6 @@
                       FontSize="13"
                       Margin="0 2" />
 
-            <StackPanel Margin="0 2" Spacing="6">
-                <TextBlock Text="Hide actions for fields" FontSize="13" />
-                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6">
-                    <TextBox Grid.Column="0"
-                             Height="32"
-                             Text="{Binding ViewModel.NewExcludeField}"
-                             Watermark="Field name"
-                             VerticalContentAlignment="Center"
-                             FontSize="13">
-                        <TextBox.KeyBindings>
-                            <KeyBinding Gesture="Return" Command="{Binding ViewModel.AddExcludeFieldCommand}" />
-                        </TextBox.KeyBindings>
-                    </TextBox>
-                    <Button Grid.Column="1"
-                            Command="{Binding ViewModel.AddExcludeFieldCommand}"
-                            Width="32"
-                            Height="32"
-                            Padding="0"
-                            HorizontalContentAlignment="Center"
-                            VerticalContentAlignment="Center"
-                            ToolTip.Tip="Add field">
-                        <PathIcon Width="14" Height="14" Data="{x:Static icons:Icons.Add}" />
-                    </Button>
-                </Grid>
-                <ItemsControl ItemsSource="{Binding ViewModel.ExcludeFields}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel Spacing="3" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Border Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
-                                    BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
-                                    BorderThickness="1"
-                                    CornerRadius="4"
-                                    Padding="10 0 4 0"
-                                    Height="32">
-                                <Grid ColumnDefinitions="*,Auto">
-                                    <TextBlock Grid.Column="0"
-                                               Text="{Binding}"
-                                               VerticalAlignment="Center"
-                                               FontSize="13"
-                                               TextTrimming="CharacterEllipsis" />
-                                    <Button Grid.Column="1"
-                                            Command="{Binding $parent[ItemsControl].((local:SettingsView)DataContext).ViewModel.RemoveExcludeFieldCommand}"
-                                            CommandParameter="{Binding}"
-                                            Width="24"
-                                            Height="24"
-                                            Padding="0"
-                                            VerticalAlignment="Center"
-                                            HorizontalContentAlignment="Center"
-                                            VerticalContentAlignment="Center"
-                                            Background="Transparent"
-                                            BorderThickness="0"
-                                            ToolTip.Tip="Remove">
-                                        <PathIcon Width="10" Height="10" Data="{x:Static icons:Icons.Close}" />
-                                    </Button>
-                                </Grid>
-                            </Border>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </StackPanel>
-
             <Separator Margin="0 6" />
 
             <!-- Search Fields -->
@@ -310,98 +245,179 @@
 
             <Separator Margin="0 6" />
 
-            <!-- Action Order -->
-            <TextBlock Text="Action Order"
-                       FontSize="11"
-                       FontWeight="SemiBold"
-                       Opacity="0.6"
-                       Margin="0 0 0 2" />
+            <!-- Advanced -->
+            <Expander Header="Advanced"
+                      HorizontalAlignment="Stretch"
+                      Margin="0 2">
+                <StackPanel Spacing="4">
 
-            <TextBlock FontSize="12"
-                       Opacity="0.6"
-                       TextWrapping="Wrap"
-                       Margin="0 0 0 4">
-                <Run Text="Sort index per action; lower sorts first, a negative index hides it. Add an action by its raw name; anything not listed uses its built-in index." />
-                <LineBreak />
-                <Run Text="Reference:" />
-                <LineBreak />
-                <Run Text="AutoType 0, Copy_Totp 100, AutoType_Totp 150, OpenUrl 200, SelectEntry 300, Copy_&lt;field&gt; 1000, AutoType_&lt;field&gt; 2000" />
-            </TextBlock>
+                    <!-- Hide Actions For Fields -->
+                    <TextBlock Text="Hide Actions For Fields"
+                               FontSize="11"
+                               FontWeight="SemiBold"
+                               Opacity="0.6"
+                               Margin="0 0 0 2" />
 
-            <StackPanel Margin="0 2" Spacing="6">
-                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6">
-                    <AutoCompleteBox Grid.Column="0"
+                    <StackPanel Margin="0 2" Spacing="6">
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6">
+                            <TextBox Grid.Column="0"
                                      Height="32"
-                                     Text="{Binding ViewModel.NewSortingAction}"
-                                     ItemsSource="{x:Static models:SettingsViewModel.AvailableActions}"
-                                     FilterMode="Contains"
-                                     Watermark="Action name"
+                                     Text="{Binding ViewModel.NewExcludeField}"
+                                     Watermark="Field name"
+                                     VerticalContentAlignment="Center"
                                      FontSize="13">
-                        <AutoCompleteBox.KeyBindings>
-                            <KeyBinding Gesture="Return" Command="{Binding ViewModel.AddSortingActionCommand}" />
-                        </AutoCompleteBox.KeyBindings>
-                    </AutoCompleteBox>
-                    <Button Grid.Column="1"
-                            Command="{Binding ViewModel.AddSortingActionCommand}"
-                            Width="32"
-                            Height="32"
-                            Padding="0"
-                            HorizontalContentAlignment="Center"
-                            VerticalContentAlignment="Center"
-                            ToolTip.Tip="Add action">
-                        <PathIcon Width="14" Height="14" Data="{x:Static icons:Icons.Add}" />
-                    </Button>
-                </Grid>
-                <ItemsControl ItemsSource="{Binding ViewModel.SortingActions}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel Spacing="3" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="models:SortingActionItem">
-                            <Border Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
-                                    BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
-                                    BorderThickness="1"
-                                    CornerRadius="4"
-                                    Padding="10 0 4 0"
-                                    Height="32">
-                                <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="6">
-                                    <TextBlock Grid.Column="0"
-                                               Text="{Binding ActionType}"
-                                               VerticalAlignment="Center"
-                                               FontSize="13"
-                                               TextTrimming="CharacterEllipsis" />
-                                    <NumericUpDown Grid.Column="1"
-                                                   Value="{Binding Index}"
-                                                   Minimum="-1"
-                                                   Maximum="100000"
-                                                   Increment="1"
-                                                   FormatString="0"
-                                                   Width="110"
-                                                   Height="26"
-                                                   VerticalAlignment="Center"
-                                                   FontSize="12" />
-                                    <Button Grid.Column="2"
-                                            Command="{Binding $parent[ItemsControl].((local:SettingsView)DataContext).ViewModel.RemoveSortingActionCommand}"
-                                            CommandParameter="{Binding}"
-                                            Width="24"
-                                            Height="24"
-                                            Padding="0"
-                                            VerticalAlignment="Center"
-                                            HorizontalContentAlignment="Center"
-                                            VerticalContentAlignment="Center"
-                                            Background="Transparent"
-                                            BorderThickness="0"
-                                            ToolTip.Tip="Remove">
-                                        <PathIcon Width="10" Height="10" Data="{x:Static icons:Icons.Close}" />
-                                    </Button>
-                                </Grid>
-                            </Border>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </StackPanel>
+                                <TextBox.KeyBindings>
+                                    <KeyBinding Gesture="Return" Command="{Binding ViewModel.AddExcludeFieldCommand}" />
+                                </TextBox.KeyBindings>
+                            </TextBox>
+                            <Button Grid.Column="1"
+                                    Command="{Binding ViewModel.AddExcludeFieldCommand}"
+                                    Width="32"
+                                    Height="32"
+                                    Padding="0"
+                                    HorizontalContentAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    ToolTip.Tip="Add field">
+                                <PathIcon Width="14" Height="14" Data="{x:Static icons:Icons.Add}" />
+                            </Button>
+                        </Grid>
+                        <ItemsControl ItemsSource="{Binding ViewModel.ExcludeFields}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Spacing="3" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                                            BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                                            BorderThickness="1"
+                                            CornerRadius="4"
+                                            Padding="10 0 4 0"
+                                            Height="32">
+                                        <Grid ColumnDefinitions="*,Auto">
+                                            <TextBlock Grid.Column="0"
+                                                       Text="{Binding}"
+                                                       VerticalAlignment="Center"
+                                                       FontSize="13"
+                                                       TextTrimming="CharacterEllipsis" />
+                                            <Button Grid.Column="1"
+                                                    Command="{Binding $parent[ItemsControl].((local:SettingsView)DataContext).ViewModel.RemoveExcludeFieldCommand}"
+                                                    CommandParameter="{Binding}"
+                                                    Width="24"
+                                                    Height="24"
+                                                    Padding="0"
+                                                    VerticalAlignment="Center"
+                                                    HorizontalContentAlignment="Center"
+                                                    VerticalContentAlignment="Center"
+                                                    Background="Transparent"
+                                                    BorderThickness="0"
+                                                    ToolTip.Tip="Remove">
+                                                <PathIcon Width="10" Height="10" Data="{x:Static icons:Icons.Close}" />
+                                            </Button>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+
+                    <Separator Margin="0 6" />
+
+                    <!-- Action Order -->
+                    <TextBlock Text="Action Order"
+                               FontSize="11"
+                               FontWeight="SemiBold"
+                               Opacity="0.6"
+                               Margin="0 0 0 2" />
+
+                    <TextBlock FontSize="12"
+                               Opacity="0.6"
+                               TextWrapping="Wrap"
+                               Margin="0 0 0 4">
+                        <Run Text="Sort index per action; lower sorts first, a negative index hides it. Add an action by its raw name; anything not listed uses its built-in index." />
+                        <LineBreak />
+                        <Run Text="Reference:" />
+                        <LineBreak />
+                        <Run Text="AutoType 0, Copy_Totp 100, AutoType_Totp 150, OpenUrl 200, SelectEntry 300, Copy_&lt;field&gt; 1000, AutoType_&lt;field&gt; 2000" />
+                    </TextBlock>
+
+                    <StackPanel Margin="0 2" Spacing="6">
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6">
+                            <AutoCompleteBox Grid.Column="0"
+                                             Height="32"
+                                             Text="{Binding ViewModel.NewSortingAction}"
+                                             ItemsSource="{x:Static models:SettingsViewModel.AvailableActions}"
+                                             FilterMode="Contains"
+                                             Watermark="Action name"
+                                             FontSize="13">
+                                <AutoCompleteBox.KeyBindings>
+                                    <KeyBinding Gesture="Return" Command="{Binding ViewModel.AddSortingActionCommand}" />
+                                </AutoCompleteBox.KeyBindings>
+                            </AutoCompleteBox>
+                            <Button Grid.Column="1"
+                                    Command="{Binding ViewModel.AddSortingActionCommand}"
+                                    Width="32"
+                                    Height="32"
+                                    Padding="0"
+                                    HorizontalContentAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    ToolTip.Tip="Add action">
+                                <PathIcon Width="14" Height="14" Data="{x:Static icons:Icons.Add}" />
+                            </Button>
+                        </Grid>
+                        <ItemsControl ItemsSource="{Binding ViewModel.SortingActions}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Spacing="3" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="models:SortingActionItem">
+                                    <Border Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                                            BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                                            BorderThickness="1"
+                                            CornerRadius="4"
+                                            Padding="10 0 4 0"
+                                            Height="32">
+                                        <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="6">
+                                            <TextBlock Grid.Column="0"
+                                                       Text="{Binding ActionType}"
+                                                       VerticalAlignment="Center"
+                                                       FontSize="13"
+                                                       TextTrimming="CharacterEllipsis" />
+                                            <NumericUpDown Grid.Column="1"
+                                                           Value="{Binding Index}"
+                                                           Minimum="-1"
+                                                           Maximum="100000"
+                                                           Increment="1"
+                                                           FormatString="0"
+                                                           Width="110"
+                                                           Height="26"
+                                                           VerticalAlignment="Center"
+                                                           FontSize="12" />
+                                            <Button Grid.Column="2"
+                                                    Command="{Binding $parent[ItemsControl].((local:SettingsView)DataContext).ViewModel.RemoveSortingActionCommand}"
+                                                    CommandParameter="{Binding}"
+                                                    Width="24"
+                                                    Height="24"
+                                                    Padding="0"
+                                                    VerticalAlignment="Center"
+                                                    HorizontalContentAlignment="Center"
+                                                    VerticalContentAlignment="Center"
+                                                    Background="Transparent"
+                                                    BorderThickness="0"
+                                                    ToolTip.Tip="Remove">
+                                                <PathIcon Width="10" Height="10" Data="{x:Static icons:Icons.Close}" />
+                                            </Button>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </StackPanel>
+            </Expander>
         </StackPanel>
     </ScrollViewer>
 </UserControl>
