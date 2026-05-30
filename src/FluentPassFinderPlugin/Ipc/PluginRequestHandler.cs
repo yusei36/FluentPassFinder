@@ -75,7 +75,7 @@ namespace FluentPassFinder.Ipc
             var entries = InvokeOnUiThread(() =>
             {
                 var query = (req.Query ?? string.Empty).ToLowerInvariant();
-                var searchOptions = settings.SearchOptions;
+                var searchOptions = settings.Search;
                 var searchTime = DateTime.Now;
                 var results = new List<EntryDto>();
 
@@ -259,7 +259,7 @@ namespace FluentPassFinder.Ipc
 
         private EntryDto BuildEntryDto(PwEntry entry, PwDatabase db, string dbUuid)
         {
-            var resolve = settings.SearchOptions.ResolveFieldReferences;
+            var resolve = settings.Search.ResolveFieldReferences;
             var dto = new EntryDto
             {
                 Uuid     = UuidToString(entry.Uuid),
@@ -378,9 +378,10 @@ namespace FluentPassFinder.Ipc
 
         private Settings CreateDefaultSettings()
         {
+            var defaults = Settings.CreateDefault();
             pluginHost.CustomConfig.SetString(ConfigKey,
-                JsonConvert.SerializeObject(Settings.DefaultSettings, jsonSerializerSettings));
-            return Settings.DefaultSettings;
+                JsonConvert.SerializeObject(defaults, jsonSerializerSettings));
+            return defaults;
         }
 
         private void InvokeOnUiThread(Action action) =>

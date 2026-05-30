@@ -34,7 +34,7 @@ namespace FluentPassFinder.Services.Actions
         {
             get
             {
-                if (Settings.ActionSorting != null && Settings.ActionSorting.TryGetValue(ActionType, out int configuredSortingIndex))
+                if (Settings.Actions.Sorting != null && Settings.Actions.Sorting.TryGetValue(ActionType, out int configuredSortingIndex))
                 {
                     return configuredSortingIndex;
                 }

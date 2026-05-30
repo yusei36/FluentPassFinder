@@ -50,7 +50,7 @@ namespace FluentPassFinder.Services.Actions.StaticActions
         protected string GenerateTotp(EntrySearchResult searchResult)
         {
             string totp = null;
-            var pluginTotpPlaceholder = Settings.PluginTotpPlaceholder;
+            var pluginTotpPlaceholder = Settings.Totp.Placeholder;
 
             if (CanGeneratePluginTotp(searchResult))
             {
@@ -75,11 +75,11 @@ namespace FluentPassFinder.Services.Actions.StaticActions
 
         private bool CanGeneratePluginTotp(EntrySearchResult searchResult)
         {
-            var pluginTotpPlaceholder = Settings.PluginTotpPlaceholder;
+            var pluginTotpPlaceholder = Settings.Totp.Placeholder;
             if (pluginTotpPlaceholder == null)
                 return false;
 
-            var pluginTotpFieldConfig = Settings.PluginTotpFieldConfig;
+            var pluginTotpFieldConfig = Settings.Totp.FieldConfigKey;
             if (pluginTotpFieldConfig == null)
                 return true;
 

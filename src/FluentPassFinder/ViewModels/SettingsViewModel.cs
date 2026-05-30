@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: Copyright (C) 2023-2026 Uwe Koegel
 // SPDX-License-Identifier: GPL-3.0-or-later
+using System;
 using FluentPassFinder.Contracts.Public;
 
 namespace FluentPassFinder.ViewModels
@@ -81,12 +82,17 @@ namespace FluentPassFinder.ViewModels
         private void Save()
         {
             var original = pluginProxy.Settings;
+            var defaults = Settings.CreateDefault();
             var newSettings = new Settings
             {
-                Theme = Theme,
-                GlobalHotkeyCurrentScreen = GlobalHotkeyCurrentScreen,
-                GlobalHotkeyPrimaryScreen = GlobalHotkeyPrimaryScreen,
-                SearchOptions = new SearchOptions
+                Version = original.Version,
+                Theme = Enum.TryParse<AppTheme>(Theme, out var theme) ? theme : AppTheme.Dark,
+                Hotkeys = new HotkeyOptions
+                {
+                    CurrentScreen = GlobalHotkeyCurrentScreen,
+                    PrimaryScreen = GlobalHotkeyPrimaryScreen,
+                },
+                Search = new SearchOptions
                 {
                     IncludeTitleField = IncludeTitleField,
                     IncludeUserNameField = IncludeUserNameField,
@@ -100,24 +106,36 @@ namespace FluentPassFinder.ViewModels
                     ExcludeGroupsBySearchSetting = ExcludeGroupsBySearchSetting,
                     ResolveFieldReferences = ResolveFieldReferences,
                 },
-                MainAction = MainAction,
-                ShiftAction = ShiftAction,
-                ControlAction = ControlAction,
-                AltAction = AltAction,
-                ShowActionsForCustomFields = ShowActionsForCustomFields,
-                PluginTotpPlaceholder = PluginTotpPlaceholder,
-                PluginTotpFieldConfig = PluginTotpFieldConfig,
-                PreserveLastSearch = PreserveLastSearch,
-                PreserveLastSearchTimeoutMilliseconds = (int)(PreserveLastSearchTimeoutSeconds ?? 30) * 1000,
-                EscAlwaysClosesWindow = EscAlwaysClosesWindow,
-                WindowWidth = (int)(WindowWidth ?? Settings.DefaultSettings.WindowWidth),
-                WindowHeight = (int)(WindowHeight ?? Settings.DefaultSettings.WindowHeight),
-                WindowAnchor = WindowAnchor,
-                WindowOffsetX = (int)(WindowOffsetX ?? 0),
-                WindowOffsetY = (int)(WindowOffsetY ?? 0),
-                // Preserve fields without UI editors
-                ActionSorting = original.ActionSorting,
-                ExcludeActionsForFields = original.ExcludeActionsForFields,
+                Actions = new ActionOptions
+                {
+                    Main = MainAction,
+                    Shift = ShiftAction,
+                    Control = ControlAction,
+                    Alt = AltAction,
+                    ShowForCustomFields = ShowActionsForCustomFields,
+                    // Preserve fields without UI editors
+                    Sorting = original.Actions.Sorting,
+                    ExcludeForFields = original.Actions.ExcludeForFields,
+                },
+                Totp = new TotpOptions
+                {
+                    Placeholder = PluginTotpPlaceholder,
+                    FieldConfigKey = PluginTotpFieldConfig,
+                },
+                Behavior = new BehaviorOptions
+                {
+                    PreserveLastSearch = PreserveLastSearch,
+                    PreserveLastSearchTimeoutMilliseconds = (int)(PreserveLastSearchTimeoutSeconds ?? 30) * 1000,
+                    EscAlwaysClosesWindow = EscAlwaysClosesWindow,
+                },
+                Window = new WindowOptions
+                {
+                    Width = (int)(WindowWidth ?? defaults.Window.Width),
+                    Height = (int)(WindowHeight ?? defaults.Window.Height),
+                    Anchor = WindowAnchor,
+                    OffsetX = (int)(WindowOffsetX ?? 0),
+                    OffsetY = (int)(WindowOffsetY ?? 0),
+                },
             };
 
             pluginProxy.SaveSettings(newSettings);
@@ -127,46 +145,46 @@ namespace FluentPassFinder.ViewModels
         [RelayCommand]
         private void ResetToDefaults()
         {
-            LoadFromSettings(Settings.DefaultSettings);
+            LoadFromSettings(Settings.CreateDefault());
         }
 
         private void LoadFromSettings(Settings s)
         {
-            Theme = s.Theme;
-            GlobalHotkeyCurrentScreen = s.GlobalHotkeyCurrentScreen;
-            GlobalHotkeyPrimaryScreen = s.GlobalHotkeyPrimaryScreen;
+            Theme = s.Theme.ToString();
+            GlobalHotkeyCurrentScreen = s.Hotkeys.CurrentScreen;
+            GlobalHotkeyPrimaryScreen = s.Hotkeys.PrimaryScreen;
 
-            IncludeTitleField = s.SearchOptions.IncludeTitleField;
-            IncludeUserNameField = s.SearchOptions.IncludeUserNameField;
-            IncludePasswordField = s.SearchOptions.IncludePasswordField;
-            IncludeUrlField = s.SearchOptions.IncludeUrlField;
-            IncludeNotesField = s.SearchOptions.IncludeNotesField;
-            IncludeTags = s.SearchOptions.IncludeTags;
-            IncludeCustomFields = s.SearchOptions.IncludeCustomFields;
-            IncludeProtectedCustomFields = s.SearchOptions.IncludeProtectedCustomFields;
-            ExcludeExpiredEntries = s.SearchOptions.ExcludeExpiredEntries;
-            ExcludeGroupsBySearchSetting = s.SearchOptions.ExcludeGroupsBySearchSetting;
-            ResolveFieldReferences = s.SearchOptions.ResolveFieldReferences;
+            IncludeTitleField = s.Search.IncludeTitleField;
+            IncludeUserNameField = s.Search.IncludeUserNameField;
+            IncludePasswordField = s.Search.IncludePasswordField;
+            IncludeUrlField = s.Search.IncludeUrlField;
+            IncludeNotesField = s.Search.IncludeNotesField;
+            IncludeTags = s.Search.IncludeTags;
+            IncludeCustomFields = s.Search.IncludeCustomFields;
+            IncludeProtectedCustomFields = s.Search.IncludeProtectedCustomFields;
+            ExcludeExpiredEntries = s.Search.ExcludeExpiredEntries;
+            ExcludeGroupsBySearchSetting = s.Search.ExcludeGroupsBySearchSetting;
+            ResolveFieldReferences = s.Search.ResolveFieldReferences;
 
-            MainAction = s.MainAction;
-            ShiftAction = s.ShiftAction;
-            ControlAction = s.ControlAction;
-            AltAction = s.AltAction;
-            ShowActionsForCustomFields = s.ShowActionsForCustomFields;
+            MainAction = s.Actions.Main;
+            ShiftAction = s.Actions.Shift;
+            ControlAction = s.Actions.Control;
+            AltAction = s.Actions.Alt;
+            ShowActionsForCustomFields = s.Actions.ShowForCustomFields;
 
-            PluginTotpPlaceholder = s.PluginTotpPlaceholder;
-            PluginTotpFieldConfig = s.PluginTotpFieldConfig;
+            PluginTotpPlaceholder = s.Totp.Placeholder;
+            PluginTotpFieldConfig = s.Totp.FieldConfigKey;
 
-            PreserveLastSearch = s.PreserveLastSearch;
-            PreserveLastSearchTimeoutSeconds = s.PreserveLastSearchTimeoutMilliseconds / 1000;
-            EscAlwaysClosesWindow = s.EscAlwaysClosesWindow;
+            PreserveLastSearch = s.Behavior.PreserveLastSearch;
+            PreserveLastSearchTimeoutSeconds = s.Behavior.PreserveLastSearchTimeoutMilliseconds / 1000;
+            EscAlwaysClosesWindow = s.Behavior.EscAlwaysClosesWindow;
 
-            var defaults = Settings.DefaultSettings;
-            WindowWidth = s.WindowWidth > 0 ? s.WindowWidth : defaults.WindowWidth;
-            WindowHeight = s.WindowHeight > 0 ? s.WindowHeight : defaults.WindowHeight;
-            WindowAnchor = s.WindowAnchor;
-            WindowOffsetX = s.WindowOffsetX;
-            WindowOffsetY = s.WindowOffsetY;
+            var defaults = Settings.CreateDefault();
+            WindowWidth = s.Window.Width > 0 ? s.Window.Width : defaults.Window.Width;
+            WindowHeight = s.Window.Height > 0 ? s.Window.Height : defaults.Window.Height;
+            WindowAnchor = s.Window.Anchor;
+            WindowOffsetX = s.Window.OffsetX;
+            WindowOffsetY = s.Window.OffsetY;
         }
     }
 }

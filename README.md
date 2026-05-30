@@ -46,7 +46,8 @@ After KeePass is closed for the first time after the plugin was installed, the c
     <Item>
         <Key>FluentPassFinder</Key>
         <Value>{
-  "SearchOptions": {
+  "Version": 1,
+  "Search": {
     "IncludeTitleField": true,
     "IncludeUserNameField": false,
     "IncludePasswordField": false,
@@ -59,35 +60,45 @@ After KeePass is closed for the first time after the plugin was installed, the c
     "ExcludeGroupsBySearchSetting": true,
     "ResolveFieldReferences": true
   },
-  "PluginTotpPlaceholder": "{TOTP}",
-  "PluginTotpFieldConfig": "totpsettings_stringname",
-  "MainAction": "OpenContextMenu",
-  "ShiftAction": "Copy_UserName",
-  "ControlAction": "Copy_Password",
-  "AltAction": "Copy_Totp",
-  "ActionSorting": {
-    "AutoType_UserName": 1,
-    "AutoType_Password": 2,
-    "AutoType_Totp": 3,
-    "Copy_UserName": 101,
-    "Copy_Password": 102,
-    "Copy_Totp": 103
+  "Totp": {
+    "Placeholder": "{TOTP}",
+    "FieldConfigKey": "totpsettings_stringname"
   },
-  "ShowActionsForCustomFields": true,
-  "ExcludeActionsForFields": [
-    "_etm_template_uuid"
-  ],
-  "GlobalHotkeyCurrentScreen": "Ctrl+Alt+S",
-  "GlobalHotkeyPrimaryScreen": "Ctrl+Alt+F",
-  "Theme": "Dark",
-  "PreserveLastSearch": false,
-  "PreserveLastSearchTimeoutMilliseconds": 30000,
-  "EscAlwaysClosesWindow": false,
-  "WindowWidth": 450,
-  "WindowHeight": 400,
-  "WindowAnchor": "CenterCenter",
-  "WindowOffsetX": 0,
-  "WindowOffsetY": 0
+  "Actions": {
+    "Main": "OpenContextMenu",
+    "Shift": "Copy_UserName",
+    "Control": "Copy_Password",
+    "Alt": "Copy_Totp",
+    "ShowForCustomFields": true,
+    "ExcludeForFields": [
+      "_etm_template_uuid"
+    ],
+    "Sorting": {
+      "AutoType_UserName": 1,
+      "AutoType_Password": 2,
+      "AutoType_Totp": 3,
+      "Copy_UserName": 101,
+      "Copy_Password": 102,
+      "Copy_Totp": 103
+    }
+  },
+  "Hotkeys": {
+    "CurrentScreen": "Ctrl+Alt+S",
+    "PrimaryScreen": "Ctrl+Alt+F"
+  },
+  "Window": {
+    "Width": 450,
+    "Height": 400,
+    "Anchor": "CenterCenter",
+    "OffsetX": 0,
+    "OffsetY": 0
+  },
+  "Behavior": {
+    "PreserveLastSearch": false,
+    "PreserveLastSearchTimeoutMilliseconds": 30000,
+    "EscAlwaysClosesWindow": false
+  },
+  "Theme": "Dark"
 }</Value>
     </Item>
 </Custom>

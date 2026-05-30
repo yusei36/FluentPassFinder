@@ -72,7 +72,7 @@ namespace FluentPassFinder.Services
             var settings = pluginProxy.Settings;
             var fields = new List<string>(Consts.StandardFieldNames);
 
-            if (includeHiddenActions || settings.ShowActionsForCustomFields)
+            if (includeHiddenActions || settings.Actions.ShowForCustomFields)
             {
                 var customFields = searchResult.Entry.Fields.Keys
                     .Where(fieldName => !Consts.IsStandardField(fieldName));
@@ -80,7 +80,7 @@ namespace FluentPassFinder.Services
             }
 
             if (!includeHiddenActions)
-                return fields.Where(f => !settings.ExcludeActionsForFields.Any(ex => f.Equals(ex)));
+                return fields.Where(f => !settings.Actions.ExcludeForFields.Any(ex => f.Equals(ex)));
 
             return fields;
         }

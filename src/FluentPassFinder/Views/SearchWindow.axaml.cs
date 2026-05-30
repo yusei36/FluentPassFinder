@@ -61,9 +61,9 @@ namespace FluentPassFinder.Views
 
             ViewModel.IsSettingsOpen = false;
 
-            if (ViewModel.Settings.PreserveLastSearch && !string.IsNullOrEmpty(ViewModel.SearchText))
+            if (ViewModel.Settings.Behavior.PreserveLastSearch && !string.IsNullOrEmpty(ViewModel.SearchText))
             {
-                _preserveTimer.Change(ViewModel.Settings.PreserveLastSearchTimeoutMilliseconds, Timeout.Infinite);
+                _preserveTimer.Change(ViewModel.Settings.Behavior.PreserveLastSearchTimeoutMilliseconds, Timeout.Infinite);
             }
             else
             {
@@ -97,7 +97,7 @@ namespace FluentPassFinder.Views
 
             ViewModel.IsSettingsOpen = false;
 
-            if (ViewModel.Settings.PreserveLastSearch && !string.IsNullOrEmpty(ViewModel.SearchText))
+            if (ViewModel.Settings.Behavior.PreserveLastSearch && !string.IsNullOrEmpty(ViewModel.SearchText))
             {
                 _preserveTimer.Change(Timeout.Infinite, Timeout.Infinite);
             }
@@ -110,7 +110,7 @@ namespace FluentPassFinder.Views
 
             SetWindowPosition(showOnPrimaryScreen);
             Show();
-            var anchor = ViewModel?.Settings?.WindowAnchor ?? WindowAnchor.CenterCenter;
+            var anchor = ViewModel?.Settings?.Window?.Anchor ?? WindowAnchor.CenterCenter;
             ApplyBottomAnchorLayout(anchor.IsBottom());
             Activate();
             SearchBox.Focus();
@@ -123,15 +123,15 @@ namespace FluentPassFinder.Views
             if (!IsVisible) return;
             var screen = Screens.ScreenFromPoint(Position) ?? Screens.Primary;
             if (screen == null) return;
-            var settings = ViewModel?.Settings;
-            var anchor = settings?.WindowAnchor ?? WindowAnchor.CenterCenter;
+            var window = ViewModel?.Settings?.Window;
+            var anchor = window?.Anchor ?? WindowAnchor.CenterCenter;
             var (hFrac, vFrac) = ParseAnchor(anchor);
             bool isBottom = anchor.IsBottom();
             ApplyBottomAnchorLayout(isBottom);
             var wa = screen.WorkingArea;
             double scaling = screen.Scaling;
-            int x = wa.X + (int)(hFrac * (wa.Width - Width * scaling)) + (settings?.WindowOffsetX ?? 0);
-            int y = wa.Y + (int)(vFrac * (wa.Height - HeaderSize * scaling)) + (settings?.WindowOffsetY ?? 0);
+            int x = wa.X + (int)(hFrac * (wa.Width - Width * scaling)) + (window?.OffsetX ?? 0);
+            int y = wa.Y + (int)(vFrac * (wa.Height - HeaderSize * scaling)) + (window?.OffsetY ?? 0);
             if (isBottom)
             {
                 _targetHeaderTopY = y;
@@ -157,14 +157,14 @@ namespace FluentPassFinder.Views
 
             if (screen == null) return;
 
-            var settings = ViewModel?.Settings;
-            var anchor = settings?.WindowAnchor ?? WindowAnchor.CenterCenter;
+            var window = ViewModel?.Settings?.Window;
+            var anchor = window?.Anchor ?? WindowAnchor.CenterCenter;
             var (hFrac, vFrac) = ParseAnchor(anchor);
             var wa = screen.WorkingArea;
             double scaling = screen.Scaling;
 
-            int x = wa.X + (int)(hFrac * (wa.Width - Width * scaling)) + (settings?.WindowOffsetX ?? 0);
-            int y = wa.Y + (int)(vFrac * (wa.Height - HeaderSize * scaling)) + (settings?.WindowOffsetY ?? 0);
+            int x = wa.X + (int)(hFrac * (wa.Width - Width * scaling)) + (window?.OffsetX ?? 0);
+            int y = wa.Y + (int)(vFrac * (wa.Height - HeaderSize * scaling)) + (window?.OffsetY ?? 0);
 
             bool isBottom = anchor.IsBottom();
             if (isBottom)

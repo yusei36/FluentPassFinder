@@ -113,31 +113,31 @@ namespace FluentPassFinder
 
         internal static void ApplySettings(Settings settings)
         {
-            var isDark = !string.Equals(settings.Theme, "Light", StringComparison.OrdinalIgnoreCase);
+            var isDark = settings.Theme != AppTheme.Light;
             Avalonia.Threading.Dispatcher.UIThread.Post(() =>
             {
                 Current.RequestedThemeVariant = isDark ? ThemeVariant.Dark : ThemeVariant.Light;
                 ApplyWindowSize(settings);
             });
 
-            HotkeyRegistrar.Unregister(nameof(Settings.GlobalHotkeyPrimaryScreen));
-            HotkeyRegistrar.Unregister(nameof(Settings.GlobalHotkeyCurrentScreen));
+            HotkeyRegistrar.Unregister(nameof(HotkeyOptions.PrimaryScreen));
+            HotkeyRegistrar.Unregister(nameof(HotkeyOptions.CurrentScreen));
             HotkeyRegistrar.Register(
-                nameof(Settings.GlobalHotkeyPrimaryScreen),
-                settings.GlobalHotkeyPrimaryScreen,
+                nameof(HotkeyOptions.PrimaryScreen),
+                settings.Hotkeys.PrimaryScreen,
                 () => Avalonia.Threading.Dispatcher.UIThread.Post(() => _instance?._searchWindow?.ShowSearchWindow(true)));
             HotkeyRegistrar.Register(
-                nameof(Settings.GlobalHotkeyCurrentScreen),
-                settings.GlobalHotkeyCurrentScreen,
+                nameof(HotkeyOptions.CurrentScreen),
+                settings.Hotkeys.CurrentScreen,
                 () => Avalonia.Threading.Dispatcher.UIThread.Post(() => _instance?._searchWindow?.ShowSearchWindow(false)));
         }
 
         private static void ApplyWindowSize(Settings settings)
         {
             if (_instance?._searchWindow == null) return;
-            var defaults = Settings.DefaultSettings;
-            var width = settings.WindowWidth > 0 ? settings.WindowWidth : defaults.WindowWidth;
-            var maxResultsH = settings.WindowHeight > 0 ? settings.WindowHeight : defaults.WindowHeight;
+            var defaults = Settings.CreateDefault().Window;
+            var width = settings.Window.Width > 0 ? settings.Window.Width : defaults.Width;
+            var maxResultsH = settings.Window.Height > 0 ? settings.Window.Height : defaults.Height;
             _instance._searchWindow.Width = width;
             _instance._searchWindow.MaxHeight = SearchWindow.HeaderSize + maxResultsH;
             _instance._searchWindow.RecenterIfVisible();
@@ -146,19 +146,19 @@ namespace FluentPassFinder
         private void RegisterHotkeys(Settings settings)
         {
             HotkeyRegistrar.Register(
-                nameof(Settings.GlobalHotkeyPrimaryScreen),
-                settings.GlobalHotkeyPrimaryScreen,
+                nameof(HotkeyOptions.PrimaryScreen),
+                settings.Hotkeys.PrimaryScreen,
                 () => Avalonia.Threading.Dispatcher.UIThread.Post(() => _searchWindow?.ShowSearchWindow(true)));
 
             HotkeyRegistrar.Register(
-                nameof(Settings.GlobalHotkeyCurrentScreen),
-                settings.GlobalHotkeyCurrentScreen,
+                nameof(HotkeyOptions.CurrentScreen),
+                settings.Hotkeys.CurrentScreen,
                 () => Avalonia.Threading.Dispatcher.UIThread.Post(() => _searchWindow?.ShowSearchWindow(false)));
         }
 
         private void RestoreTheme(Settings settings)
         {
-            var isDark = !string.Equals(settings.Theme, "Light", StringComparison.OrdinalIgnoreCase);
+            var isDark = settings.Theme != AppTheme.Light;
             RequestedThemeVariant = isDark ? ThemeVariant.Dark : ThemeVariant.Light;
         }
     }

@@ -67,7 +67,7 @@ namespace FluentPassFinder.ViewModels
             else
             {
                 SelectedEntry = entry;
-                entryActionService.RunAction(entry.SearchResult, pluginProxy.Settings.MainAction);
+                entryActionService.RunAction(entry.SearchResult, pluginProxy.Settings.Actions.Main);
             }
         }
 
@@ -76,7 +76,7 @@ namespace FluentPassFinder.ViewModels
         {
             var entry = entryViewModel ?? SelectedEntry;
             if (entry == null) return;
-            entryActionService.RunAction(entry.SearchResult, pluginProxy.Settings.ShiftAction);
+            entryActionService.RunAction(entry.SearchResult, pluginProxy.Settings.Actions.Shift);
         }
 
         [RelayCommand]
@@ -84,7 +84,7 @@ namespace FluentPassFinder.ViewModels
         {
             var entry = entryViewModel ?? SelectedEntry;
             if (entry == null) return;
-            entryActionService.RunAction(entry.SearchResult, pluginProxy.Settings.ControlAction);
+            entryActionService.RunAction(entry.SearchResult, pluginProxy.Settings.Actions.Control);
         }
 
         [RelayCommand]
@@ -92,7 +92,7 @@ namespace FluentPassFinder.ViewModels
         {
             var entry = entryViewModel ?? SelectedEntry;
             if (entry == null) return;
-            entryActionService.RunAction(entry.SearchResult, pluginProxy.Settings.AltAction);
+            entryActionService.RunAction(entry.SearchResult, pluginProxy.Settings.Actions.Alt);
         }
 
         [RelayCommand]
@@ -140,7 +140,7 @@ namespace FluentPassFinder.ViewModels
                 IsSettingsOpen = false;
                 searchWindowInteractionService.FocusSearchBox();
             }
-            else if (IsContextMenuOpen && !Settings.EscAlwaysClosesWindow)
+            else if (IsContextMenuOpen && !Settings.Behavior.EscAlwaysClosesWindow)
             {
                 IsContextMenuOpen = false;
                 searchWindowInteractionService.FocusSearchBox();
