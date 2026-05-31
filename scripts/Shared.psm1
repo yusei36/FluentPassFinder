@@ -155,7 +155,8 @@ function Invoke-ILRepack {
     $ext        = [IO.Path]::GetExtension($Primary)
     $baseName   = [IO.Path]::GetFileNameWithoutExtension($Primary)
     $mergedPath = Join-Path $Dir "${baseName}_merged${ext}"
-    $repackArgs = @("/out:$mergedPath") + $primaryPath + $secondaryDlls
+    # /internalize makes the bundled deps internal so they don't leak into KeePass's shared process.
+    $repackArgs = @("/out:$mergedPath", '/internalize') + $primaryPath + $secondaryDlls
 
     & ilrepack @repackArgs
     if ($LASTEXITCODE -ne 0) { throw "ILRepack failed with exit code $LASTEXITCODE" }
