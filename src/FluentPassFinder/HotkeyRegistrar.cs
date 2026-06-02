@@ -1,105 +1,35 @@
 // SPDX-FileCopyrightText: Copyright (C) 2023-2026 Uwe Koegel
 // SPDX-License-Identifier: GPL-3.0-or-later
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System.Threading;
+using SharpHook;
+using SharpHook.Data;
 
 namespace FluentPassFinder
 {
     /// <summary>
-    /// Registers global hotkeys via Win32 RegisterHotKey using a hidden message-only window
-    /// on a dedicated STA background thread. No WinForms or WPF dependency required.
+    /// Registers global hotkeys via SharpHook's low-level global keyboard hook.
+    /// SharpHook sees every keystroke; we match registered gestures against the
+    /// pressed key plus modifier mask and suppress the event so the combination is
+    /// not delivered to the focused application (mirroring RegisterHotKey behaviour).
     /// </summary>
     internal static class HotkeyRegistrar
     {
-        private static readonly Dictionary<int, Action> _handlers = new();
-        private static readonly Dictionary<string, int> _nameToId = new();
-        private static readonly Queue<(string name, string gesture, Action callback)> _registerQueue = new();
-        private static readonly Queue<string> _unregisterQueue = new();
-        private static readonly object _queueLock = new();
-        private static int _nextId = 0xC000;
-
-        private static volatile IntPtr _hwnd = IntPtr.Zero;
-        private static readonly ManualResetEventSlim _hwndReady = new(false);
-        private static bool _loopStarted;
-        private static readonly object _loopLock = new();
-
-        private const int WM_HOTKEY = 0x0312;
-        private const uint WM_APP_REGISTER = 0x8001; // signal loop thread to drain queue
-
-        private const uint MOD_ALT = 0x0001;
-        private const uint MOD_CONTROL = 0x0002;
-        private const uint MOD_SHIFT = 0x0004;
-        private const uint MOD_WIN = 0x0008;
-        private const uint MOD_NOREPEAT = 0x4000;
-
-        [DllImport("user32.dll", SetLastError = true)]
-        private static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
-
-        [DllImport("user32.dll")]
-        private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
-
-        [DllImport("user32.dll")]
-        private static extern bool GetMessage(out MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax);
-
-        [DllImport("user32.dll")]
-        private static extern bool TranslateMessage(ref MSG lpMsg);
-
-        [DllImport("user32.dll")]
-        private static extern IntPtr DispatchMessage(ref MSG lpMsg);
-
-        [DllImport("user32.dll")]
-        private static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
-
-        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-        private static extern IntPtr CreateWindowEx(
-            uint dwExStyle, string lpClassName, string lpWindowName,
-            uint dwStyle, int x, int y, int nWidth, int nHeight,
-            IntPtr hWndParent, IntPtr hMenu, IntPtr hInstance, IntPtr lpParam);
-
-        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-        private static extern ushort RegisterClassEx(ref WNDCLASSEX lpwcx);
-
-        [DllImport("user32.dll")]
-        private static extern IntPtr DefWindowProc(IntPtr hWnd, uint uMsg, IntPtr wParam, IntPtr lParam);
-
-        [DllImport("kernel32.dll")]
-        private static extern IntPtr GetModuleHandle(string lpModuleName);
-
-        private static readonly IntPtr HWND_MESSAGE = new(-3);
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct MSG
+        [Flags]
+        private enum Mods
         {
-            public IntPtr hwnd;
-            public uint message;
-            public IntPtr wParam;
-            public IntPtr lParam;
-            public uint time;
-            public int ptX, ptY;
+            None = 0,
+            Ctrl = 1,
+            Alt = 2,
+            Shift = 4,
+            Win = 8,
         }
 
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-        private struct WNDCLASSEX
-        {
-            public uint cbSize;
-            public uint style;
-            public WndProcDelegate lpfnWndProc;
-            public int cbClsExtra;
-            public int cbWndExtra;
-            public IntPtr hInstance;
-            public IntPtr hIcon;
-            public IntPtr hCursor;
-            public IntPtr hbrBackground;
-            public string lpszMenuName;
-            public string lpszClassName;
-            public IntPtr hIconSm;
-        }
+        private sealed record Hotkey(Mods Modifiers, KeyCode Key, Action Callback);
 
-        private delegate IntPtr WndProcDelegate(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
+        private static readonly Dictionary<string, Hotkey> _byName = new();
+        private static readonly object _lock = new();
 
-        // Keep delegate alive to prevent GC collection
-        private static WndProcDelegate _wndProcDelegate;
+        private static IGlobalHook _hook;
 
         /// <summary>
         /// Register a global hotkey. Gesture format: "Ctrl+Alt+K", "Shift+Win+F1", etc.
@@ -107,150 +37,125 @@ namespace FluentPassFinder
         /// </summary>
         public static void Register(string name, string gestureString, Action callback)
         {
-            if (string.IsNullOrWhiteSpace(gestureString))
+            if (string.IsNullOrWhiteSpace(gestureString) || callback == null)
                 return;
 
-            lock (_queueLock)
-                _registerQueue.Enqueue((name, gestureString, callback));
+            if (!TryParseGesture(gestureString, out var modifiers, out var key))
+                return;
 
-            EnsureMessageLoop();
-
-            // Signal the message loop thread to drain the queue.
-            // _hwnd is set before _hwndReady fires, so this is safe.
-            PostMessage(_hwnd, WM_APP_REGISTER, IntPtr.Zero, IntPtr.Zero);
+            lock (_lock)
+            {
+                _byName[name] = new Hotkey(modifiers, key, callback);
+                EnsureHook();
+            }
         }
 
         /// <summary>
-        /// Unregister a hotkey by name. The unregistration is queued and processed on the
-        /// message loop thread (same thread that called RegisterHotKey) before any pending
-        /// registrations, so calling Unregister then Register with the same name is safe.
+        /// Unregister a hotkey by name.
         /// </summary>
         public static void Unregister(string name)
         {
             if (string.IsNullOrEmpty(name)) return;
 
-            lock (_queueLock)
-                _unregisterQueue.Enqueue(name);
-
-            EnsureMessageLoop();
-            PostMessage(_hwnd, WM_APP_REGISTER, IntPtr.Zero, IntPtr.Zero);
+            lock (_lock)
+                _byName.Remove(name);
         }
 
-        private static void EnsureMessageLoop()
+        private static void EnsureHook()
         {
-            lock (_loopLock)
-            {
-                if (_loopStarted) return;
-                _loopStarted = true;
+            if (_hook != null) return;
 
-                var thread = new Thread(RunMessageLoop) { IsBackground = true };
-                thread.SetApartmentState(ApartmentState.STA);
-                thread.Start();
-            }
-
-            _hwndReady.Wait();
+            _hook = new EventLoopGlobalHook();
+            _hook.KeyPressed += OnKeyPressed;
+            // Fire and forget: the hook runs on its own thread for the lifetime of the
+            // process. The process is terminated by the plugin when KeePass closes.
+            _ = _hook.RunAsync();
         }
 
-        private static void RunMessageLoop()
+        private static void OnKeyPressed(object sender, KeyboardHookEventArgs e)
         {
-            _wndProcDelegate = WndProc;
+            var pressed = ToMods(e.RawEvent.Mask);
+            var key = e.Data.KeyCode;
 
-            var className = "FluentPassFinder_HotkeyWnd";
-            var wc = new WNDCLASSEX
+            Action callback = null;
+            lock (_lock)
             {
-                cbSize = (uint)Marshal.SizeOf<WNDCLASSEX>(),
-                lpfnWndProc = _wndProcDelegate,
-                hInstance = GetModuleHandle(null),
-                lpszClassName = className,
-            };
-            RegisterClassEx(ref wc);
-
-            _hwnd = CreateWindowEx(0, className, string.Empty, 0,
-                0, 0, 0, 0,
-                HWND_MESSAGE, IntPtr.Zero, GetModuleHandle(null), IntPtr.Zero);
-
-            _hwndReady.Set(); // unblock any callers waiting in EnsureMessageLoop
-
-            while (GetMessage(out var msg, IntPtr.Zero, 0, 0))
-            {
-                TranslateMessage(ref msg);
-                DispatchMessage(ref msg);
-            }
-        }
-
-        private static IntPtr WndProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)
-        {
-            if (msg == WM_HOTKEY)
-            {
-                var id = wParam.ToInt32();
-                if (_handlers.TryGetValue(id, out var handler))
-                    handler?.Invoke();
-                return IntPtr.Zero;
-            }
-
-            if (msg == WM_APP_REGISTER)
-            {
-                // Drain both queues on the message loop thread so that RegisterHotKey /
-                // UnregisterHotKey are always called from the thread that owns the hotkeys.
-                // Unregistrations are processed first so re-registering with the same name works.
-                lock (_queueLock)
+                foreach (var hotkey in _byName.Values)
                 {
-                    while (_unregisterQueue.Count > 0)
+                    if (hotkey.Key == key && hotkey.Modifiers == pressed)
                     {
-                        var name = _unregisterQueue.Dequeue();
-                        if (_nameToId.TryGetValue(name, out var id))
-                        {
-                            UnregisterHotKey(_hwnd, id);
-                            _handlers.Remove(id);
-                            _nameToId.Remove(name);
-                        }
-                    }
-
-                    while (_registerQueue.Count > 0)
-                    {
-                        var (name, gesture, callback) = _registerQueue.Dequeue();
-                        DoRegister(name, gesture, callback);
+                        callback = hotkey.Callback;
+                        break;
                     }
                 }
-                return IntPtr.Zero;
             }
 
-            return DefWindowProc(hWnd, msg, wParam, lParam);
-        }
-
-        private static void DoRegister(string name, string gestureString, Action callback)
-        {
-            var (modifiers, vk) = ParseGesture(gestureString);
-            if (vk == 0) return;
-
-            var id = _nextId++;
-            _handlers[id] = callback;
-            if (name != null) _nameToId[name] = id;
-            RegisterHotKey(_hwnd, id, modifiers | MOD_NOREPEAT, vk);
-        }
-
-        private static (uint modifiers, uint vk) ParseGesture(string gesture)
-        {
-            uint modifiers = 0;
-            uint vk = 0;
-
-            foreach (var part in gesture.Split('+'))
+            if (callback != null)
             {
-                switch (part.Trim().ToLowerInvariant())
+                // Consume the keystroke so it is not also delivered to the focused app.
+                e.SuppressEvent = true;
+                callback();
+            }
+        }
+
+        private static Mods ToMods(EventMask mask)
+        {
+            var mods = Mods.None;
+            if ((mask & EventMask.Ctrl) != 0) mods |= Mods.Ctrl;
+            if ((mask & EventMask.Alt) != 0) mods |= Mods.Alt;
+            if ((mask & EventMask.Shift) != 0) mods |= Mods.Shift;
+            if ((mask & EventMask.Meta) != 0) mods |= Mods.Win;
+            return mods;
+        }
+
+        private static bool TryParseGesture(string gesture, out Mods modifiers, out KeyCode key)
+        {
+            modifiers = Mods.None;
+            key = KeyCode.VcUndefined;
+            var hasKey = false;
+
+            foreach (var rawPart in gesture.Split('+'))
+            {
+                var part = rawPart.Trim();
+                if (part.Length == 0) continue;
+
+                switch (part.ToLowerInvariant())
                 {
-                    case "ctrl":  modifiers |= MOD_CONTROL; break;
-                    case "alt":   modifiers |= MOD_ALT;     break;
-                    case "shift": modifiers |= MOD_SHIFT;   break;
-                    case "win":   modifiers |= MOD_WIN;     break;
+                    case "ctrl":
+                    case "control": modifiers |= Mods.Ctrl; break;
+                    case "alt": modifiers |= Mods.Alt; break;
+                    case "shift": modifiers |= Mods.Shift; break;
+                    case "win":
+                    case "meta":
+                    case "cmd": modifiers |= Mods.Win; break;
                     default:
-                        var trimmed = part.Trim();
-                        if (trimmed.Length == 1)
-                            vk = (uint)char.ToUpper(trimmed[0]);
+                        if (!TryParseKey(part, out key))
+                            return false;
+                        hasKey = true;
                         break;
                 }
             }
 
-            return (modifiers, vk);
+            return hasKey;
+        }
+
+        private static bool TryParseKey(string token, out KeyCode key)
+        {
+            // Single letter or digit (A-Z, 0-9) -> VcA..VcZ / Vc0..Vc9
+            if (token.Length == 1)
+            {
+                var c = char.ToUpperInvariant(token[0]);
+                if ((c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9'))
+                    return Enum.TryParse("Vc" + c, out key);
+            }
+
+            // Function keys F1..F24 and any other named key matching the KeyCode enum
+            // suffix (e.g. "Enter", "Space", "Escape", "Tab").
+            if (Enum.TryParse("Vc" + token, ignoreCase: true, out key))
+                return true;
+
+            key = KeyCode.VcUndefined;
+            return false;
         }
     }
 }
