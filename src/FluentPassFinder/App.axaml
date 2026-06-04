@@ -5,8 +5,35 @@
              xmlns:sty="using:FluentAvalonia.Styling"
              x:Class="FluentPassFinder.App">
 	<Application.Resources>
-		<!-- Bundled Fluent UI System Icons font (MIT) used for FontIcon glyphs -->
-		<FontFamily x:Key="SymbolFontFamily">avares://FluentPassFinder/Assets/Fonts/FluentSystemIcons-Resizable.ttf#FluentSystemIcons-Resizable</FontFamily>
+		<ResourceDictionary>
+			<!-- Bundled Fluent UI System Icons font (MIT) used for FontIcon glyphs -->
+			<FontFamily x:Key="SymbolFontFamily">avares://FluentPassFinder/Assets/Fonts/FluentSystemIcons-Resizable.ttf#FluentSystemIcons-Resizable</FontFamily>
+
+			<ResourceDictionary.ThemeDictionaries>
+				<!-- AMOLED dark palette: pure-black base with a tight ladder of near-black
+				     grays for elevation. Overrides FluentAvalonia's default dark surfaces
+				     (#202020 base). Accent, borders and text are left untouched. -->
+				<ResourceDictionary x:Key="Dark">
+					<Color x:Key="SolidBackgroundFillColorBase">#000000</Color>
+					<Color x:Key="SolidBackgroundFillColorSecondary">#0A0A0A</Color>
+					<Color x:Key="SolidBackgroundFillColorTertiary">#141414</Color>
+					<Color x:Key="CardBackgroundFillColorDefault">#141414</Color>
+					<Color x:Key="LayerFillColorDefault">#1A1A1A</Color>
+
+					<SolidColorBrush x:Key="SolidBackgroundFillColorBaseBrush" Color="#000000" />
+					<SolidColorBrush x:Key="SolidBackgroundFillColorSecondaryBrush" Color="#0A0A0A" />
+					<SolidColorBrush x:Key="SolidBackgroundFillColorTertiaryBrush" Color="#141414" />
+					<SolidColorBrush x:Key="CardBackgroundFillColorDefaultBrush" Color="#141414" />
+					<SolidColorBrush x:Key="LayerFillColorDefaultBrush" Color="#1A1A1A" />
+
+					<!-- Search field (TextBox) surfaces, matched to the elevation ladder -->
+					<SolidColorBrush x:Key="TextControlBackground" Color="#141414" />
+					<SolidColorBrush x:Key="TextControlBackgroundPointerOver" Color="#1A1A1A" />
+					<SolidColorBrush x:Key="TextControlBackgroundFocused" Color="#1A1A1A" />
+					<SolidColorBrush x:Key="TextControlBackgroundDisabled" Color="#0A0A0A" />
+				</ResourceDictionary>
+			</ResourceDictionary.ThemeDictionaries>
+		</ResourceDictionary>
 	</Application.Resources>
 	<Application.Styles>
 		<sty:FluentAvaloniaTheme PreferUserAccentColor="True" />
