@@ -84,7 +84,13 @@ namespace FluentPassFinder
         {
             if (_hook != null) return;
 
-            _hook = new EventLoopGlobalHook();
+            // SimpleGlobalHook runs event handlers synchronously on the hook thread.
+            // This is required for SuppressEvent to take effect: EventLoopGlobalHook
+            // dispatches handlers on a separate thread, so the native hook callback
+            // returns (passing the key on to the focused app) before our handler can
+            // set SuppressEvent. Our handler is cheap (sets a flag + posts to the UI
+            // thread), so blocking the hook thread briefly is not a concern.
+            _hook = new SimpleGlobalHook();
             _hook.KeyPressed += OnKeyPressed;
             // Fire and forget: the hook runs on its own thread for the lifetime of the
             // process. The process is terminated by the plugin when KeePass closes.

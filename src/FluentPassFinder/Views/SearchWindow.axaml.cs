@@ -28,6 +28,9 @@ namespace FluentPassFinder.Views
         private int _targetHeaderTopY;
         private double _anchorScaling = 1.0;
 
+        private WinEventDelegate _foregroundWatchProc;
+        private IntPtr _foregroundWatchHook;
+
         public SearchWindow() { InitializeComponent(); }
 
         public SearchWindow(SearchWindowViewModel viewModel, SettingsView settingsView)
@@ -140,12 +143,94 @@ namespace FluentPassFinder.Views
 
             SetWindowPosition(showOnPrimaryScreen);
             Show();
+            EnsureForegroundWatch();
             var anchor = ViewModel?.Settings?.Window?.Anchor ?? WindowAnchor.CenterCenter;
             ApplyBottomAnchorLayout(anchor.IsBottom());
+            ForceForeground();
             Activate();
             SearchBox.Focus();
             _isOpening = false;
 
+        }
+
+        /// <summary>
+        /// Forces this window to the foreground and gives it keyboard focus.
+        ///
+        /// We run as a separate process from the one the user is interacting with
+        /// (browser, Explorer, ...). When the hotkey fires, that other process is the
+        /// foreground app, so Windows' focus-stealing prevention blocks our
+        /// <see cref="Window.Activate"/>/SetForegroundWindow call: the window becomes
+        /// visible but keyboard input keeps going to the previously focused app.
+        ///
+        /// The reliable workaround is to temporarily attach our UI thread's input
+        /// queue to the foreground window's thread (<c>AttachThreadInput</c>), which
+        /// lifts the restriction so <c>SetForegroundWindow</c> actually takes effect,
+        /// then detach again.
+        /// </summary>
+        private void ForceForeground()
+        {
+            var hWnd = TryGetPlatformHandle()?.Handle ?? IntPtr.Zero;
+            if (hWnd == IntPtr.Zero) return;
+
+            var foreground = GetForegroundWindow();
+            if (foreground == hWnd) return;
+
+            uint foregroundThread = foreground != IntPtr.Zero
+                ? GetWindowThreadProcessId(foreground, out _)
+                : 0;
+            uint currentThread = GetWindowThreadProcessId(hWnd, out _);
+
+            bool attached = foregroundThread != 0
+                && foregroundThread != currentThread
+                && AttachThreadInput(currentThread, foregroundThread, true);
+            try
+            {
+                SetForegroundWindow(hWnd);
+            }
+            finally
+            {
+                if (attached)
+                    AttachThreadInput(currentThread, foregroundThread, false);
+            }
+        }
+
+        /// <summary>
+        /// Hides the window when the user switches to another application.
+        ///
+        /// Relying on Avalonia's <see cref="InputElement.LostFocus"/>/Deactivated alone
+        /// is unreliable for a borderless, topmost launcher window: Windows does not
+        /// always deliver a deactivation when focus jumps to another process (clicking
+        /// the desktop, taskbar, another topmost window, ...), so the window can stay
+        /// open. A system-wide <c>EVENT_SYSTEM_FOREGROUND</c> hook fires whenever the
+        /// foreground window changes; we hide as soon as it moves to a window owned by
+        /// a different process. The process check keeps our own in-process popups
+        /// (context-menu flyout, settings pane) from closing the window.
+        ///
+        /// The hook is installed on the UI thread, so its callback is marshalled back
+        /// onto the UI thread's message loop. It is installed once and lives for the
+        /// window's lifetime (the process is terminated when KeePass closes).
+        /// </summary>
+        private void EnsureForegroundWatch()
+        {
+            if (_foregroundWatchHook != IntPtr.Zero) return;
+
+            _foregroundWatchProc = OnForegroundChanged; // keep a reference so it is not GC'd
+            _foregroundWatchHook = SetWinEventHook(
+                EVENT_SYSTEM_FOREGROUND, EVENT_SYSTEM_FOREGROUND,
+                IntPtr.Zero, _foregroundWatchProc, 0, 0, WINEVENT_OUTOFCONTEXT);
+        }
+
+        private void OnForegroundChanged(
+            IntPtr hWinEventHook, uint eventType, IntPtr hwnd,
+            int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
+        {
+            if (hwnd == IntPtr.Zero) return;
+            if (!IsVisible || _isWarmingUp || _isOpening || _isClosing) return;
+
+            GetWindowThreadProcessId(hwnd, out uint pid);
+            if (pid == (uint)Environment.ProcessId) return; // our own window or popups
+
+            HideSearchWindow();
         }
 
         public void RecenterIfVisible()
@@ -280,6 +365,30 @@ namespace FluentPassFinder.Views
 
         [DllImport("user32.dll")]
         private static extern bool GetCursorPos(out POINT lpPoint);
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr GetForegroundWindow();
+
+        [DllImport("user32.dll")]
+        private static extern bool SetForegroundWindow(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
+
+        [DllImport("user32.dll")]
+        private static extern bool AttachThreadInput(uint idAttach, uint idAttachTo, bool fAttach);
+
+        private const uint EVENT_SYSTEM_FOREGROUND = 0x0003;
+        private const uint WINEVENT_OUTOFCONTEXT = 0x0000;
+
+        private delegate void WinEventDelegate(
+            IntPtr hWinEventHook, uint eventType, IntPtr hwnd,
+            int idObject, int idChild, uint dwEventThread, uint dwmsEventTime);
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr SetWinEventHook(
+            uint eventMin, uint eventMax, IntPtr hmodWinEventProc,
+            WinEventDelegate lpfnWinEventProc, uint idProcess, uint idThread, uint dwFlags);
 
         [StructLayout(LayoutKind.Sequential)]
         private struct POINT { public int X; public int Y; }
