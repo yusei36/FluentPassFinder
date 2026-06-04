@@ -9,7 +9,8 @@ Shortcut can be used to open the small search window from everywhere.
 
 ## Requirements
 - [KeePass](https://keepass.info/) 2.54 or later
-- Windows 10 or 11
+
+Tested on Windows 10 and 11. Since the app is built on .NET 10 and Avalonia UI (a cross-platform UI framework), it may be possible to make it work on or port it to other operating systems such as Linux or macOS, though this has not been tested.
 
 ## How to use
 
@@ -28,10 +29,13 @@ Shortcut can be used to open the small search window from everywhere.
 
 ## Screenshots
 ### Search Window
-![Search window](https://github.com/yusei36/FluentPassFinder/assets/15942327/ff1fd9aa-6a4d-4728-a4a0-9ec456bb1e3e)
+![Search window](docs/images/search_field.png)
 
 ### Entry context menu
-![Entry context menu](https://github.com/yusei36/FluentPassFinder/assets/15942327/5bbf27fd-ae17-466d-9800-88e161510a1a)
+![Entry context menu](docs/images/context_menu.png)
+
+### Settings
+![Settings](docs/images/settings_menu.png)
 
 
 ## Configuration
