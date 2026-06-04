@@ -16,6 +16,8 @@ namespace FluentPassFinder
         private Process appProcess;
         private PipeServer pipeServer;
 
+        public override string UpdateUrl => "https://raw.githubusercontent.com/yusei36/FluentPassFinder/refs/heads/master/version.txt";
+
         public override bool Initialize(IPluginHost host)
         {
             if (host == null) return false;
