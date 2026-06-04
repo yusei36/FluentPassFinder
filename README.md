@@ -53,7 +53,6 @@ The search window runs as a **separate process** from KeePass, built with [Avalo
 - Copy TOTP: `Alt+Enter`
 - Select action in entry context menu: `Enter`
 
-Time-based one-time passwords (TOTP) are supported. Counter-based HMAC OTP (HOTP) is intentionally not supported.
 
 ## Screenshots
 ### Search Window
@@ -68,72 +67,14 @@ Time-based one-time passwords (TOTP) are supported. Counter-based HMAC OTP (HOTP
 
 ## Configuration
 
-Plugin settings can be changed via the built-in **settings panel** inside the FluentPassFinder window (gear icon), or by editing `KeePass.config.xml` directly.
+Plugin settings can be changed via the built-in **settings panel** inside the FluentPassFinder window (gear icon). The settings are persisted as JSON under the `FluentPassFinder` key in `KeePass.config.xml`, which you can also edit directly if you prefer.
 
-After KeePass is closed for the first time after the plugin was installed, the configuration file will contain an entry like this:
-(Note that this example may not be always up to date)
+### TOTP placeholder
 
-```xml
-<Custom>
-    <Item>
-        <Key>FluentPassFinder</Key>
-        <Value>{
-  "Version": 1,
-  "Search": {
-    "IncludeTitleField": true,
-    "IncludeUserNameField": false,
-    "IncludePasswordField": false,
-    "IncludeUrlField": true,
-    "IncludeNotesField": true,
-    "IncludeTags": true,
-    "IncludeCustomFields": true,
-    "IncludeProtectedCustomFields": false,
-    "ExcludeExpiredEntries": true,
-    "ExcludeGroupsBySearchSetting": true,
-    "ResolveFieldReferences": true
-  },
-  "Otp": {
-    "TotpPlaceholder": "{TIMEOTP}"
-  },
-  "Actions": {
-    "Main": "OpenContextMenu",
-    "Shift": "Copy_UserName",
-    "Control": "Copy_Password",
-    "Alt": "Copy_Totp",
-    "ShowForCustomFields": true,
-    "ExcludeFields": [
-      "_etm_template_uuid"
-    ],
-    "Sorting": {
-      "AutoType_UserName": 1,
-      "AutoType_Password": 2,
-      "AutoType_Totp": 3,
-      "Copy_UserName": 101,
-      "Copy_Password": 102,
-      "Copy_Totp": 103
-    }
-  },
-  "Hotkeys": {
-    "CurrentScreen": "Ctrl+Alt+S",
-    "PrimaryScreen": "Ctrl+Alt+F"
-  },
-  "Window": {
-    "Width": 450,
-    "Height": 400,
-    "Anchor": "CenterCenter",
-    "OffsetX": 0,
-    "OffsetY": 0
-  },
-  "Behavior": {
-    "PreserveLastSearch": false,
-    "PreserveLastSearchTimeoutMilliseconds": 30000,
-    "EscAlwaysClosesWindow": false
-  },
-  "Theme": "Dark"
-}</Value>
-    </Item>
-</Custom>
-```
+The **TOTP placeholder** setting controls how time-based one-time passwords are resolved. It defaults to KeePass's built-in `{TIMEOTP}`, but you can change it to the placeholder used by another TOTP plugin (for example KeePassOTP's `{KPOTP}`) so FluentPassFinder resolves codes through that plugin instead.
+
+> [!WARNING]
+> Do not set the TOTP placeholder to a counter-based OTP placeholder such as `{HMACOTP}`. It is not blocked and the code will resolve, but HOTP is counter-based: KeePass increments and saves the entry's counter every time the placeholder is resolved. FluentPassFinder resolves it just to decide whether to *offer* the TOTP action, so simply browsing entries would advance the counter (and mark the database modified) without you ever using a code, desyncing it from the server.
 
 ## Building
 
