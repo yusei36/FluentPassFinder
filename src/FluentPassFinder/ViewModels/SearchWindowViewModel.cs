@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: Copyright (C) 2023-2026 Uwe Koegel
 // SPDX-License-Identifier: GPL-3.0-or-later
+using Avalonia.Threading;
 using FluentPassFinder.Contracts;
 using FluentPassFinder.Contracts.Public;
 using System.Collections.ObjectModel;
@@ -26,6 +27,9 @@ namespace FluentPassFinder.ViewModels
 
         [ObservableProperty]
         private EntryViewModel selectedEntry;
+
+        [ObservableProperty]
+        private bool isEntryListUpdating;
 
         [ObservableProperty]
         private bool isContextMenuOpen = false;
@@ -220,8 +224,11 @@ namespace FluentPassFinder.ViewModels
 
             if (results == null) return;
 
+            IsEntryListUpdating = true;
             Entries = new ObservableCollection<EntryViewModel>(results);
             SelectedEntry = Entries.Count > 0 ? Entries[0] : null;
+
+            Dispatcher.UIThread.Post(() => IsEntryListUpdating = false, DispatcherPriority.Background);
         }
 
         internal void ClearEntries()
