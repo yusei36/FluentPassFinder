@@ -35,4 +35,9 @@
     <ProjectReference Include="..\FluentPassFinderContracts\FluentPassFinderContracts.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- Bundled Fluent UI System Icons font (MIT) so icon glyphs don't depend on an OS font -->
+    <AvaloniaResource Include="Assets\Fonts\FluentSystemIcons-Resizable.ttf" />
+  </ItemGroup>
+
 </Project>

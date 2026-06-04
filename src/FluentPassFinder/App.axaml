@@ -4,6 +4,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:sty="using:FluentAvalonia.Styling"
              x:Class="FluentPassFinder.App">
+	<Application.Resources>
+		<!-- Bundled Fluent UI System Icons font (MIT) used for FontIcon glyphs -->
+		<FontFamily x:Key="SymbolFontFamily">avares://FluentPassFinder/Assets/Fonts/FluentSystemIcons-Resizable.ttf#FluentSystemIcons-Resizable</FontFamily>
+	</Application.Resources>
 	<Application.Styles>
 		<sty:FluentAvaloniaTheme PreferUserAccentColor="True" />
 	</Application.Styles>

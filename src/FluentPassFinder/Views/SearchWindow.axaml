@@ -9,6 +9,7 @@
         xmlns:contracts="clr-namespace:FluentPassFinder.Contracts"
         xmlns:converters="clr-namespace:FluentPassFinder.Converters"
         xmlns:icons="clr-namespace:FluentPassFinder.Services.Actions"
+        xmlns:ui="using:FluentAvalonia.UI.Controls"
         x:Class="FluentPassFinder.Views.SearchWindow"
         x:ClassModifier="internal"
         x:DataType="local:SearchWindow"
@@ -130,9 +131,9 @@
                                     BorderThickness="0"
                                     VerticalAlignment="Center"
                                     ToolTip.Tip="Clear">
-                                <PathIcon Width="10"
-                                          Height="10"
-                                          Data="{x:Static icons:Icons.Close}" />
+                                <ui:FontIcon FontSize="14"
+                                             FontFamily="{StaticResource SymbolFontFamily}"
+                                             Glyph="{x:Static icons:Icons.Close}" />
                             </Button>
                             <Button Command="{Binding ViewModel.ToggleSettingsCommand}"
                                     IsVisible="{Binding ViewModel.SearchText, Converter={StaticResource StringEmptyConverter}}"
@@ -143,9 +144,9 @@
                                     BorderThickness="0"
                                     VerticalAlignment="Center"
                                     ToolTip.Tip="Settings">
-                                <PathIcon Width="14"
-                                          Height="14"
-                                          Data="{x:Static icons:Icons.Settings}" />
+                                <ui:FontIcon FontSize="16"
+                                             FontFamily="{StaticResource SymbolFontFamily}"
+                                             Glyph="{x:Static icons:Icons.Settings}" />
                             </Button>
                         </StackPanel>
                     </TextBox.InnerRightContent>
@@ -187,9 +188,9 @@
                             BorderThickness="0"
                             VerticalAlignment="Center"
                             ToolTip.Tip="Reset to defaults">
-                        <PathIcon Width="14"
-                                  Height="14"
-                                  Data="{x:Static icons:Icons.Reset}" />
+                        <ui:FontIcon FontSize="16"
+                                     FontFamily="{StaticResource SymbolFontFamily}"
+                                     Glyph="{x:Static icons:Icons.Reset}" />
                     </Button>
                     <Button Grid.Column="2"
                             Command="{Binding ViewModel.SaveSettingsAndCloseCommand}"
@@ -200,9 +201,9 @@
                             BorderThickness="0"
                             VerticalAlignment="Center"
                             ToolTip.Tip="Save settings">
-                        <PathIcon Width="14"
-                                  Height="14"
-                                  Data="{x:Static icons:Icons.Save}" />
+                        <ui:FontIcon FontSize="16"
+                                     FontFamily="{StaticResource SymbolFontFamily}"
+                                     Glyph="{x:Static icons:Icons.Save}" />
                     </Button>
                     <Button Grid.Column="3"
                             Command="{Binding ViewModel.NavigateBackCommand}"
@@ -213,9 +214,9 @@
                             BorderThickness="0"
                             VerticalAlignment="Center"
                             ToolTip.Tip="Discard and go back">
-                        <PathIcon Width="14"
-                                  Height="14"
-                                  Data="{x:Static icons:Icons.Close}" />
+                        <ui:FontIcon FontSize="16"
+                                     FontFamily="{StaticResource SymbolFontFamily}"
+                                     Glyph="{x:Static icons:Icons.Close}" />
                     </Button>
                 </Grid>
 
@@ -293,20 +294,20 @@
                                   Width="26"
                                   Height="26"
                                   Margin="2,0">
-                                <PathIcon Data="{Binding IconPath}"
-                                          Width="16"
-                                          Height="16"
-                                          HorizontalAlignment="Left"
-                                          VerticalAlignment="Center" />
-                                <Border IsVisible="{Binding BadgePath, Converter={StaticResource StringEmptyConverter}, ConverterParameter=Invert}"
+                                <ui:FontIcon Glyph="{Binding IconGlyph}"
+                                             FontFamily="{StaticResource SymbolFontFamily}"
+                                             FontSize="18"
+                                             HorizontalAlignment="Left"
+                                             VerticalAlignment="Center" />
+                                <Border IsVisible="{Binding BadgeGlyph, Converter={StaticResource StringEmptyConverter}, ConverterParameter=Invert}"
                                         Width="11"
                                         Height="11"
                                         HorizontalAlignment="Right"
                                         VerticalAlignment="Bottom"
                                         CornerRadius="2">
-                                    <PathIcon Data="{Binding BadgePath}"
-                                              Width="9"
-                                              Height="9" />
+                                    <ui:FontIcon Glyph="{Binding BadgeGlyph}"
+                                                 FontFamily="{StaticResource SymbolFontFamily}"
+                                                 FontSize="10" />
                                 </Border>
                             </Grid>
                             <TextBlock Grid.Column="1"

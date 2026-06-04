@@ -8,6 +8,7 @@
              xmlns:models="clr-namespace:FluentPassFinder.ViewModels"
              xmlns:converters="clr-namespace:FluentPassFinder.Converters"
              xmlns:icons="clr-namespace:FluentPassFinder.Services.Actions"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
              x:Class="FluentPassFinder.Views.SettingsView"
              x:ClassModifier="internal"
              x:DataType="local:SettingsView"
@@ -278,7 +279,7 @@
                                     HorizontalContentAlignment="Center"
                                     VerticalContentAlignment="Center"
                                     ToolTip.Tip="Add field">
-                                <PathIcon Width="14" Height="14" Data="{x:Static icons:Icons.Add}" />
+                                <ui:FontIcon FontSize="16" FontFamily="{StaticResource SymbolFontFamily}" Glyph="{x:Static icons:Icons.Add}" />
                             </Button>
                         </Grid>
                         <ItemsControl ItemsSource="{Binding ViewModel.ExcludeFields}">
@@ -313,7 +314,7 @@
                                                     Background="Transparent"
                                                     BorderThickness="0"
                                                     ToolTip.Tip="Remove">
-                                                <PathIcon Width="10" Height="10" Data="{x:Static icons:Icons.Close}" />
+                                                <ui:FontIcon FontSize="14" FontFamily="{StaticResource SymbolFontFamily}" Glyph="{x:Static icons:Icons.Close}" />
                                             </Button>
                                         </Grid>
                                     </Border>
@@ -363,7 +364,7 @@
                                     HorizontalContentAlignment="Center"
                                     VerticalContentAlignment="Center"
                                     ToolTip.Tip="Add action">
-                                <PathIcon Width="14" Height="14" Data="{x:Static icons:Icons.Add}" />
+                                <ui:FontIcon FontSize="16" FontFamily="{StaticResource SymbolFontFamily}" Glyph="{x:Static icons:Icons.Add}" />
                             </Button>
                         </Grid>
                         <ItemsControl ItemsSource="{Binding ViewModel.SortingActions}">
@@ -408,7 +409,7 @@
                                                     Background="Transparent"
                                                     BorderThickness="0"
                                                     ToolTip.Tip="Remove">
-                                                <PathIcon Width="10" Height="10" Data="{x:Static icons:Icons.Close}" />
+                                                <ui:FontIcon FontSize="14" FontFamily="{StaticResource SymbolFontFamily}" Glyph="{x:Static icons:Icons.Close}" />
                                             </Button>
                                         </Grid>
                                     </Border>

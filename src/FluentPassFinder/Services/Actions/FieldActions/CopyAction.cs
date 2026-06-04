@@ -8,7 +8,7 @@ namespace FluentPassFinder.Services.Actions.FieldActions
     internal class CopyAction : FieldActionBase
     {
         public override int DefaultSortingIndex => 1000;
-        public override string BadgePath => Icons.Copy;
+        public override string BadgeGlyph => Icons.Copy;
         public override string ActionType => string.Format(Consts.CopyActionPattern, FieldName);
         public override string DisplayName => $"Copy '{FieldName}'";
 

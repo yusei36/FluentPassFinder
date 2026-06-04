@@ -10,7 +10,7 @@ namespace FluentPassFinder.Services.Actions.StaticActions
         public override int DefaultSortingIndex => 0;
         public override string ActionType => Consts.AutoType;
         public override string DisplayName => "Auto type selected entry";
-        public override string IconPath => Icons.Keyboard;
+        public override string IconGlyph => Icons.Keyboard;
 
         public override void RunAction(EntrySearchResult searchResult)
         {

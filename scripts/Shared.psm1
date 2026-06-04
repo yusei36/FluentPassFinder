@@ -110,6 +110,21 @@ function Invoke-GenerateLicenseNotices {
         }
     }
 
+    # Bundled assets that are NOT delivered as a NuGet package, so nuget-license can't see them
+    # (e.g. the icon font). Each *.notice.txt under src/ is a ready-formatted notice block,
+    # co-located with the asset it covers; drop one in next to the relevant file to add an entry.
+    $srcDir = Join-Path $RepoRoot 'src'
+    $noticeFiles = @(Get-ChildItem -Path $srcDir -Filter '*.notice.txt' -Recurse -ErrorAction SilentlyContinue | Sort-Object FullName)
+    if ($noticeFiles.Count -gt 0) {
+        $result.Add('')
+        $result.Add('---')
+        $result.Add('# Bundled Assets (non-package)')
+        foreach ($file in $noticeFiles) {
+            $result.Add('')
+            foreach ($line in (Get-Content -LiteralPath $file.FullName)) { $result.Add([string]$line) }
+        }
+    }
+
     $result | Set-Content -Path $OutputFile -Encoding utf8
     Write-Host "  Generated: $(Split-Path $OutputFile -Leaf)"
 }

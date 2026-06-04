@@ -15,7 +15,7 @@ namespace FluentPassFinder.Services.Actions.FieldActions
             Initialize(hostProxy, searchWindowInteractionService);
         }
 
-        public override string IconPath => FieldName switch
+        public override string IconGlyph => FieldName switch
         {
             Consts.UserNameField => Icons.Person,
             Consts.PasswordField => Icons.Lock,

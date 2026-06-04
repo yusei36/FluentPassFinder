@@ -10,7 +10,7 @@ namespace FluentPassFinder.Services.Actions.StaticActions
         public override string DisplayName => "Open URL of selected entry";
         public override string ActionType => Consts.OpenUrl;
         public override int DefaultSortingIndex => 200;
-        public override string IconPath => Icons.Globe;
+        public override string IconGlyph => Icons.Globe;
 
         public override void RunAction(EntrySearchResult searchResult)
         {
