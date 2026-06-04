@@ -1,0 +1,17 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".gitignore" />
+    <File Path="src/Directory.Build.props" />
+    <File Path="LICENSE" />
+    <File Path="README.md" />
+    <File Path="version.txt" />
+  </Folder>
+  <Folder Name="/Solution Items/Workflows/">
+    <File Path=".github/workflows/build.yml" />
+  </Folder>
+  <Project Path="src/FluentPassFinder/FluentPassFinder.csproj" />
+  <Project Path="src/FluentPassFinderContracts/FluentPassFinderContracts.csproj" />
+  <Project Path="src/FluentPassFinderPlugin/FluentPassFinderPlugin.csproj">
+    <BuildDependency Project="src/FluentPassFinder/FluentPassFinder.csproj" />
+  </Project>
+</Solution>

@@ -8,7 +8,7 @@ function Write-Step([string]$msg) {
 
 # Returns hashtable: FileVersion, Version (e.g. "0.1.0-beta.1")
 function Get-BuildVersions([string]$RepoRoot) {
-    $xml             = [xml](Get-Content "$RepoRoot\Directory.Build.props")
+    $xml             = [xml](Get-Content "$RepoRoot\src\Directory.Build.props")
     $fileVersionNode = $xml.SelectSingleNode('//FileVersion')
     $prefixNode      = $xml.SelectSingleNode('//VersionPrefix')
     $suffixNode      = $xml.SelectSingleNode('//VersionSuffix')
@@ -21,7 +21,7 @@ function Get-BuildVersions([string]$RepoRoot) {
 }
 
 function Invoke-Build([string]$RepoRoot, [string]$Configuration) {
-    $sln = Get-ChildItem -Path $RepoRoot -Filter '*.sln' | Select-Object -First 1 -ExpandProperty FullName
+    $sln = Get-ChildItem -Path $RepoRoot -Filter '*.slnx' | Select-Object -First 1 -ExpandProperty FullName
     & dotnet restore $sln --nologo -v quiet
     if ($LASTEXITCODE -ne 0) { throw "dotnet restore failed with exit code $LASTEXITCODE" }
     & dotnet build $sln --no-restore -c $Configuration --nologo
@@ -47,7 +47,7 @@ function Invoke-GenerateLicenseNotices {
         if ($LASTEXITCODE -ne 0) { throw "Failed to install nuget-license" }
     }
 
-    $slnPath = Get-ChildItem -Path $RepoRoot -Filter '*.sln' | Select-Object -First 1 -ExpandProperty FullName
+    $slnPath = Get-ChildItem -Path $RepoRoot -Filter '*.slnx' | Select-Object -First 1 -ExpandProperty FullName
     Write-Host "  Restoring NuGet packages..."
     & dotnet restore $slnPath --verbosity quiet
     if ($LASTEXITCODE -ne 0) { throw "dotnet restore failed (exit $LASTEXITCODE)" }
