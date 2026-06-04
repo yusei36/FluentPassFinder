@@ -1,16 +1,42 @@
-[![GitHub](https://img.shields.io/badge/GitHub-yusei36%2FFluentPassFinder-black?logo=github&style=for-the-badge)](https://github.com/yusei36/FluentPassFinder) [![GitHub Release](https://img.shields.io/github/v/release/yusei36/FluentPassFinder?include_prereleases&style=for-the-badge)](https://github.com/yusei36/FluentPassFinder/releases/latest) [![GitHub Release Date](https://img.shields.io/github/release-date-pre/yusei36/FluentPassFinder?style=for-the-badge)](https://github.com/yusei36/FluentPassFinder/releases/latest)
-
 ## Status
 ⚠️ **Early Stage / Personal Project**: This project was mostly developed for personal use and has never been properly released or maintained due to limited available time. A larger refactoring is currently in progress and may be released in the future.
 
 # FluentPassFinder
-KeePass Plugin with a fluent design search window to quickly find entries and autotype or copy passwords or other fields.
-Shortcut can be used to open the small search window from everywhere.
+
+[![GitHub](https://img.shields.io/badge/GitHub-yusei36%2FFluentPassFinder-black?logo=github&style=for-the-badge)](https://github.com/yusei36/FluentPassFinder) [![GitHub Release](https://img.shields.io/github/v/release/yusei36/FluentPassFinder?include_prereleases&style=for-the-badge)](https://github.com/yusei36/FluentPassFinder/releases/latest) [![GitHub Release Date](https://img.shields.io/github/release-date-pre/yusei36/FluentPassFinder?style=for-the-badge)](https://github.com/yusei36/FluentPassFinder/releases/latest)
+
+**[Download](https://github.com/yusei36/FluentPassFinder/releases/latest)** | **[Installation](#installation)** | **[How to use](#how-to-use)** | **[Configuration](#configuration)**
+
+A KeePass plugin with a Fluent Design search window to quickly find entries and autotype or copy passwords or other fields. A global shortcut opens the search window from anywhere.
+
+![Search window](docs/images/search_field.png)
 
 ## Requirements
 - [KeePass](https://keepass.info/) 2.54 or later
+- Windows 10 or 11
 
-Tested on Windows 10 and 11. A Linux/macOS port should be feasible but isn't implemented yet. If you'd like to help build and test it, see [docs/CrossPlatform.md](docs/CrossPlatform.md).
+A Linux/macOS port should be feasible but isn't implemented yet. If you'd like to help build and test it, see [docs/CrossPlatform.md](docs/CrossPlatform.md).
+
+## Installation
+
+1. Download `FluentPassFinder-<version>.zip` from the [releases page](https://github.com/yusei36/FluentPassFinder/releases/latest) and extract it.
+2. Copy the `FluentPassFinderPlugin` folder into your KeePass `Plugins` folder (e.g. `C:\Program Files\KeePass Password Safe 2\Plugins\`).
+3. (Re)start KeePass.
+4. Open a database, then press the hotkey (default `Ctrl+Alt+S`) to launch the search window.
+
+## How it works
+
+The search window runs as a **separate process** from KeePass, built with [Avalonia](https://avaloniaui.net/) and FluentAvaloniaUI. The KeePass plugin hosts a named-pipe server and spawns the app; all KeePass operations (search, copy, autotype, settings) are routed back over the pipe:
+
+```
+         Global hotkey
+              ↓
+      FluentPassFinder.exe   (Avalonia search window, .NET 10)
+              ↓  (Named pipe JSON)
+    FluentPassFinder.dll     (KeePass plugin, .NET Framework 4.8)
+              ↓  (KeePass API)
+       KeePass Database
+```
 
 ## How to use
 
@@ -26,6 +52,8 @@ Tested on Windows 10 and 11. A Linux/macOS port should be feasible but isn't imp
 - Copy password: `Ctrl+Enter`
 - Copy TOTP: `Alt+Enter`
 - Select action in entry context menu: `Enter`
+
+Time-based one-time passwords (TOTP) are supported. Counter-based HMAC OTP (HOTP) is intentionally not supported.
 
 ## Screenshots
 ### Search Window
@@ -105,6 +133,45 @@ After KeePass is closed for the first time after the plugin was installed, the c
 }</Value>
     </Item>
 </Custom>
+```
+
+## Building
+
+### Prerequisites
+
+| Requirement | Notes |
+|---|---|
+| .NET 10 SDK | For the Avalonia app (`FluentPassFinder`) |
+| .NET Framework 4.8 SDK | For the KeePass plugin (`FluentPassFinderPlugin`) |
+| KeePass.exe (2.54+, compile reference) | Place at `build\KeePass\KeePass.exe`. If absent, the plugin falls back to the (unsigned) `KeePass` NuGet package. |
+
+```powershell
+dotnet restore
+dotnet build --no-restore               # Debug build
+dotnet build --no-restore -c Release    # Release build
+```
+
+After building the plugin, a post-build target copies the plugin and app into `build\KeePass\Plugins\FluentPassFinder\` for local testing.
+
+### Packaging
+
+`scripts\Publish-Package.ps1` produces the distributable zip (merges plugin DLLs with ILRepack, publishes the app as a single-file executable):
+
+```powershell
+.\scripts\Publish-Package.ps1                     # Release (default)
+.\scripts\Publish-Package.ps1 -Configuration Debug
+.\scripts\Publish-Package.ps1 -SkipBuild          # repackage without rebuilding
+```
+
+## Project structure
+
+```
+src/
+  FluentPassFinderContracts    Shared DTOs, interfaces, and named-pipe IPC protocol (net48 + net10.0)
+  FluentPassFinderPlugin       KeePass plugin entry point; hosts the pipe server (net48)
+  FluentPassFinder             Standalone Avalonia search window; pipe client (net10.0)
+scripts/
+  Publish-Package.ps1          Build Release and produce the distributable zip
 ```
 
 ## License
