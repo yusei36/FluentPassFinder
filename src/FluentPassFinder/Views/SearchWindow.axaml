@@ -58,9 +58,19 @@
                                    VerticalAlignment="Center"
                                    Width="3" Height="16"
                                    Margin="2 0 0 0"
+                                   UseLayoutRounding="False"
                                    RadiusX="2" RadiusY="2"
                                    IsVisible="False"
-                                   Fill="{DynamicResource AccentFillColorDefaultBrush}" />
+                                   RenderTransform="scaleY(0)"
+                                   Fill="{DynamicResource AccentFillColorDefaultBrush}">
+                            <Rectangle.Transitions>
+                                <Transitions>
+                                    <TransformOperationsTransition Duration="00:00:00.167"
+                                                                   Property="RenderTransform"
+                                                                   Easing="0,0 0,1" />
+                                </Transitions>
+                            </Rectangle.Transitions>
+                        </Rectangle>
                     </Panel>
                 </ControlTemplate>
             </Setter>
@@ -75,6 +85,7 @@
             </Style>
             <Style Selector="^:selected /template/ Rectangle#SelectionIndicator">
                 <Setter Property="IsVisible" Value="True" />
+                <Setter Property="RenderTransform" Value="scaleY(1)" />
             </Style>
         </ControlTheme>
     </Window.Resources>
