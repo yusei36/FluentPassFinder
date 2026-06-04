@@ -3,7 +3,7 @@
 Scope and plan for making the standalone `FluentPassFinder` Avalonia app run on
 Linux and macOS, not just Windows. This document covers **the app only**. The
 KeePass plugin side is out of scope here: KeePass 2.x is assumed to run via Mono,
-which provides its own auto-type backend.
+so i assume the plugin itself should already compatible. 
 
 ## Status
 

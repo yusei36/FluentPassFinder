@@ -1,4 +1,4 @@
-[![Build](https://github.com/yusei36/FluentPassFinder/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/yusei36/FluentPassFinder/actions/workflows/build.yml)
+[![GitHub](https://img.shields.io/badge/GitHub-yusei36%2FFluentPassFinder-black?logo=github&style=for-the-badge)](https://github.com/yusei36/FluentPassFinder) [![GitHub Release](https://img.shields.io/github/v/release/yusei36/FluentPassFinder?include_prereleases&style=for-the-badge)](https://github.com/yusei36/FluentPassFinder/releases/latest) [![GitHub Release Date](https://img.shields.io/github/release-date-pre/yusei36/FluentPassFinder?style=for-the-badge)](https://github.com/yusei36/FluentPassFinder/releases/latest)
 
 ## Status
 ⚠️ **Early Stage / Personal Project**: This project was mostly developed for personal use and has never been properly released or maintained due to limited available time. A larger refactoring is currently in progress and may be released in the future.
