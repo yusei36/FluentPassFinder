@@ -231,23 +231,35 @@ namespace FluentPassFinder.Platform
 
         private static void DoRegister(string name, string gestureString, Action callback)
         {
-            var (modifiers, vk) = ParseGesture(gestureString);
-            if (vk == 0) return;
+            if (!TryParseGesture(gestureString, out var modifiers, out var vk))
+            {
+                Program.WriteLog("HotkeyRegistration", $"Ignoring invalid hotkey gesture '{gestureString}'.");
+                return;
+            }
 
             var id = _nextId++;
+            if (!RegisterHotKey(_hwnd, id, modifiers | MOD_NOREPEAT, vk))
+            {
+                Program.WriteLog("HotkeyRegistration",
+                    $"Failed to register hotkey '{gestureString}' for '{name}'. Win32 error: {Marshal.GetLastWin32Error()}.");
+                return;
+            }
+
             _handlers[id] = callback;
             if (name != null) _nameToId[name] = id;
-            RegisterHotKey(_hwnd, id, modifiers | MOD_NOREPEAT, vk);
         }
 
-        private static (uint modifiers, uint vk) ParseGesture(string gesture)
+        private static bool TryParseGesture(string gesture, out uint modifiers, out uint vk)
         {
-            uint modifiers = 0;
-            uint vk = 0;
+            modifiers = 0;
+            vk = 0;
 
             foreach (var part in gesture.Split('+'))
             {
                 var trimmed = part.Trim();
+                if (trimmed.Length == 0)
+                    return false;
+
                 switch (trimmed.ToLowerInvariant())
                 {
                     case "ctrl":  modifiers |= MOD_CONTROL; break;
@@ -255,12 +267,17 @@ namespace FluentPassFinder.Platform
                     case "shift": modifiers |= MOD_SHIFT;   break;
                     case "win":   modifiers |= MOD_WIN;     break;
                     default:
+                        if (vk != 0)
+                            return false;
+
                         vk = ParseKey(trimmed);
+                        if (vk == 0)
+                            return false;
                         break;
                 }
             }
 
-            return (modifiers, vk);
+            return vk != 0;
         }
 
         /// <summary>
@@ -269,6 +286,9 @@ namespace FluentPassFinder.Platform
         /// </summary>
         private static uint ParseKey(string token)
         {
+            if (string.IsNullOrWhiteSpace(token))
+                return 0;
+
             // Single letter or digit maps directly to its ASCII/virtual-key code.
             if (token.Length == 1)
             {
