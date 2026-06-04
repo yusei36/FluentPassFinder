@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading;
 
-namespace FluentPassFinder
+namespace FluentPassFinder.Platform
 {
     /// <summary>
     /// Registers global hotkeys via Win32 RegisterHotKey using a hidden message-only window

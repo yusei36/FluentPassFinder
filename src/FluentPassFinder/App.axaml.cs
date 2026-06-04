@@ -8,6 +8,7 @@ using Avalonia.Styling;
 using FluentPassFinder.Contracts;
 using FluentPassFinder.Contracts.Public;
 using FluentPassFinder.Ipc;
+using FluentPassFinder.Platform;
 using FluentPassFinder.Services;
 using FluentPassFinder.Services.Actions.FieldActions;
 using FluentPassFinder.Services.Actions.StaticActions;
@@ -22,6 +23,7 @@ namespace FluentPassFinder
     {
         private static App _instance;
         private SearchWindow _searchWindow;
+        private IPlatformServices _platform;
 
         public override void Initialize()
         {
@@ -61,11 +63,17 @@ namespace FluentPassFinder
         {
             _instance = this;
 
+            // Platform-specific services (global hotkeys, foreground-window handling).
+            // Only Windows is implemented today; add IsLinux/IsMacOS branches here when
+            // porting (see docs/CrossPlatform.md).
+            _platform = new WindowsPlatformServices();
+
             var pipeClient = new PipeClient(pipeName);
             pipeClient.Connect();
 
             var services = new ServiceCollection();
             services.AddSingleton<IPluginProxy>(pipeClient);
+            services.AddSingleton<IPlatformServices>(_platform);
             services.AddSingleton<Lazy<SearchWindow>>(_ => new Lazy<SearchWindow>(() =>
                 _searchWindow ?? throw new InvalidOperationException("Current search window is null.")));
             services.AddSingleton<Lazy<SearchWindowViewModel>>(_ => new Lazy<SearchWindowViewModel>(() =>
@@ -88,7 +96,7 @@ namespace FluentPassFinder
             var viewModel = provider.GetRequiredService<SearchWindowViewModel>();
             var settingsViewModel = provider.GetRequiredService<SettingsViewModel>();
             var settingsView = new Views.SettingsView(settingsViewModel);
-            _searchWindow = new SearchWindow(viewModel, settingsView);
+            _searchWindow = new SearchWindow(viewModel, settingsView, _platform);
 
             var settings = pipeClient.Settings;
             RegisterHotkeys(settings);
@@ -118,7 +126,7 @@ namespace FluentPassFinder
                 }
                 catch { /* process already gone or no longer accessible */ }
 
-                HotkeyRegistrar.Dispose();
+                _platform?.DisposeHotkeys();
                 Environment.Exit(0);
             });
         }
@@ -131,13 +139,13 @@ namespace FluentPassFinder
                 ApplyWindowSize(settings);
             });
 
-            HotkeyRegistrar.Unregister(nameof(HotkeyOptions.PrimaryScreen));
-            HotkeyRegistrar.Unregister(nameof(HotkeyOptions.CurrentScreen));
-            HotkeyRegistrar.Register(
+            _instance?._platform?.UnregisterHotkey(nameof(HotkeyOptions.PrimaryScreen));
+            _instance?._platform?.UnregisterHotkey(nameof(HotkeyOptions.CurrentScreen));
+            _instance?._platform?.RegisterHotkey(
                 nameof(HotkeyOptions.PrimaryScreen),
                 settings.Hotkeys.PrimaryScreen,
                 () => Avalonia.Threading.Dispatcher.UIThread.Post(() => _instance?._searchWindow?.ShowSearchWindow(true)));
-            HotkeyRegistrar.Register(
+            _instance?._platform?.RegisterHotkey(
                 nameof(HotkeyOptions.CurrentScreen),
                 settings.Hotkeys.CurrentScreen,
                 () => Avalonia.Threading.Dispatcher.UIThread.Post(() => _instance?._searchWindow?.ShowSearchWindow(false)));
@@ -156,12 +164,12 @@ namespace FluentPassFinder
 
         private void RegisterHotkeys(Settings settings)
         {
-            HotkeyRegistrar.Register(
+            _platform.RegisterHotkey(
                 nameof(HotkeyOptions.PrimaryScreen),
                 settings.Hotkeys.PrimaryScreen,
                 () => Avalonia.Threading.Dispatcher.UIThread.Post(() => _searchWindow?.ShowSearchWindow(true)));
 
-            HotkeyRegistrar.Register(
+            _platform.RegisterHotkey(
                 nameof(HotkeyOptions.CurrentScreen),
                 settings.Hotkeys.CurrentScreen,
                 () => Avalonia.Threading.Dispatcher.UIThread.Post(() => _searchWindow?.ShowSearchWindow(false)));

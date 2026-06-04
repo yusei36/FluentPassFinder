@@ -6,8 +6,8 @@ using Avalonia.Input;
 using Avalonia.Platform;
 using FluentPassFinder.Contracts;
 using FluentPassFinder.Contracts.Public;
+using FluentPassFinder.Platform;
 using FluentPassFinder.ViewModels;
-using System.Runtime.InteropServices;
 
 namespace FluentPassFinder.Views
 {
@@ -28,15 +28,15 @@ namespace FluentPassFinder.Views
         private int _targetHeaderTopY;
         private double _anchorScaling = 1.0;
 
-        private WinEventDelegate _foregroundWatchProc;
-        private IntPtr _foregroundWatchHook;
+        private readonly IPlatformServices _platform;
 
         public SearchWindow() { InitializeComponent(); }
 
-        public SearchWindow(SearchWindowViewModel viewModel, SettingsView settingsView)
+        public SearchWindow(SearchWindowViewModel viewModel, SettingsView settingsView, IPlatformServices platform)
         {
             ViewModel = viewModel;
             SettingsView = settingsView;
+            _platform = platform;
             DataContext = this;
 
             _preserveTimer = new Timer(_ =>
@@ -57,20 +57,15 @@ namespace FluentPassFinder.Views
         public void FocusSearchBox() => SearchBox.Focus();
 
         /// <summary>
-        /// Windows 11 draws a 1px border around every window (following the corner
-        /// radius), which shows up even though we render our own borderless rounded
-        /// surface. Setting the DWM border color to <c>DWMWA_COLOR_NONE</c> removes it.
-        /// The call is a no-op on Windows 10 (the attribute is unsupported there).
+        /// Strips the OS-drawn window border so it doesn't show over our borderless
+        /// rounded surface (see <see cref="IPlatformServices.RemoveWindowBorder"/>).
         /// </summary>
         protected override void OnOpened(EventArgs e)
         {
             base.OnOpened(e);
 
             var hWnd = TryGetPlatformHandle()?.Handle ?? IntPtr.Zero;
-            if (hWnd == IntPtr.Zero) return;
-
-            int colorNone = unchecked((int)DWMWA_COLOR_NONE);
-            DwmSetWindowAttribute(hWnd, DWMWA_BORDER_COLOR, ref colorNone, sizeof(int));
+            _platform?.RemoveWindowBorder(hWnd);
         }
 
         /// <summary>
@@ -171,83 +166,30 @@ namespace FluentPassFinder.Views
         }
 
         /// <summary>
-        /// Forces this window to the foreground and gives it keyboard focus.
-        ///
-        /// We run as a separate process from the one the user is interacting with
-        /// (browser, Explorer, ...). When the hotkey fires, that other process is the
-        /// foreground app, so Windows' focus-stealing prevention blocks our
-        /// <see cref="Window.Activate"/>/SetForegroundWindow call: the window becomes
-        /// visible but keyboard input keeps going to the previously focused app.
-        ///
-        /// The reliable workaround is to temporarily attach our UI thread's input
-        /// queue to the foreground window's thread (<c>AttachThreadInput</c>), which
-        /// lifts the restriction so <c>SetForegroundWindow</c> actually takes effect,
-        /// then detach again.
+        /// Forces this window to the foreground and gives it keyboard focus, working
+        /// around the OS focus-stealing prevention (see
+        /// <see cref="IPlatformServices.ForceForegroundWindow"/>).
         /// </summary>
         private void ForceForeground()
         {
             var hWnd = TryGetPlatformHandle()?.Handle ?? IntPtr.Zero;
-            if (hWnd == IntPtr.Zero) return;
-
-            var foreground = GetForegroundWindow();
-            if (foreground == hWnd) return;
-
-            uint foregroundThread = foreground != IntPtr.Zero
-                ? GetWindowThreadProcessId(foreground, out _)
-                : 0;
-            uint currentThread = GetWindowThreadProcessId(hWnd, out _);
-
-            bool attached = foregroundThread != 0
-                && foregroundThread != currentThread
-                && AttachThreadInput(currentThread, foregroundThread, true);
-            try
-            {
-                SetForegroundWindow(hWnd);
-            }
-            finally
-            {
-                if (attached)
-                    AttachThreadInput(currentThread, foregroundThread, false);
-            }
+            _platform.ForceForegroundWindow(hWnd);
         }
 
         /// <summary>
-        /// Hides the window when the user switches to another application.
-        ///
-        /// Relying on Avalonia's <see cref="InputElement.LostFocus"/>/Deactivated alone
-        /// is unreliable for a borderless, topmost launcher window: Windows does not
-        /// always deliver a deactivation when focus jumps to another process (clicking
-        /// the desktop, taskbar, another topmost window, ...), so the window can stay
-        /// open. A system-wide <c>EVENT_SYSTEM_FOREGROUND</c> hook fires whenever the
-        /// foreground window changes; we hide as soon as it moves to a window owned by
-        /// a different process. The process check keeps our own in-process popups
-        /// (context-menu flyout, settings pane) from closing the window.
-        ///
-        /// The hook is installed on the UI thread, so its callback is marshalled back
-        /// onto the UI thread's message loop. It is installed once and lives for the
-        /// window's lifetime (the process is terminated when KeePass closes).
+        /// Hides the window when focus moves to another application. Avalonia's
+        /// Deactivated/LostFocus alone is unreliable for a borderless, topmost launcher
+        /// window, so we ask the platform to watch for the foreground window changing to
+        /// one owned by another process and hide when it does. Idempotent; the watch is
+        /// installed once and lives for the window's lifetime.
         /// </summary>
         private void EnsureForegroundWatch()
         {
-            if (_foregroundWatchHook != IntPtr.Zero) return;
-
-            _foregroundWatchProc = OnForegroundChanged; // keep a reference so it is not GC'd
-            _foregroundWatchHook = SetWinEventHook(
-                EVENT_SYSTEM_FOREGROUND, EVENT_SYSTEM_FOREGROUND,
-                IntPtr.Zero, _foregroundWatchProc, 0, 0, WINEVENT_OUTOFCONTEXT);
-        }
-
-        private void OnForegroundChanged(
-            IntPtr hWinEventHook, uint eventType, IntPtr hwnd,
-            int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
-        {
-            if (hwnd == IntPtr.Zero) return;
-            if (!IsVisible || _isWarmingUp || _isOpening || _isClosing) return;
-
-            GetWindowThreadProcessId(hwnd, out uint pid);
-            if (pid == (uint)Environment.ProcessId) return; // our own window or popups
-
-            HideSearchWindow();
+            _platform.StartForegroundWatch(() =>
+            {
+                if (!IsVisible || _isWarmingUp || _isOpening || _isClosing) return;
+                HideSearchWindow();
+            });
         }
 
         public void RecenterIfVisible()
@@ -283,7 +225,7 @@ namespace FluentPassFinder.Views
             }
             else
             {
-                var cursorPos = GetCursorPixelPos();
+                var cursorPos = _platform.GetCursorPosition();
                 screen = screens.ScreenFromPoint(cursorPos) ?? screens.Primary;
             }
 
@@ -378,48 +320,6 @@ namespace FluentPassFinder.Views
         {
             if (e.InitialPressMouseButton == MouseButton.Left)
                 ViewModel.RunActionCommand.Execute(((sender as Control)?.DataContext as IAction)?.ActionType);
-        }
-
-        [DllImport("dwmapi.dll")]
-        private static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int attrValue, int attrSize);
-
-        private const int DWMWA_BORDER_COLOR = 34;
-        private const uint DWMWA_COLOR_NONE = 0xFFFFFFFE;
-
-        [DllImport("user32.dll")]
-        private static extern bool GetCursorPos(out POINT lpPoint);
-
-        [DllImport("user32.dll")]
-        private static extern IntPtr GetForegroundWindow();
-
-        [DllImport("user32.dll")]
-        private static extern bool SetForegroundWindow(IntPtr hWnd);
-
-        [DllImport("user32.dll")]
-        private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
-
-        [DllImport("user32.dll")]
-        private static extern bool AttachThreadInput(uint idAttach, uint idAttachTo, bool fAttach);
-
-        private const uint EVENT_SYSTEM_FOREGROUND = 0x0003;
-        private const uint WINEVENT_OUTOFCONTEXT = 0x0000;
-
-        private delegate void WinEventDelegate(
-            IntPtr hWinEventHook, uint eventType, IntPtr hwnd,
-            int idObject, int idChild, uint dwEventThread, uint dwmsEventTime);
-
-        [DllImport("user32.dll")]
-        private static extern IntPtr SetWinEventHook(
-            uint eventMin, uint eventMax, IntPtr hmodWinEventProc,
-            WinEventDelegate lpfnWinEventProc, uint idProcess, uint idThread, uint dwFlags);
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct POINT { public int X; public int Y; }
-
-        private static PixelPoint GetCursorPixelPos()
-        {
-            GetCursorPos(out var pt);
-            return new PixelPoint(pt.X, pt.Y);
         }
     }
 }

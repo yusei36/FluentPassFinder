@@ -10,7 +10,7 @@ Shortcut can be used to open the small search window from everywhere.
 ## Requirements
 - [KeePass](https://keepass.info/) 2.54 or later
 
-Tested on Windows 10 and 11. Since the app is built on .NET 10 and Avalonia UI (a cross-platform UI framework), it may be possible to make it work on or port it to other operating systems such as Linux or macOS, though this has not been tested.
+Tested on Windows 10 and 11. A Linux/macOS port should be feasible but isn't implemented yet. If you'd like to help build and test it, see [docs/CrossPlatform.md](docs/CrossPlatform.md).
 
 ## How to use
 
