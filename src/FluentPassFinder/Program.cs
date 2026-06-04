@@ -2,6 +2,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 using Avalonia;
 using Avalonia.Controls;
+using System.Runtime.Versioning;
+
+// The app relies on Win32 P/Invoke (global hotkeys, DWM, foreground-window handling),
+// so it only runs on Windows. Declaring this keeps the platform analyzer (CA1416) happy
+// now that the target framework is plain net10.0 instead of net10.0-windows.
+[assembly: SupportedOSPlatform("windows")]
 
 namespace FluentPassFinder
 {

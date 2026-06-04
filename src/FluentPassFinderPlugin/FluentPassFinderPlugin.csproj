@@ -39,7 +39,7 @@
   <Target Name="CopyToKeePassPlugins" AfterTargets="Build">
     <PropertyGroup>
       <PluginOutputPath>$(SolutionDir)build\KeePass\Plugins\FluentPassFinder\</PluginOutputPath>
-      <AppBinDir>$(SolutionDir)build\$(Configuration)\net10.0-windows\bin\</AppBinDir>
+      <AppBinDir>$(SolutionDir)build\$(Configuration)\net10.0\bin\</AppBinDir>
     </PropertyGroup>
 
     <RemoveDir Directories="$(PluginOutputPath)" />
