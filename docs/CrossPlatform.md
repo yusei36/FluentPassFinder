@@ -7,10 +7,9 @@ so i assume the plugin itself should already compatible.
 
 ## Status
 
-The app no longer targets `net10.0-windows` — it targets plain `net10.0`
-(see [SizeReduction.md](SizeReduction.md) for the publish setup). Dropping the
-`-windows` TFM suffix was the trivial part; it does **not** make the app
-cross-platform on its own. The app is still `SelfContained` `win-x64` and depends
+The app no longer targets `net10.0-windows` — it targets plain `net10.0`.
+Dropping the `-windows` TFM suffix was the trivial part; it does **not** make the
+app cross-platform on its own. The app is still `SelfContained` `win-x64` and depends
 on Win32 P/Invoke at runtime.
 
 All Win32 has since been isolated behind the `IPlatformServices` abstraction (see
