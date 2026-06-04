@@ -50,7 +50,7 @@ namespace FluentPassFinder
                 }
 
                 if (args.Length >= 2 && int.TryParse(args[1], out var hostPid))
-                    WatchHostProcess(hostPid, desktop);
+                    WatchHostProcess(hostPid);
             }
 
             base.OnFrameworkInitializationCompleted();
@@ -99,7 +99,7 @@ namespace FluentPassFinder
             _searchWindow.WarmUp();
         }
 
-        private void WatchHostProcess(int hostPid, IClassicDesktopStyleApplicationLifetime desktop)
+        private void WatchHostProcess(int hostPid)
         {
             Task.Run(async () =>
             {
@@ -108,10 +108,10 @@ namespace FluentPassFinder
                     using var host = Process.GetProcessById(hostPid);
                     await host.WaitForExitAsync();
                 }
-                catch { /* process already gone */ }
+                catch { /* process already gone or no longer accessible */ }
 
-                await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
-                    desktop.Shutdown(0));
+                HotkeyRegistrar.Dispose();
+                Environment.Exit(0);
             });
         }
 

@@ -61,6 +61,25 @@ namespace FluentPassFinder
                 _byName.Remove(name);
         }
 
+        /// <summary>
+        /// Stop and dispose the global hook. SharpHook's <c>RunAsync</c> runs the
+        /// native event loop on a thread that lives for the process lifetime, so it
+        /// must be disposed explicitly for the process to be able to exit.
+        /// </summary>
+        public static void Dispose()
+        {
+            lock (_lock)
+            {
+                _byName.Clear();
+                if (_hook != null)
+                {
+                    _hook.KeyPressed -= OnKeyPressed;
+                    try { _hook.Dispose(); } catch { }
+                    _hook = null;
+                }
+            }
+        }
+
         private static void EnsureHook()
         {
             if (_hook != null) return;
