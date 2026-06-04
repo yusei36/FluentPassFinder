@@ -2,6 +2,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 using System;
 using System.Collections.ObjectModel;
+using System.Reflection;
+using System.Text.RegularExpressions;
 using FluentPassFinder.Contracts.Public;
 
 namespace FluentPassFinder.ViewModels
@@ -78,10 +80,40 @@ namespace FluentPassFinder.ViewModels
                 string.Format(Consts.AutoTypeActionPattern, Consts.Totp),
             };
 
+        // About
+        public static string AppVersionFull { get; } =
+            Assembly.GetEntryAssembly()
+                ?.GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+                ?.InformationalVersion ?? "?";
+
+        // Trim the git commit hash that follows "+" down to the first 8 chars for display.
+        public static string AppVersion { get; } =
+            Regex.Replace(AppVersionFull, @"\+([0-9a-f]{8})[0-9a-f]+", "+$1", RegexOptions.IgnoreCase);
+
+        public const string Copyright = "© 2023 - 2026 Uwe Kögel";
+        public const string ProjectUrl = "https://github.com/yusei36/FluentPassFinder";
+        public const string IssuesUrl = "https://github.com/yusei36/FluentPassFinder/issues";
+        public const string LicenseUrl = "https://github.com/yusei36/FluentPassFinder/blob/master/LICENSE";
+
         public SettingsViewModel(IPluginProxy pluginProxy)
         {
             this.pluginProxy = pluginProxy;
             LoadFromSettings(pluginProxy.Settings);
+        }
+
+        [RelayCommand]
+        private void OpenUrl(string url) =>
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = url,
+                UseShellExecute = true,
+            });
+
+        [RelayCommand]
+        private async System.Threading.Tasks.Task CopyToClipboard(string text)
+        {
+            if (!string.IsNullOrEmpty(text))
+                await App.CopyToClipboardAsync(text);
         }
 
         [RelayCommand]

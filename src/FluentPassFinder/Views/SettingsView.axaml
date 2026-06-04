@@ -247,9 +247,14 @@
             <Separator Margin="0 6" />
 
             <!-- Advanced -->
-            <Expander Header="Advanced"
-                      HorizontalAlignment="Stretch"
+            <Expander HorizontalAlignment="Stretch"
                       Margin="0 2">
+                <Expander.Header>
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <ui:FontIcon FontSize="16" FontFamily="{StaticResource SymbolFontFamily}" Glyph="{x:Static icons:Icons.Options}" VerticalAlignment="Center" />
+                        <TextBlock Text="Advanced" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Expander.Header>
                 <StackPanel Spacing="4">
 
                     <!-- Hide Actions For Fields -->
@@ -417,6 +422,98 @@
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
                     </StackPanel>
+                </StackPanel>
+            </Expander>
+
+            <!-- About -->
+            <Expander HorizontalAlignment="Stretch"
+                      Margin="0 2">
+                <Expander.Header>
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <ui:FontIcon FontSize="16" FontFamily="{StaticResource SymbolFontFamily}" Glyph="{x:Static icons:Icons.Info}" VerticalAlignment="Center" />
+                        <TextBlock Text="About" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Expander.Header>
+                <StackPanel Spacing="4">
+
+                    <TextBlock VerticalAlignment="Center" FontSize="13" Margin="0 2">
+                        <Run Text="FluentPassFinder" />
+                        <Run Text="{x:Static models:SettingsViewModel.Copyright}" />
+                    </TextBlock>
+
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="6" Margin="0 2">
+                        <TextBlock Grid.Column="0" Text="Version" VerticalAlignment="Center" FontSize="13" />
+                        <TextBlock Grid.Column="1"
+                                   Text="{x:Static models:SettingsViewModel.AppVersion}"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Center"
+                                   Opacity="0.7"
+                                   FontSize="13"
+                                   TextTrimming="CharacterEllipsis" />
+                        <Button Grid.Column="2"
+                                Command="{Binding ViewModel.CopyToClipboardCommand}"
+                                CommandParameter="{x:Static models:SettingsViewModel.AppVersionFull}"
+                                Width="32"
+                                Height="32"
+                                Padding="0"
+                                HorizontalContentAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                ToolTip.Tip="Copy version">
+                            <ui:FontIcon FontSize="14" FontFamily="{StaticResource SymbolFontFamily}" Glyph="{x:Static icons:Icons.Copy}" />
+                        </Button>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="6" Margin="0 2">
+                        <TextBlock Grid.Column="0" Text="License" VerticalAlignment="Center" FontSize="13" />
+                        <TextBlock Grid.Column="1"
+                                   Text="GNU GPL v3.0 or later"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Center"
+                                   Opacity="0.7"
+                                   FontSize="13" />
+                        <Button Grid.Column="2"
+                                Command="{Binding ViewModel.OpenUrlCommand}"
+                                CommandParameter="{x:Static models:SettingsViewModel.LicenseUrl}"
+                                Width="32"
+                                Height="32"
+                                Padding="0"
+                                HorizontalContentAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                ToolTip.Tip="Open license text">
+                            <ui:FontIcon FontSize="14" FontFamily="{StaticResource SymbolFontFamily}" Glyph="{x:Static icons:Icons.Document}" />
+                        </Button>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,Auto" Margin="0 2">
+                        <TextBlock Grid.Column="0" Text="Source code" VerticalAlignment="Center" FontSize="13" />
+                        <Button Grid.Column="1"
+                                Command="{Binding ViewModel.OpenUrlCommand}"
+                                CommandParameter="{x:Static models:SettingsViewModel.ProjectUrl}"
+                                Width="32"
+                                Height="32"
+                                Padding="0"
+                                HorizontalContentAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                ToolTip.Tip="Open source code on GitHub">
+                            <ui:FontIcon FontSize="14" FontFamily="{StaticResource SymbolFontFamily}" Glyph="{x:Static icons:Icons.Globe}" />
+                        </Button>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,Auto" Margin="0 2">
+                        <TextBlock Grid.Column="0" Text="Report a bug" VerticalAlignment="Center" FontSize="13" />
+                        <Button Grid.Column="1"
+                                Command="{Binding ViewModel.OpenUrlCommand}"
+                                CommandParameter="{x:Static models:SettingsViewModel.IssuesUrl}"
+                                Width="32"
+                                Height="32"
+                                Padding="0"
+                                HorizontalContentAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                ToolTip.Tip="Open issue tracker on GitHub">
+                            <ui:FontIcon FontSize="14" FontFamily="{StaticResource SymbolFontFamily}" Glyph="{x:Static icons:Icons.Globe}" />
+                        </Button>
+                    </Grid>
+
                 </StackPanel>
             </Expander>
         </StackPanel>

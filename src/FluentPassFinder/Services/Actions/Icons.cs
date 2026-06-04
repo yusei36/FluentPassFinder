@@ -10,28 +10,32 @@ namespace FluentPassFinder.Services.Actions
     internal static class Icons
     {
         // Search window UI
-        public const string Close = "\uE6CB";     // dismiss
-        public const string Search = "\uEF9B";    // search
-        public const string Save = "\uEF5D";      // save
-        public const string Reset = "\uE0C7";     // arrow_counterclockwise_dashes
-        public const string Add = "\uE00D";       // add
+        public const string Close = "\uE6CB";      // dismiss
+        public const string Search = "\uEF9B";     // search
+        public const string Save = "\uEF5D";       // save
+        public const string Reset = "\uE0C7";      // arrow_counterclockwise_dashes
+        public const string Add = "\uE00D";        // add
 
         // Action type badges
-        public const string Copy = "\uE5D3";      // copy
-        public const string Keyboard = "\uEA85";  // keyboard
+        public const string Copy = "\uE5D3";       // copy
+        public const string Keyboard = "\uEA85";   // keyboard
 
         // Field icons
-        public const string Person = "\uED7D";    // person
-        public const string Lock = "\uEB7A";      // lock_closed
-        public const string Text = "\uF3E7";      // text_t
-        public const string Document = "\uE6E1";  // document
-        public const string Globe = "\uE975";     // globe
-        public const string Tag = "\uF23D";       // tag
-        public const string Clock = "\uE512";     // clock_sparkle (TOTP)
+        public const string Person = "\uED7D";     // person
+        public const string Lock = "\uEB7A";       // lock_closed
+        public const string Text = "\uF3E7";       // text_t
+        public const string Document = "\uE6E1";   // document
+        public const string Globe = "\uE975";      // globe
+        public const string Tag = "\uF23D";        // tag
+        public const string Clock = "\uE512";      // clock_sparkle (TOTP)
 
         // Static action icons
-        public const string Checkmark = "\uE45C"; // checkmark
-        public const string Menu = "\uEC3E";      // more_horizontal
-        public const string Settings = "\uEFD3";  // settings
+        public const string Checkmark = "\uE45C";  // checkmark
+        public const string Menu = "\uEC3E";       // more_horizontal
+        public const string Settings = "\uEFD3";   // settings
+
+        // Settings section icons
+        public const string Options = "\uECC6";    // options (Advanced)
+        public const string Info = "\uEA5C";       // info (About)
     }
 }

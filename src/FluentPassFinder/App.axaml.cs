@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: Copyright (C) 2023-2026 Uwe Koegel
 // SPDX-License-Identifier: GPL-3.0-or-later
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
@@ -97,6 +98,13 @@ namespace FluentPassFinder
             // Render the window once off-screen so the first hotkey press shows a
             // fully composited window instead of an unrendered "skeleton" frame.
             _searchWindow.WarmUp();
+        }
+
+        internal static async Task CopyToClipboardAsync(string text)
+        {
+            if (_instance?._searchWindow is { } window
+                && TopLevel.GetTopLevel(window)?.Clipboard is { } clipboard)
+                await clipboard.SetTextAsync(text);
         }
 
         private void WatchHostProcess(int hostPid)
