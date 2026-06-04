@@ -57,6 +57,23 @@ namespace FluentPassFinder.Views
         public void FocusSearchBox() => SearchBox.Focus();
 
         /// <summary>
+        /// Windows 11 draws a 1px border around every window (following the corner
+        /// radius), which shows up even though we render our own borderless rounded
+        /// surface. Setting the DWM border color to <c>DWMWA_COLOR_NONE</c> removes it.
+        /// The call is a no-op on Windows 10 (the attribute is unsupported there).
+        /// </summary>
+        protected override void OnOpened(EventArgs e)
+        {
+            base.OnOpened(e);
+
+            var hWnd = TryGetPlatformHandle()?.Handle ?? IntPtr.Zero;
+            if (hWnd == IntPtr.Zero) return;
+
+            int colorNone = unchecked((int)DWMWA_COLOR_NONE);
+            DwmSetWindowAttribute(hWnd, DWMWA_BORDER_COLOR, ref colorNone, sizeof(int));
+        }
+
+        /// <summary>
         /// Renders the window once off-screen at startup so the first real
         /// <see cref="ShowSearchWindow"/> doesn't flash an unrendered "skeleton"
         /// (window border with no composited background). The native surface,
@@ -362,6 +379,12 @@ namespace FluentPassFinder.Views
             if (e.InitialPressMouseButton == MouseButton.Left)
                 ViewModel.RunActionCommand.Execute(((sender as Control)?.DataContext as IAction)?.ActionType);
         }
+
+        [DllImport("dwmapi.dll")]
+        private static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int attrValue, int attrSize);
+
+        private const int DWMWA_BORDER_COLOR = 34;
+        private const uint DWMWA_COLOR_NONE = 0xFFFFFFFE;
 
         [DllImport("user32.dll")]
         private static extern bool GetCursorPos(out POINT lpPoint);

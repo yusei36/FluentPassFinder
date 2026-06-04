@@ -108,6 +108,21 @@
                          Watermark="Search"
                          FontSize="18"
                          Text="{Binding ViewModel.SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+					<TextBox.Resources>
+						<ResourceDictionary>
+							<!-- Dark-theme only, scoped to this search field: near-black rest/hover
+							     surface that sinks to pure black on focus. Other TextBoxes keep the
+							     default FluentAvalonia palette. -->
+							<ResourceDictionary.ThemeDictionaries>
+								<ResourceDictionary x:Key="Dark">
+									<SolidColorBrush x:Key="TextControlBackground" Color="#0A0A0A" />
+									<SolidColorBrush x:Key="TextControlBackgroundPointerOver" Color="#0A0A0A" />
+									<SolidColorBrush x:Key="TextControlBackgroundFocused" Color="#000000" />
+									<SolidColorBrush x:Key="TextControlBackgroundDisabled" Color="#000000" />
+								</ResourceDictionary>
+							</ResourceDictionary.ThemeDictionaries>
+						</ResourceDictionary>
+					</TextBox.Resources>
 					<TextBox.Styles>
 						<Style Selector="TextBox:focus-within /template/ Border#PART_BorderElement">
 							<Setter Property="BorderBrush" Value="Transparent" />
