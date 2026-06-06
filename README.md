@@ -1,13 +1,13 @@
+# FluentPassFinder
+
 ## Status
 ⚠️ **Early Stage / Personal Project**: This project was mostly developed for personal use and has never been properly released or maintained due to limited available time. A larger refactoring is currently in progress and may be released in the future.
-
-# FluentPassFinder
 
 [![GitHub](https://img.shields.io/badge/GitHub-yusei36%2FFluentPassFinder-black?logo=github&style=for-the-badge)](https://github.com/yusei36/FluentPassFinder) [![GitHub Release](https://img.shields.io/github/v/release/yusei36/FluentPassFinder?include_prereleases&style=for-the-badge)](https://github.com/yusei36/FluentPassFinder/releases/latest) [![GitHub Release Date](https://img.shields.io/github/release-date-pre/yusei36/FluentPassFinder?style=for-the-badge)](https://github.com/yusei36/FluentPassFinder/releases/latest)
 
 **[Download](https://github.com/yusei36/FluentPassFinder/releases/latest)** | **[Installation](#installation)** | **[How to use](#how-to-use)** | **[Configuration](#configuration)**
 
-A KeePass plugin with a Fluent Design search window to quickly find entries and autotype or copy passwords or other fields. A global shortcut opens the search window from anywhere.
+A KeePass plugin with a Fluent Design search window to quickly find entries and autotype or copy passwords and other fields. A global shortcut opens the search window from anywhere.
 
 ![Search window](docs/images/search_field.png)
 
