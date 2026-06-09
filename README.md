@@ -85,8 +85,7 @@ The **TOTP placeholder** setting controls how time-based one-time passwords are 
 
 ```powershell
 dotnet restore
-dotnet build --no-restore               # Debug build
-dotnet build --no-restore -c Release    # Release build
+dotnet build --no-restore
 ```
 
 After building the plugin, a post-build target copies the plugin and app into `build\KeePass\Plugins\FluentPassFinder\` for local testing.
@@ -96,9 +95,7 @@ After building the plugin, a post-build target copies the plugin and app into `b
 `scripts\Publish-Package.ps1` produces the distributable zip (merges plugin DLLs with ILRepack, publishes the app as a single-file executable):
 
 ```powershell
-.\scripts\Publish-Package.ps1                     # Release (default)
-.\scripts\Publish-Package.ps1 -Configuration Debug
-.\scripts\Publish-Package.ps1 -SkipBuild          # repackage without rebuilding
+.\scripts\Publish-Package.ps1
 ```
 
 ## Project structure
