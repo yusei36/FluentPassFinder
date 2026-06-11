@@ -12,8 +12,6 @@ namespace FluentPassFinder.Platform
     /// </summary>
     internal sealed class WindowsPlatformServices : IPlatformServices
     {
-        // ---- Global hotkeys -------------------------------------------------
-
         public void RegisterHotkey(string name, string gesture, Action callback)
             => HotkeyRegistrar.Register(name, gesture, callback);
 
@@ -21,15 +19,11 @@ namespace FluentPassFinder.Platform
 
         public void DisposeHotkeys() => HotkeyRegistrar.Dispose();
 
-        // ---- Cursor ---------------------------------------------------------
-
         public PixelPoint GetCursorPosition()
         {
             GetCursorPos(out var pt);
             return new PixelPoint(pt.X, pt.Y);
         }
-
-        // ---- Window border (DWM) -------------------------------------------
 
         /// <summary>
         /// Windows 11 draws a 1px border around every window (following the corner radius),
@@ -44,8 +38,6 @@ namespace FluentPassFinder.Platform
             int colorNone = unchecked((int)DWMWA_COLOR_NONE);
             DwmSetWindowAttribute(windowHandle, DWMWA_BORDER_COLOR, ref colorNone, sizeof(int));
         }
-
-        // ---- Foreground window ---------------------------------------------
 
         /// <summary>
         /// Forces the given window to the foreground and gives it keyboard focus.
@@ -120,8 +112,6 @@ namespace FluentPassFinder.Platform
 
             _onForegroundChangedToOtherProcess?.Invoke();
         }
-
-        // ---- P/Invoke -------------------------------------------------------
 
         [DllImport("dwmapi.dll")]
         private static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int attrValue, int attrSize);
