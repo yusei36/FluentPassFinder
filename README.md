@@ -23,7 +23,7 @@ A Linux/macOS port should be feasible but isn't implemented yet. If you'd like t
 
 ## How it works
 
-The search window runs as a **separate process** from KeePass, built with [Avalonia](https://avaloniaui.net/) and FluentAvaloniaUI. The KeePass plugin hosts a named-pipe server and spawns the app; all KeePass operations (search, copy, autotype, settings) are routed back over the pipe:
+The search window runs as a **separate process** from KeePass, built with [Avalonia](https://avaloniaui.net/). The KeePass plugin hosts a named-pipe server and spawns the app; all KeePass operations (search, copy, autotype, settings) are routed back over the pipe:
 
 ```
          Global hotkey
