@@ -7,7 +7,6 @@ namespace FluentPassFinder.Services
 {
     internal class SearchWindowInteractionService : ISearchWindowInteractionService
     {
-        // Time for the OS to hide the window and restore foreground before an autotype is sent.
         private const int WindowHideDelayMilliseconds = 150;
 
         private readonly Lazy<SearchWindow> lazySearchWindow;
@@ -25,7 +24,6 @@ namespace FluentPassFinder.Services
         {
             Close();
 
-            // Off the UI thread, so the deferred Hide() can run before the action fires.
             Task.Run(async () =>
             {
                 await Task.Delay(WindowHideDelayMilliseconds);

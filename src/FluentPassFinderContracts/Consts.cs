@@ -7,7 +7,6 @@ namespace FluentPassFinder.Contracts.Public
 {
     public static class Consts
     {
-        // Constats for the Actions
         public static string OpenContextMenu = nameof(OpenContextMenu);
         public static string SelectEntry = nameof(SelectEntry);
         public static string OpenUrl = nameof(OpenUrl);
@@ -16,7 +15,6 @@ namespace FluentPassFinder.Contracts.Public
         public static string CopyActionPattern = "Copy_{0}";
         public static string AutoTypeActionPattern = "AutoType_{0}";
 
-        /// <summary>The five standard KeePass field names.</summary>
         public static readonly string[] StandardFieldNames = { TitleField, UserNameField, PasswordField, NotesField, UrlField };
         
         public const string TitleField = "Title";
