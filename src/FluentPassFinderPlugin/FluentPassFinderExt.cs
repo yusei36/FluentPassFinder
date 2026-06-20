@@ -4,6 +4,7 @@ using FluentPassFinder.Ipc;
 using KeePass.Plugins;
 using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -16,7 +17,12 @@ namespace FluentPassFinder
         private Process appProcess;
         private PipeServer pipeServer;
 
+        // Loaded once; MemoryStream kept open for GDI+ lifetime requirement.
+        private static readonly Image _smallIcon = LoadSmallIcon();
+
         public override string UpdateUrl => "https://raw.githubusercontent.com/yusei36/FluentPassFinder/refs/heads/master/version.txt";
+
+        public override Image SmallIcon => _smallIcon;
 
         public override bool Initialize(IPluginHost host)
         {
@@ -47,6 +53,19 @@ namespace FluentPassFinder
             pipeServer?.Dispose();
 
             base.Terminate();
+        }
+
+        private static Image LoadSmallIcon()
+        {
+            var asm = Assembly.GetExecutingAssembly();
+            using (Stream raw = asm.GetManifestResourceStream(
+                "FluentPassFinder.Resources.plugin-icon.png"))
+            {
+                var ms = new MemoryStream();
+                raw.CopyTo(ms);
+                ms.Position = 0;
+                return Image.FromStream(ms);
+            }
         }
 
         private string FindAppExePath()

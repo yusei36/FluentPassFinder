@@ -10,6 +10,7 @@
     <SelfContained>true</SelfContained>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <OutDir>$(SolutionDir)build/$(Configuration)/$(TargetFramework)/bin</OutDir>
+    <ApplicationIcon>Assets\Icons\app.ico</ApplicationIcon>
   </PropertyGroup>
 
   <!-- Single-file publish only for Release to keep Debug builds debuggable -->
@@ -37,6 +38,8 @@
   <ItemGroup>
     <!-- Bundled Fluent UI System Icons font (MIT) so icon glyphs don't depend on an OS font -->
     <AvaloniaResource Include="Assets\Fonts\FluentSystemIcons-Resizable.ttf" />
+    <!-- App icon used for the window (taskbar/alt-tab) and as the exe icon (ApplicationIcon) -->
+    <AvaloniaResource Include="Assets\Icons\app.ico" />
   </ItemGroup>
 
 </Project>

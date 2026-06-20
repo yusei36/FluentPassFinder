@@ -23,6 +23,10 @@
   <ItemGroup>
     <ProjectReference Include="..\FluentPassFinderContracts\FluentPassFinderContracts.csproj" />
   </ItemGroup>
+  <!-- Plugin icon shown in KeePass (Tools > Plugins). Embedded so it survives the ILRepack merge. -->
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\plugin-icon.png" />
+  </ItemGroup>
   <!-- Local dev: build\KeePass\KeePass.exe (official build). CI fallback: NuGet (unsigned). -->
   <ItemGroup Condition="Exists('..\..\build\KeePass\KeePass.exe')">
     <Reference Include="KeePass">

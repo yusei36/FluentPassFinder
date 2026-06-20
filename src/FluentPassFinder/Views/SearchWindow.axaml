@@ -17,6 +17,7 @@
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance local:SearchWindow}"
         Title="{Binding ViewModel.ApplicationTitle, Mode=OneWay}"
+        Icon="/Assets/Icons/app.ico"
         ShowInTaskbar="False"
         Topmost="True"
         CanResize="False"

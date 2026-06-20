@@ -1,0 +1,24 @@
+<!-- SPDX-FileCopyrightText: Copyright (C) 2026 Uwe Koegel -->
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <rect width="256" height="256" rx="56" fill="#200e5c" stroke="#2e1280" stroke-width="6"/>
+  <defs>
+    <clipPath id="glass"><circle cx="110" cy="106" r="65"/></clipPath>
+  </defs>
+  <!-- key seen through the magnifier glass -->
+  <g clip-path="url(#glass)">
+    <g fill="none" stroke="#c0b0f8" stroke-width="9" stroke-linecap="round">
+      <circle cx="137" cy="79" r="14"/>
+      <line x1="127" y1="89" x2="83" y2="133"/>
+      <line x1="103" y1="113" x2="113" y2="123"/>
+      <line x1="94" y1="122" x2="104" y2="132"/>
+    </g>
+  </g>
+  <!-- thick magnifier handle: flat (butt) end tucks under the ring, rounded grip via circle -->
+  <line x1="160" y1="156" x2="222" y2="218" stroke="#7c3aed" stroke-width="22" stroke-linecap="butt"/>
+  <circle cx="222" cy="218" r="11" fill="#7c3aed"/>
+  <!-- lens frame (drawn over the handle's inner end) -->
+  <circle cx="110" cy="106" r="72" fill="none" stroke="#7c3aed" stroke-width="14"/>
+  <!-- glass sheen -->
+  <path d="M57 87 A56 56 0 0 1 91 53" fill="none" stroke="#c0b0f8" stroke-width="5" stroke-linecap="round" opacity="0.45"/>
+</svg>
