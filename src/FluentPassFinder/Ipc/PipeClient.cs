@@ -123,12 +123,13 @@ namespace FluentPassFinder.Ipc
             return response?.Groups ?? Array.Empty<GroupDto>();
         }
 
-        public string CreateEntry(string templateUuid, IDictionary<string, string> fields)
+        public string CreateEntry(string templateUuid, IDictionary<string, string> fields, string targetGroupUuid)
         {
             var response = Send<CreateEntryRequest, CreateEntryResponse>(new CreateEntryRequest
             {
                 TemplateUuid = templateUuid,
                 Fields = fields != null ? new Dictionary<string, string>(fields) : new Dictionary<string, string>(),
+                TargetGroupUuid = targetGroupUuid,
             });
             return response != null && response.Success ? response.CreatedEntryUuid : null;
         }

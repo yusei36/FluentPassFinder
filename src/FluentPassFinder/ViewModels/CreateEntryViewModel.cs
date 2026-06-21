@@ -10,8 +10,8 @@ using FluentPassFinder.Contracts.Public;
 namespace FluentPassFinder.ViewModels
 {
     /// <summary>
-    /// Backs the "Create entry" overlay. Produces a new entry in the active KeePass
-    /// database (root group) via <see cref="IPluginProxy.CreateEntry"/>. Supports a blank
+    /// Backs the "Create entry" overlay. Produces a new entry in the chosen target group of the
+    /// active KeePass database via <see cref="IPluginProxy.CreateEntry"/>. Supports a blank
     /// entry or one seeded from a template (KeePass core or KPEntryTemplates).
     /// </summary>
     internal partial class CreateEntryViewModel : ObservableObject
@@ -40,6 +40,8 @@ namespace FluentPassFinder.ViewModels
         [ObservableProperty] private ObservableCollection<TemplateChoiceViewModel> templates = new();
         [ObservableProperty] private TemplateChoiceViewModel selectedTemplate;
         [ObservableProperty] private ObservableCollection<DynamicFieldViewModel> fields = new();
+        [ObservableProperty] private ObservableCollection<GroupDto> groups = new();
+        [ObservableProperty] private GroupDto selectedGroup;
         [ObservableProperty] private string errorMessage;
 
         public CreateEntryViewModel(IPluginProxy pluginProxy, Lazy<SearchWindowViewModel> lazySearchWindowViewModel)
@@ -57,6 +59,7 @@ namespace FluentPassFinder.ViewModels
             Title = initialTitle ?? string.Empty;
 
             LoadTemplates();
+            LoadGroups();
 
             // Preselect the requested template; otherwise default to the first available
             // template (Uuid != null), falling back to the blank entry when none exist.
@@ -73,6 +76,14 @@ namespace FluentPassFinder.ViewModels
             Templates.Add(TemplateChoiceViewModel.Blank);
             foreach (var template in pluginProxy.GetTemplates())
                 Templates.Add(new TemplateChoiceViewModel(template));
+        }
+
+        // Loads the database's groups, defaulting the selection to the configured target group.
+        private void LoadGroups()
+        {
+            var configured = pluginProxy.Settings?.EntryCreation?.NewEntryGroupUuid ?? Consts.DefaultNewEntryGroupUuid;
+            Groups = GroupChoices.Build(pluginProxy.GetGroups(), configured);
+            SelectedGroup = GroupChoices.Select(Groups, configured);
         }
 
         partial void OnSelectedTemplateChanged(TemplateChoiceViewModel value) => BuildForm(value?.Template);
@@ -129,7 +140,7 @@ namespace FluentPassFinder.ViewModels
                 values[field.FieldName] = value;
             }
 
-            var createdUuid = pluginProxy.CreateEntry(SelectedTemplate?.Uuid, values);
+            var createdUuid = pluginProxy.CreateEntry(SelectedTemplate?.Uuid, values, SelectedGroup?.Uuid);
             if (createdUuid == null)
             {
                 ErrorMessage = "Failed to create the entry.";

@@ -46,6 +46,22 @@
                 </ComboBox>
             </Grid>
 
+            <!-- Target group selector -->
+            <Grid ColumnDefinitions="130,*" Margin="0 2">
+                <TextBlock Grid.Column="0" Text="Save in" VerticalAlignment="Center" FontSize="13" />
+                <ComboBox Grid.Column="1"
+                          ItemsSource="{Binding ViewModel.Groups}"
+                          SelectedItem="{Binding ViewModel.SelectedGroup}"
+                          HorizontalAlignment="Stretch"
+                          FontSize="13">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Path}" TextTrimming="CharacterEllipsis" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </Grid>
+
             <Separator Margin="0 6" />
 
             <!-- Title (always required, always first) -->

@@ -50,19 +50,32 @@ namespace FluentPassFinder.Services
                 var db = context.ActiveDatabase;
                 if (db == null || !db.IsOpen) return list;
 
-                CollectGroups(db.RootGroup, db.RootGroup.Name, list, db);
+                var root = db.RootGroup;
+                // Root group keeps its own name as label; descendants are pathed relative to it
+                // (the root group name is omitted from their displayed paths).
+                list.Add(new GroupDto
+                {
+                    Uuid = root.Uuid.ToHexString(),
+                    Name = root.Name,
+                    Path = root.Name,
+                });
+
+                foreach (var sub in root.GetGroups(false))
+                    CollectGroups(sub, string.Empty, list, db);
+
                 return list;
             });
 
             return new GetGroupsResponse { Success = true, Groups = groups.ToArray() };
         }
 
-        private static void CollectGroups(PwGroup group, string path, List<GroupDto> list, PwDatabase db)
+        private static void CollectGroups(PwGroup group, string parentPath, List<GroupDto> list, PwDatabase db)
         {
             // Skip the recycle bin (and its descendants) as a target.
             if (db.RecycleBinEnabled && !db.RecycleBinUuid.Equals(PwUuid.Zero) && group.Uuid.Equals(db.RecycleBinUuid))
                 return;
 
+            var path = string.IsNullOrEmpty(parentPath) ? group.Name : parentPath + " / " + group.Name;
             list.Add(new GroupDto
             {
                 Uuid = group.Uuid.ToHexString(),
@@ -71,7 +84,7 @@ namespace FluentPassFinder.Services
             });
 
             foreach (var sub in group.GetGroups(false))
-                CollectGroups(sub, path + " / " + sub.Name, list, db);
+                CollectGroups(sub, path, list, db);
         }
 
         public GetTemplatesResponse GetTemplates()
@@ -277,7 +290,7 @@ namespace FluentPassFinder.Services
                 var db = context.ActiveDatabase;
                 if (db == null || !db.IsOpen) return null;
 
-                var parentGroup = ResolveTargetGroup(db);
+                var parentGroup = ResolveTargetGroup(db, req.TargetGroupUuid);
                 if (parentGroup == null) return null;
 
                 var entry = new PwEntry(true, true);
@@ -346,9 +359,12 @@ namespace FluentPassFinder.Services
         // missing (the default group on first use, or a deleted custom group), it is created as
         // "New entries" with the configured UUID under the root. Falls back to the root group
         // when the setting is empty or unparseable.
-        private PwGroup ResolveTargetGroup(PwDatabase db)
+        private PwGroup ResolveTargetGroup(PwDatabase db, string requestedUuidHex)
         {
-            var uuidHex = settings.Current.EntryCreation?.NewEntryGroupUuid;
+            // Per-create override (from the create form) wins; otherwise the configured default.
+            var uuidHex = string.IsNullOrEmpty(requestedUuidHex)
+                ? settings.Current.EntryCreation?.NewEntryGroupUuid
+                : requestedUuidHex;
             if (string.IsNullOrEmpty(uuidHex))
                 return db.RootGroup;
 

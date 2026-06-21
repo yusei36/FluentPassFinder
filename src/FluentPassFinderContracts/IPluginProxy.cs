@@ -34,7 +34,7 @@ namespace FluentPassFinder.Contracts.Public
         // Entry creation
         TemplateDto[] GetTemplates();
         GroupDto[] GetGroups();
-        string CreateEntry(string templateUuid, IDictionary<string, string> fields);
+        string CreateEntry(string templateUuid, IDictionary<string, string> fields, string targetGroupUuid);
         string GeneratePassword();
     }
 }

@@ -97,6 +97,8 @@ namespace FluentPassFinder.Contracts.Public.Ipc
         public string TemplateUuid { get; set; }
 
         public Dictionary<string, string> Fields { get; set; } = new Dictionary<string, string>();
+
+        public string TargetGroupUuid { get; set; }
     }
 
     public class GeneratePasswordRequest : PipeRequest

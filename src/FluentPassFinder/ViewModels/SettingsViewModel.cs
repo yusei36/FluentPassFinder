@@ -244,24 +244,8 @@ namespace FluentPassFinder.ViewModels
         public void ReloadGroups()
         {
             var targetUuid = SelectedGroup?.Uuid ?? configuredGroupUuid;
-            var groups = (pluginProxy.GetGroups() ?? Array.Empty<GroupDto>()).ToList();
-
-            if (!string.IsNullOrEmpty(targetUuid) &&
-                groups.All(g => !string.Equals(g.Uuid, targetUuid, StringComparison.OrdinalIgnoreCase)))
-            {
-                var isDefault = string.Equals(targetUuid, Consts.DefaultNewEntryGroupUuid, StringComparison.OrdinalIgnoreCase);
-                groups.Insert(0, new GroupDto
-                {
-                    Uuid = targetUuid,
-                    Name = Consts.DefaultNewEntryGroupName,
-                    Path = Consts.DefaultNewEntryGroupName +
-                           (isDefault ? " (created automatically)" : " (will be created)"),
-                });
-            }
-
-            AvailableGroups = new ObservableCollection<GroupDto>(groups);
-            SelectedGroup = AvailableGroups.FirstOrDefault(g => string.Equals(g.Uuid, targetUuid, StringComparison.OrdinalIgnoreCase))
-                            ?? AvailableGroups.FirstOrDefault();
+            AvailableGroups = GroupChoices.Build(pluginProxy.GetGroups(), targetUuid);
+            SelectedGroup = GroupChoices.Select(AvailableGroups, targetUuid);
         }
 
         private void LoadFromSettings(Settings s)
