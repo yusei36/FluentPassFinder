@@ -16,22 +16,27 @@ namespace FluentPassFinder.ViewModels
     /// </summary>
     internal static class GroupChoices
     {
-        public static ObservableCollection<GroupDto> Build(IEnumerable<GroupDto> groups, string targetUuid)
+        public static ObservableCollection<GroupDto> Build(IEnumerable<GroupDto> groups, string defaultUuid)
         {
             var list = (groups ?? Array.Empty<GroupDto>()).ToList();
 
-            if (!string.IsNullOrEmpty(targetUuid) &&
-                list.All(g => !string.Equals(g.Uuid, targetUuid, StringComparison.OrdinalIgnoreCase)))
+            // The configured default group is created lazily on first use, so it may not exist in
+            // the database yet; insert a placeholder so it is still selectable.
+            if (!string.IsNullOrEmpty(defaultUuid) &&
+                list.All(g => !string.Equals(g.Uuid, defaultUuid, StringComparison.OrdinalIgnoreCase)))
             {
-                var isDefault = string.Equals(targetUuid, Consts.DefaultNewEntryGroupUuid, StringComparison.OrdinalIgnoreCase);
                 list.Insert(0, new GroupDto
                 {
-                    Uuid = targetUuid,
+                    Uuid = defaultUuid,
                     Name = Consts.DefaultNewEntryGroupName,
-                    Path = Consts.DefaultNewEntryGroupName +
-                           (isDefault ? " (created automatically)" : " (will be created)"),
+                    Path = Consts.DefaultNewEntryGroupName,
                 });
             }
+
+            // Mark the default target group in its displayed path.
+            var defaultGroup = list.FirstOrDefault(g => string.Equals(g.Uuid, defaultUuid, StringComparison.OrdinalIgnoreCase));
+            if (defaultGroup != null)
+                defaultGroup.Path += " (Default)";
 
             return new ObservableCollection<GroupDto>(list);
         }

@@ -51,13 +51,13 @@ namespace FluentPassFinder.Services
                 if (db == null || !db.IsOpen) return list;
 
                 var root = db.RootGroup;
-                // Root group keeps its own name as label; descendants are pathed relative to it
-                // (the root group name is omitted from their displayed paths).
+                // Root group keeps its own name as label (tagged so it stands out); descendants
+                // are pathed relative to it (the root group name is omitted from their paths).
                 list.Add(new GroupDto
                 {
                     Uuid = root.Uuid.ToHexString(),
                     Name = root.Name,
-                    Path = root.Name,
+                    Path = root.Name + " (Root)",
                 });
 
                 foreach (var sub in root.GetGroups(false))

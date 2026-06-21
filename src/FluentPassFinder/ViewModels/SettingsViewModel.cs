@@ -243,9 +243,9 @@ namespace FluentPassFinder.ViewModels
         /// </summary>
         public void ReloadGroups()
         {
-            var targetUuid = SelectedGroup?.Uuid ?? configuredGroupUuid;
-            AvailableGroups = GroupChoices.Build(pluginProxy.GetGroups(), targetUuid);
-            SelectedGroup = GroupChoices.Select(AvailableGroups, targetUuid);
+            var selectUuid = SelectedGroup?.Uuid ?? configuredGroupUuid;
+            AvailableGroups = GroupChoices.Build(pluginProxy.GetGroups(), configuredGroupUuid);
+            SelectedGroup = GroupChoices.Select(AvailableGroups, selectUuid);
         }
 
         private void LoadFromSettings(Settings s)
