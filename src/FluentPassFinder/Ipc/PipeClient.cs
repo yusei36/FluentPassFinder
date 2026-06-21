@@ -111,6 +111,28 @@ namespace FluentPassFinder.Ipc
             cachedSettings = settings;
         }
 
+        public TemplateDto[] GetTemplates()
+        {
+            var response = Send<GetTemplatesRequest, GetTemplatesResponse>(new GetTemplatesRequest());
+            return response?.Templates ?? Array.Empty<TemplateDto>();
+        }
+
+        public string CreateEntry(string templateUuid, IDictionary<string, string> fields)
+        {
+            var response = Send<CreateEntryRequest, CreateEntryResponse>(new CreateEntryRequest
+            {
+                TemplateUuid = templateUuid,
+                Fields = fields != null ? new Dictionary<string, string>(fields) : new Dictionary<string, string>(),
+            });
+            return response != null && response.Success ? response.CreatedEntryUuid : null;
+        }
+
+        public string GeneratePassword()
+        {
+            var response = Send<GeneratePasswordRequest, GeneratePasswordResponse>(new GeneratePasswordRequest());
+            return response?.Password ?? string.Empty;
+        }
+
         private Settings FetchSettings()
         {
             return Send<GetSettingsRequest, GetSettingsResponse>(new GetSettingsRequest())?.Settings;

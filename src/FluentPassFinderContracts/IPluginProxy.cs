@@ -30,5 +30,10 @@ namespace FluentPassFinder.Contracts.Public
 
         // Settings persistence
         void SaveSettings(Settings settings);
+
+        // Entry creation
+        TemplateDto[] GetTemplates();
+        string CreateEntry(string templateUuid, IDictionary<string, string> fields);
+        string GeneratePassword();
     }
 }

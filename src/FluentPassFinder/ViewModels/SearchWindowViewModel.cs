@@ -14,6 +14,7 @@ namespace FluentPassFinder.ViewModels
         private readonly IEntryActionService entryActionService;
         private readonly ISearchWindowInteractionService searchWindowInteractionService;
         private readonly SettingsViewModel settingsViewModel;
+        private readonly CreateEntryViewModel createEntryViewModel;
         private CancellationTokenSource _searchCts;
 
         [ObservableProperty]
@@ -37,7 +38,16 @@ namespace FluentPassFinder.ViewModels
         [ObservableProperty]
         private bool isSettingsOpen = false;
 
-        public bool IsSearchBarVisible => !IsContextMenuOpen && !IsSettingsOpen;
+        [ObservableProperty]
+        private bool isCreateEntryOpen = false;
+
+        public bool IsSearchBarVisible => !IsContextMenuOpen && !IsSettingsOpen && !IsCreateEntryOpen;
+        public bool IsResultsVisible => !IsSettingsOpen && !IsCreateEntryOpen;
+
+        // While an overlay (create/settings) is open the search-list key bindings (Enter family,
+        // Up/Down) must go inert so those keys reach the focused control instead. A KeyBinding
+        // whose command can't execute does not mark the key handled, so it falls through.
+        public bool CanNavigateResults => !IsSettingsOpen && !IsCreateEntryOpen;
 
         [ObservableProperty]
         private ObservableCollection<IAction> contextActions;
@@ -48,16 +58,17 @@ namespace FluentPassFinder.ViewModels
         public bool IsAnyDatabaseOpen => pluginProxy.IsAnyDatabaseOpen;
         internal Settings Settings => pluginProxy.Settings;
 
-        public SearchWindowViewModel(IPluginProxy pluginProxy, IEntrySearchService entrySearchService, IEntryActionService entryActionService, ISearchWindowInteractionService searchWindowInteractionService, SettingsViewModel settingsViewModel)
+        public SearchWindowViewModel(IPluginProxy pluginProxy, IEntrySearchService entrySearchService, IEntryActionService entryActionService, ISearchWindowInteractionService searchWindowInteractionService, SettingsViewModel settingsViewModel, CreateEntryViewModel createEntryViewModel)
         {
             this.pluginProxy = pluginProxy;
             this.entrySearchService = entrySearchService;
             this.entryActionService = entryActionService;
             this.searchWindowInteractionService = searchWindowInteractionService;
             this.settingsViewModel = settingsViewModel;
+            this.createEntryViewModel = createEntryViewModel;
         }
 
-        [RelayCommand]
+        [RelayCommand(CanExecute = nameof(CanNavigateResults))]
         private void EnterAction(EntryViewModel entryViewModel)
         {
             var entry = entryViewModel ?? SelectedEntry;
@@ -75,7 +86,7 @@ namespace FluentPassFinder.ViewModels
             }
         }
 
-        [RelayCommand]
+        [RelayCommand(CanExecute = nameof(CanNavigateResults))]
         private void ShiftEnterAction(EntryViewModel entryViewModel)
         {
             var entry = entryViewModel ?? SelectedEntry;
@@ -83,7 +94,7 @@ namespace FluentPassFinder.ViewModels
             entryActionService.RunAction(entry.SearchResult, pluginProxy.Settings.Actions.Shift);
         }
 
-        [RelayCommand]
+        [RelayCommand(CanExecute = nameof(CanNavigateResults))]
         private void ControlEnterAction(EntryViewModel entryViewModel)
         {
             var entry = entryViewModel ?? SelectedEntry;
@@ -91,7 +102,7 @@ namespace FluentPassFinder.ViewModels
             entryActionService.RunAction(entry.SearchResult, pluginProxy.Settings.Actions.Control);
         }
 
-        [RelayCommand]
+        [RelayCommand(CanExecute = nameof(CanNavigateResults))]
         private void AltEnterAction(EntryViewModel entryViewModel)
         {
             var entry = entryViewModel ?? SelectedEntry;
@@ -106,7 +117,7 @@ namespace FluentPassFinder.ViewModels
             entryActionService.RunAction(SelectedEntry.SearchResult, actionType);
         }
 
-        [RelayCommand]
+        [RelayCommand(CanExecute = nameof(CanNavigateResults))]
         private void NavigateListDown()
         {
             if (IsContextMenuOpen)
@@ -115,7 +126,7 @@ namespace FluentPassFinder.ViewModels
                 NavigateCollectionDown(Entries, SelectedEntry, x => SelectedEntry = x);
         }
 
-        [RelayCommand]
+        [RelayCommand(CanExecute = nameof(CanNavigateResults))]
         private void NavigateListUp()
         {
             if (IsContextMenuOpen)
@@ -137,12 +148,46 @@ namespace FluentPassFinder.ViewModels
         }
 
         [RelayCommand]
+        public void OpenCreateEntry(string preselectTemplateUuid = null)
+        {
+            if (!IsAnyDatabaseOpen) return;
+
+            IsContextMenuOpen = false;
+            IsSettingsOpen = false;
+            createEntryViewModel.Open(preselectTemplateUuid, preselectTemplateUuid == null ? SearchText : null);
+            IsCreateEntryOpen = true;
+        }
+
+        public void CloseCreateEntry()
+        {
+            IsCreateEntryOpen = false;
+            searchWindowInteractionService.FocusSearchBox();
+        }
+
+        public void CloseWindowAfterCreate()
+        {
+            IsCreateEntryOpen = false;
+            searchWindowInteractionService.Close();
+        }
+
+        [RelayCommand]
+        private void SaveCreateEntry()
+        {
+            if (IsCreateEntryOpen)
+                createEntryViewModel.CreateCommand.Execute(null);
+        }
+
+        [RelayCommand]
         private void NavigateBack()
         {
             if (IsSettingsOpen)
             {
                 IsSettingsOpen = false;
                 searchWindowInteractionService.FocusSearchBox();
+            }
+            else if (IsCreateEntryOpen)
+            {
+                CloseCreateEntry();
             }
             else if (IsContextMenuOpen && !Settings.Behavior.EscAlwaysClosesWindow)
             {
@@ -185,7 +230,30 @@ namespace FluentPassFinder.ViewModels
                 SelectedContextAction = null;
             }
         }
-        partial void OnIsSettingsOpenChanged(bool value) => OnPropertyChanged(nameof(IsSearchBarVisible));
+        partial void OnIsSettingsOpenChanged(bool value)
+        {
+            OnPropertyChanged(nameof(IsSearchBarVisible));
+            OnPropertyChanged(nameof(IsResultsVisible));
+            NotifyNavigateResultsCanExecuteChanged();
+        }
+
+        partial void OnIsCreateEntryOpenChanged(bool value)
+        {
+            OnPropertyChanged(nameof(IsSearchBarVisible));
+            OnPropertyChanged(nameof(IsResultsVisible));
+            NotifyNavigateResultsCanExecuteChanged();
+        }
+
+        private void NotifyNavigateResultsCanExecuteChanged()
+        {
+            OnPropertyChanged(nameof(CanNavigateResults));
+            EnterActionCommand.NotifyCanExecuteChanged();
+            ShiftEnterActionCommand.NotifyCanExecuteChanged();
+            ControlEnterActionCommand.NotifyCanExecuteChanged();
+            AltEnterActionCommand.NotifyCanExecuteChanged();
+            NavigateListDownCommand.NotifyCanExecuteChanged();
+            NavigateListUpCommand.NotifyCanExecuteChanged();
+        }
 
         partial void OnSearchTextChanged(string value)
         {

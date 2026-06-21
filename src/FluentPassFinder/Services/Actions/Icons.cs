@@ -15,6 +15,8 @@ namespace FluentPassFinder.Services.Actions
         public const string Save = "\uEF5D";       // save
         public const string Reset = "\uE0C7";      // arrow_counterclockwise_dashes
         public const string Add = "\uE00D";        // add
+        public const string Eye = "\uE87A";        // eye (reveal password)
+        public const string EyeOff = "\uE880";     // eye_off (hide password)
 
         // Action type badges
         public const string Copy = "\uE5D3";       // copy

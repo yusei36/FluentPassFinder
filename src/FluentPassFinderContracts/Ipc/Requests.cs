@@ -1,5 +1,7 @@
 // SPDX-FileCopyrightText: Copyright (C) 2023-2026 Uwe Koegel
 // SPDX-License-Identifier: GPL-3.0-or-later
+using System.Collections.Generic;
+
 namespace FluentPassFinder.Contracts.Public.Ipc
 {
     public class SearchEntriesRequest : PipeRequest
@@ -76,5 +78,24 @@ namespace FluentPassFinder.Contracts.Public.Ipc
     {
         public override string Type => PipeRequestTypes.SaveSettings;
         public Settings Settings { get; set; }
+    }
+
+    public class GetTemplatesRequest : PipeRequest
+    {
+        public override string Type => PipeRequestTypes.GetTemplates;
+    }
+
+    public class CreateEntryRequest : PipeRequest
+    {
+        public override string Type => PipeRequestTypes.CreateEntry;
+
+        public string TemplateUuid { get; set; }
+
+        public Dictionary<string, string> Fields { get; set; } = new Dictionary<string, string>();
+    }
+
+    public class GeneratePasswordRequest : PipeRequest
+    {
+        public override string Type => PipeRequestTypes.GeneratePassword;
     }
 }

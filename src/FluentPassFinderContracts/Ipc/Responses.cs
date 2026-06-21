@@ -26,6 +26,24 @@ namespace FluentPassFinder.Contracts.Public.Ipc
         public bool IsOpen { get; set; }
     }
 
+    public class GetTemplatesResponse : PipeResponse
+    {
+        public override string Type => PipeRequestTypes.GetTemplates;
+        public TemplateDto[] Templates { get; set; }
+    }
+
+    public class CreateEntryResponse : PipeResponse
+    {
+        public override string Type => PipeRequestTypes.CreateEntry;
+        public string CreatedEntryUuid { get; set; }
+    }
+
+    public class GeneratePasswordResponse : PipeResponse
+    {
+        public override string Type => PipeRequestTypes.GeneratePassword;
+        public string Password { get; set; }
+    }
+
     // Void action responses (CopyField, AutoTypeField, CopyToClipboard, PerformAutoType,
     // OpenEntryUrl, SelectEntry) use the base PipeResponse directly; Success/Error is enough.
 }

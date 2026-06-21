@@ -15,6 +15,7 @@ namespace FluentPassFinder.Views
     {
         public SearchWindowViewModel ViewModel { get; }
         public SettingsView SettingsView { get; }
+        public CreateEntryView CreateEntryView { get; }
         public static double HeaderSize = 40.0;
 
         private bool _isClosing;
@@ -32,10 +33,11 @@ namespace FluentPassFinder.Views
 
         public SearchWindow() { InitializeComponent(); }
 
-        public SearchWindow(SearchWindowViewModel viewModel, SettingsView settingsView, IPlatformServices platform)
+        public SearchWindow(SearchWindowViewModel viewModel, SettingsView settingsView, CreateEntryView createEntryView, IPlatformServices platform)
         {
             ViewModel = viewModel;
             SettingsView = settingsView;
+            CreateEntryView = createEntryView;
             _platform = platform;
             DataContext = this;
 
@@ -49,6 +51,13 @@ namespace FluentPassFinder.Views
             }, null, Timeout.Infinite, Timeout.Infinite);
 
             InitializeComponent();
+
+            // Focus the Title field when the create-entry overlay opens.
+            ViewModel.PropertyChanged += (_, e) =>
+            {
+                if (e.PropertyName == nameof(SearchWindowViewModel.IsCreateEntryOpen) && ViewModel.IsCreateEntryOpen)
+                    CreateEntryView.FocusFirstField();
+            };
 
             Deactivated += (_, _) => { if (!_isWarmingUp) HideSearchWindow(); };
             SizeChanged += OnWindowSizeChanged;
@@ -105,6 +114,7 @@ namespace FluentPassFinder.Views
             _pendingHide = true;
 
             ViewModel.IsSettingsOpen = false;
+            ViewModel.IsCreateEntryOpen = false;
 
             if (ViewModel.Settings.Behavior.PreserveLastSearch && !string.IsNullOrEmpty(ViewModel.SearchText))
             {
@@ -141,6 +151,7 @@ namespace FluentPassFinder.Views
             _isOpening = true;
 
             ViewModel.IsSettingsOpen = false;
+            ViewModel.IsCreateEntryOpen = false;
 
             if (ViewModel.Settings.Behavior.PreserveLastSearch && !string.IsNullOrEmpty(ViewModel.SearchText))
             {
@@ -260,6 +271,7 @@ namespace FluentPassFinder.Views
                 MainGrid.RowDefinitions[1].Height = new GridLength(HeaderSize);
                 Grid.SetRow(HeaderPanel, 1);
                 Grid.SetRow(SettingsContent, 0);
+                Grid.SetRow(CreateEntryContent, 0);
                 Grid.SetRow(ResultsPanel, 0);
             }
             else
@@ -268,6 +280,7 @@ namespace FluentPassFinder.Views
                 MainGrid.RowDefinitions[1].Height = GridLength.Star;
                 Grid.SetRow(HeaderPanel, 0);
                 Grid.SetRow(SettingsContent, 1);
+                Grid.SetRow(CreateEntryContent, 1);
                 Grid.SetRow(ResultsPanel, 1);
             }
         }

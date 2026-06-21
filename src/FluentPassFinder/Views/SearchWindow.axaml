@@ -94,6 +94,8 @@
         <KeyBinding Gesture="Alt+Return"   Command="{Binding ViewModel.AltEnterActionCommand}" />
         <KeyBinding Gesture="Down"         Command="{Binding ViewModel.NavigateListDownCommand}" />
         <KeyBinding Gesture="Up"           Command="{Binding ViewModel.NavigateListUpCommand}" />
+        <KeyBinding Gesture="Ctrl+N"       Command="{Binding ViewModel.OpenCreateEntryCommand}" />
+        <KeyBinding Gesture="Ctrl+S"       Command="{Binding ViewModel.SaveCreateEntryCommand}" />
     </Window.KeyBindings>
 
     <Border CornerRadius="8"
@@ -154,6 +156,19 @@
                                 <ui:FontIcon FontSize="14"
                                              FontFamily="{StaticResource SymbolFontFamily}"
                                              Glyph="{x:Static icons:Icons.Close}" />
+                            </Button>
+                            <Button Command="{Binding ViewModel.OpenCreateEntryCommand}"
+                                    IsVisible="{Binding ViewModel.SearchText, Converter={StaticResource StringEmptyConverter}}"
+                                    Width="28"
+                                    Height="28"
+                                    Padding="0"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    VerticalAlignment="Center"
+                                    ToolTip.Tip="New entry (Ctrl+N)">
+                                <ui:FontIcon FontSize="16"
+                                             FontFamily="{StaticResource SymbolFontFamily}"
+                                             Glyph="{x:Static icons:Icons.Add}" />
                             </Button>
                             <Button Command="{Binding ViewModel.ToggleSettingsCommand}"
                                     IsVisible="{Binding ViewModel.SearchText, Converter={StaticResource StringEmptyConverter}}"
@@ -240,6 +255,45 @@
                     </Button>
                 </Grid>
 
+                <!-- Create entry header: title + Create / Cancel buttons -->
+                <Grid IsVisible="{Binding ViewModel.IsCreateEntryOpen}"
+                      ColumnDefinitions="*,Auto,Auto"
+                      Margin="12 0 4 0">
+                    <TextBlock Grid.Column="0"
+                               Text="New entry"
+                               FontSize="18"
+                               FontWeight="SemiBold"
+                               VerticalAlignment="Center" />
+                    <Button Grid.Column="1"
+                            Command="{Binding CreateEntryView.ViewModel.CreateCommand}"
+                            IsEnabled="{Binding CreateEntryView.ViewModel.IsEditable}"
+                            Width="28"
+                            Height="28"
+                            Padding="0"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            VerticalAlignment="Center"
+                            ToolTip.Tip="Create entry">
+                        <ui:FontIcon FontSize="16"
+                                     FontFamily="{StaticResource SymbolFontFamily}"
+                                     Glyph="{x:Static icons:Icons.Save}" />
+                    </Button>
+                    <Button Grid.Column="2"
+                            Command="{Binding CreateEntryView.ViewModel.CancelCommand}"
+                            IsEnabled="{Binding CreateEntryView.ViewModel.IsEditable}"
+                            Width="28"
+                            Height="28"
+                            Padding="0"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            VerticalAlignment="Center"
+                            ToolTip.Tip="Discard and go back">
+                        <ui:FontIcon FontSize="16"
+                                     FontFamily="{StaticResource SymbolFontFamily}"
+                                     Glyph="{x:Static icons:Icons.Close}" />
+                    </Button>
+                </Grid>
+
             </Panel>
 
             <ContentControl x:Name="SettingsContent"
@@ -247,9 +301,14 @@
                             Content="{Binding SettingsView}"
                             IsVisible="{Binding ViewModel.IsSettingsOpen}" />
 
+            <ContentControl x:Name="CreateEntryContent"
+                            Grid.Row="1"
+                            Content="{Binding CreateEntryView}"
+                            IsVisible="{Binding ViewModel.IsCreateEntryOpen}" />
+
             <Panel x:Name="ResultsPanel"
                    Grid.Row="1"
-                   IsVisible="{Binding ViewModel.IsSettingsOpen, Converter={StaticResource InvertBoolConverter}}">
+                   IsVisible="{Binding ViewModel.IsResultsVisible}">
 
             <ListBox x:Name="EntriesListBox"
                      ItemsSource="{Binding ViewModel.Entries}"

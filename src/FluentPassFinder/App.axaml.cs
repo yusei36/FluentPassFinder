@@ -79,6 +79,7 @@ namespace FluentPassFinder
             services.AddSingleton<Lazy<SearchWindowViewModel>>(_ => new Lazy<SearchWindowViewModel>(() =>
                 _searchWindow?.ViewModel ?? throw new InvalidOperationException("Current search window view model is null.")));
             services.AddSingleton<SettingsViewModel>();
+            services.AddSingleton<CreateEntryViewModel>();
             services.AddSingleton<ISearchWindowInteractionService, SearchWindowInteractionService>();
             services.AddSingleton<IEntrySearchService, EntrySearchService>();
             services.AddSingleton<IEntryActionService, EntryActionService>();
@@ -87,6 +88,7 @@ namespace FluentPassFinder
             services.AddTransient<IStaticAction, OpenContextMenuAction>();
             services.AddTransient<IStaticAction, OpenUrlAction>();
             services.AddTransient<IStaticAction, SelectEntryAction>();
+            services.AddTransient<IStaticAction, CreateFromTemplateAction>();
             services.AddTransient<IStaticAction, CopyTotpAction>();
             services.AddTransient<IStaticAction, AutoTypeTotpAction>();
             services.AddTransient<IFieldAction, AutoTypeAction>();
@@ -96,7 +98,9 @@ namespace FluentPassFinder
             var viewModel = provider.GetRequiredService<SearchWindowViewModel>();
             var settingsViewModel = provider.GetRequiredService<SettingsViewModel>();
             var settingsView = new Views.SettingsView(settingsViewModel);
-            _searchWindow = new SearchWindow(viewModel, settingsView, _platform);
+            var createEntryViewModel = provider.GetRequiredService<CreateEntryViewModel>();
+            var createEntryView = new Views.CreateEntryView(createEntryViewModel);
+            _searchWindow = new SearchWindow(viewModel, settingsView, createEntryView, _platform);
 
             var settings = pipeClient.Settings;
             RegisterHotkeys(settings);

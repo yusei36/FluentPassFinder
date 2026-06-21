@@ -9,6 +9,7 @@ namespace FluentPassFinder.Contracts.Public
     {
         public static string OpenContextMenu = nameof(OpenContextMenu);
         public static string SelectEntry = nameof(SelectEntry);
+        public static string CreateFromTemplate = nameof(CreateFromTemplate);
         public static string OpenUrl = nameof(OpenUrl);
         public static string AutoType = nameof(AutoType);
         public static string Totp = nameof(Totp);

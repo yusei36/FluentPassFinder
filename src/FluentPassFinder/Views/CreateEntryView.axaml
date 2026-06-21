@@ -1,0 +1,165 @@
+<!-- SPDX-FileCopyrightText: Copyright (C) 2026 Uwe Koegel -->
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:FluentPassFinder.Views"
+             xmlns:models="clr-namespace:FluentPassFinder.ViewModels"
+             xmlns:converters="clr-namespace:FluentPassFinder.Converters"
+             xmlns:icons="clr-namespace:FluentPassFinder.Services.Actions"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             x:Class="FluentPassFinder.Views.CreateEntryView"
+             x:ClassModifier="internal"
+             x:DataType="local:CreateEntryView"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance local:CreateEntryView}">
+
+    <UserControl.Resources>
+        <converters:StringEmptyConverter x:Key="StringEmptyConverter" />
+    </UserControl.Resources>
+
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                  VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="12 8 12 12" Spacing="4">
+
+          <StackPanel Spacing="4" IsVisible="{Binding ViewModel.IsEditable}">
+
+            <!-- Template selector -->
+            <Grid ColumnDefinitions="130,*" Margin="0 2">
+                <TextBlock Grid.Column="0" Text="Template" VerticalAlignment="Center" FontSize="13" />
+                <ComboBox Grid.Column="1"
+                          ItemsSource="{Binding ViewModel.Templates}"
+                          SelectedItem="{Binding ViewModel.SelectedTemplate}"
+                          HorizontalAlignment="Stretch"
+                          FontSize="13">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate x:DataType="models:TemplateChoiceViewModel">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <Image Source="{Binding Icon}" Width="16" Height="16"
+                                       VerticalAlignment="Center"
+                                       IsVisible="{Binding HasIcon}" />
+                                <TextBlock Text="{Binding Name}" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </Grid>
+
+            <Separator Margin="0 6" />
+
+            <!-- Title (always required, always first) -->
+            <Grid ColumnDefinitions="130,*" Margin="0 2">
+                <TextBlock Grid.Column="0" Text="Title" VerticalAlignment="Center" FontSize="13" />
+                <TextBox Grid.Column="1" x:Name="TitleBox"
+                         Text="{Binding ViewModel.Title}" FontSize="13" />
+            </Grid>
+
+            <!-- All other fields, in template order -->
+            <ItemsControl ItemsSource="{Binding ViewModel.Fields}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="models:DynamicFieldViewModel">
+                        <StackPanel>
+                            <!-- Divider -->
+                            <TextBlock Text="{Binding Title}"
+                                       FontSize="13"
+                                       FontWeight="SemiBold"
+                                       Opacity="0.7"
+                                       Margin="0 6 0 2"
+                                       IsVisible="{Binding IsDivider}" />
+
+                            <!-- Field row -->
+                            <Grid ColumnDefinitions="130,*" Margin="0 2"
+                                  IsVisible="{Binding IsNotDivider}">
+                                <TextBlock Grid.Column="0"
+                                           Text="{Binding Title}"
+                                           VerticalAlignment="Center"
+                                           FontSize="13"
+                                           TextTrimming="CharacterEllipsis" />
+                                <Panel Grid.Column="1">
+                                    <TextBox Text="{Binding TextValue}" FontSize="13"
+                                             IsVisible="{Binding IsPlainText}" />
+
+                                    <!-- Protected text: masked, with reveal toggle + (password only) generate -->
+                                    <Grid ColumnDefinitions="*,Auto" IsVisible="{Binding IsProtectedText}">
+                                        <TextBox Grid.Column="0"
+                                                 Text="{Binding TextValue}"
+                                                 PasswordChar="●"
+                                                 RevealPassword="{Binding RevealValue}"
+                                                 FontSize="13">
+                                            <TextBox.InnerRightContent>
+                                                <ToggleButton IsChecked="{Binding RevealValue}"
+                                                              Width="28" Height="28" Padding="0"
+                                                              Margin="0 0 2 0"
+                                                              Background="Transparent" BorderThickness="0"
+                                                              VerticalAlignment="Center"
+                                                              ToolTip.Tip="Reveal">
+                                                    <ui:FontIcon FontSize="14"
+                                                                 FontFamily="{StaticResource SymbolFontFamily}"
+                                                                 Glyph="{Binding RevealGlyph}" />
+                                                </ToggleButton>
+                                            </TextBox.InnerRightContent>
+                                        </TextBox>
+                                        <Button Grid.Column="1"
+                                                Command="{Binding GeneratePasswordCommand}"
+                                                IsVisible="{Binding IsPasswordField}"
+                                                Margin="4 0 0 0" Padding="6 0"
+                                                VerticalAlignment="Stretch"
+                                                ToolTip.Tip="Generate password">
+                                            <ui:FontIcon FontSize="14"
+                                                         FontFamily="{StaticResource SymbolFontFamily}"
+                                                         Glyph="{x:Static icons:Icons.Reset}" />
+                                        </Button>
+                                    </Grid>
+
+                                    <TextBox Text="{Binding TextValue}" FontSize="13"
+                                             AcceptsReturn="True" TextWrapping="Wrap"
+                                             Height="{Binding MultiLineHeight}"
+                                             VerticalContentAlignment="Top"
+                                             AcceptsTab="False"
+                                             IsVisible="{Binding IsMultiLine}" />
+                                    <CheckBox IsChecked="{Binding BoolValue}"
+                                              IsVisible="{Binding IsCheckbox}" />
+                                    <ComboBox ItemsSource="{Binding Options}"
+                                              SelectedItem="{Binding SelectedOption}"
+                                              HorizontalAlignment="Stretch" FontSize="13"
+                                              IsVisible="{Binding IsListBox}" />
+                                    <StackPanel Orientation="Horizontal" Spacing="6"
+                                                IsVisible="{Binding IsDateLike}">
+                                        <DatePicker SelectedDate="{Binding DateValue}"
+                                                    IsVisible="{Binding ShowDate}" />
+                                        <TimePicker SelectedTime="{Binding TimeValue}"
+                                                    IsVisible="{Binding ShowTime}" />
+                                    </StackPanel>
+                                </Panel>
+                            </Grid>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <!-- Validation / error message -->
+            <TextBlock Text="{Binding ViewModel.ErrorMessage}"
+                       Foreground="{DynamicResource SystemFillColorCriticalBrush}"
+                       TextWrapping="Wrap"
+                       Margin="0 6 0 0"
+                       IsVisible="{Binding ViewModel.ErrorMessage, Converter={StaticResource StringEmptyConverter}, ConverterParameter=Invert}" />
+
+          </StackPanel>
+
+            <!-- Success confirmation (shown briefly before the window closes) -->
+            <StackPanel Orientation="Horizontal" Spacing="6" Margin="0 6 0 0"
+                        IsVisible="{Binding ViewModel.Saved}">
+                <ui:FontIcon FontSize="14"
+                             FontFamily="{StaticResource SymbolFontFamily}"
+                             Glyph="{x:Static icons:Icons.Checkmark}"
+                             Foreground="{DynamicResource SystemFillColorSuccessBrush}"
+                             VerticalAlignment="Center" />
+                <TextBlock Text="Entry created"
+                           Foreground="{DynamicResource SystemFillColorSuccessBrush}"
+                           VerticalAlignment="Center" />
+            </StackPanel>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

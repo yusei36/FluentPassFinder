@@ -15,6 +15,9 @@ namespace FluentPassFinder.Contracts.Public
 
         public bool Expires { get; set; }
 
+        /// <summary>True when the entry lives in the database's template group (eligible for "create from template").</summary>
+        public bool IsTemplate { get; set; }
+
         /// <summary>Pre-rendered 24×24 icon as PNG bytes.</summary>
         public byte[] Icon { get; set; }
 

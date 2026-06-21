@@ -15,5 +15,8 @@ namespace FluentPassFinder.Contracts.Public.Ipc
         public const string OpenEntryUrl              = "OpenEntryUrl";
         public const string SelectEntry               = "SelectEntry";
         public const string SaveSettings              = "SaveSettings";
+        public const string GetTemplates              = "GetTemplates";
+        public const string CreateEntry               = "CreateEntry";
+        public const string GeneratePassword          = "GeneratePassword";
     }
 }
