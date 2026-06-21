@@ -5,6 +5,7 @@ using FluentPassFinder.Contracts.Public.Ipc;
 using KeePassLib;
 using KeePassLib.Cryptography.PasswordGenerator;
 using KeePassLib.Security;
+using KeePassLib.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,11 +33,45 @@ namespace FluentPassFinder.Services
 
         private readonly KeePassContext context;
         private readonly EntryIconRenderer iconRenderer;
+        private readonly SettingsStore settings;
 
-        public EntryCreationService(KeePassContext context, EntryIconRenderer iconRenderer)
+        public EntryCreationService(KeePassContext context, EntryIconRenderer iconRenderer, SettingsStore settings)
         {
             this.context = context;
             this.iconRenderer = iconRenderer;
+            this.settings = settings;
+        }
+
+        public GetGroupsResponse GetGroups()
+        {
+            var groups = context.Invoke(() =>
+            {
+                var list = new List<GroupDto>();
+                var db = context.ActiveDatabase;
+                if (db == null || !db.IsOpen) return list;
+
+                CollectGroups(db.RootGroup, db.RootGroup.Name, list, db);
+                return list;
+            });
+
+            return new GetGroupsResponse { Success = true, Groups = groups.ToArray() };
+        }
+
+        private static void CollectGroups(PwGroup group, string path, List<GroupDto> list, PwDatabase db)
+        {
+            // Skip the recycle bin (and its descendants) as a target.
+            if (db.RecycleBinEnabled && !db.RecycleBinUuid.Equals(PwUuid.Zero) && group.Uuid.Equals(db.RecycleBinUuid))
+                return;
+
+            list.Add(new GroupDto
+            {
+                Uuid = group.Uuid.ToHexString(),
+                Name = group.Name,
+                Path = path,
+            });
+
+            foreach (var sub in group.GetGroups(false))
+                CollectGroups(sub, path + " / " + sub.Name, list, db);
         }
 
         public GetTemplatesResponse GetTemplates()
@@ -242,7 +277,7 @@ namespace FluentPassFinder.Services
                 var db = context.ActiveDatabase;
                 if (db == null || !db.IsOpen) return null;
 
-                var parentGroup = db.RootGroup;
+                var parentGroup = ResolveTargetGroup(db);
                 if (parentGroup == null) return null;
 
                 var entry = new PwEntry(true, true);
@@ -305,6 +340,31 @@ namespace FluentPassFinder.Services
         {
             var uuid = new PwUuid(Convert.FromBase64String(base64Uuid));
             return db.RootGroup.FindEntry(uuid, true);
+        }
+
+        // The group new entries are saved into, from settings. If the configured group is
+        // missing (the default group on first use, or a deleted custom group), it is created as
+        // "New entries" with the configured UUID under the root. Falls back to the root group
+        // when the setting is empty or unparseable.
+        private PwGroup ResolveTargetGroup(PwDatabase db)
+        {
+            var uuidHex = settings.Current.EntryCreation?.NewEntryGroupUuid;
+            if (string.IsNullOrEmpty(uuidHex))
+                return db.RootGroup;
+
+            byte[] uuidBytes;
+            try { uuidBytes = MemUtil.HexStringToByteArray(uuidHex); }
+            catch { return db.RootGroup; }
+            if (uuidBytes == null || uuidBytes.Length != 16)
+                return db.RootGroup;
+
+            var uuid = new PwUuid(uuidBytes);
+            var existing = db.RootGroup.FindGroup(uuid, true);
+            if (existing != null) return existing;
+
+            var created = new PwGroup(false, true, Consts.DefaultNewEntryGroupName, PwIcon.Folder) { Uuid = uuid };
+            db.RootGroup.AddGroup(created, true);
+            return created;
         }
     }
 }

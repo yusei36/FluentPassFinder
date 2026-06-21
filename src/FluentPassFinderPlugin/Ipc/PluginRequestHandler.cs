@@ -28,7 +28,7 @@ namespace FluentPassFinder.Ipc
             var iconRenderer = new EntryIconRenderer(context.MainWindow);
             searchService = new EntrySearchService(context, settingsStore, iconRenderer);
             operationService = new EntryOperationService(context);
-            creationService = new EntryCreationService(context, iconRenderer);
+            creationService = new EntryCreationService(context, iconRenderer, settingsStore);
         }
 
         public PipeResponse Handle(PipeRequest request)
@@ -49,6 +49,7 @@ namespace FluentPassFinder.Ipc
                     case SelectEntryRequest req:               return operationService.SelectEntry(req);
                     case SaveSettingsRequest req:              settingsStore.Save(req.Settings); return Ack();
                     case GetTemplatesRequest _:                return creationService.GetTemplates();
+                    case GetGroupsRequest _:                   return creationService.GetGroups();
                     case CreateEntryRequest req:               return creationService.CreateEntry(req);
                     case GeneratePasswordRequest _:            return creationService.GeneratePassword();
                     default:                                   return Ack(success: false, error: $"Unknown request type: {request.Type}");

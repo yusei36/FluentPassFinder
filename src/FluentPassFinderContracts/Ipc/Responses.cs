@@ -32,6 +32,12 @@ namespace FluentPassFinder.Contracts.Public.Ipc
         public TemplateDto[] Templates { get; set; }
     }
 
+    public class GetGroupsResponse : PipeResponse
+    {
+        public override string Type => PipeRequestTypes.GetGroups;
+        public GroupDto[] Groups { get; set; }
+    }
+
     public class CreateEntryResponse : PipeResponse
     {
         public override string Type => PipeRequestTypes.CreateEntry;

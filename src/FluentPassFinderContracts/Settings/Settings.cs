@@ -19,6 +19,7 @@ namespace FluentPassFinder.Contracts.Public
         public HotkeyOptions Hotkeys { get; set; } = new HotkeyOptions();
         public WindowOptions Window { get; set; } = new WindowOptions();
         public BehaviorOptions Behavior { get; set; } = new BehaviorOptions();
+        public EntryCreationOptions EntryCreation { get; set; } = new EntryCreationOptions();
 
         /// <summary>Returns a fresh, fully-defaulted settings instance.</summary>
         public static Settings CreateDefault() => new Settings();

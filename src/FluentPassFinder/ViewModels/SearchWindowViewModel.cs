@@ -145,6 +145,8 @@ namespace FluentPassFinder.ViewModels
         private void ToggleSettings()
         {
             IsSettingsOpen = !IsSettingsOpen;
+            if (IsSettingsOpen)
+                settingsViewModel.ReloadGroups();
         }
 
         [RelayCommand]

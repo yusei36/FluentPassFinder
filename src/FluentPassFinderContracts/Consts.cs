@@ -27,6 +27,9 @@ namespace FluentPassFinder.Contracts.Public
         public const string TemplateUuidField = "_etm_template_uuid";
         public const string NativeTotpPlaceholder = "{TIMEOTP}";
 
+        public const string DefaultNewEntryGroupUuid = "A436B624EE2C4421B3E0949924E9C18C";
+        public const string DefaultNewEntryGroupName = "New entries";
+
         public const string AutoTypeEnterPlaceholder = "{ENTER}";
 
         public static bool IsStandardField(string fieldName) =>

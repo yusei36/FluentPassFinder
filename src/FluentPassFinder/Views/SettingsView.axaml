@@ -130,6 +130,31 @@
 
             <Separator Margin="0 6" />
 
+            <!-- New Entries -->
+            <TextBlock Text="New Entries"
+                       FontSize="11"
+                       FontWeight="SemiBold"
+                       Opacity="0.6"
+                       Margin="0 0 0 2" />
+
+            <Grid ColumnDefinitions="*,*" Margin="0 2"
+                  ToolTip.Tip="Group new entries are saved into. The default group is created automatically on first use.">
+                <TextBlock Grid.Column="0" Text="Save new entries in" VerticalAlignment="Center" FontSize="13" />
+                <ComboBox Grid.Column="1"
+                          ItemsSource="{Binding ViewModel.AvailableGroups}"
+                          SelectedItem="{Binding ViewModel.SelectedGroup}"
+                          HorizontalAlignment="Stretch"
+                          FontSize="13">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Path}" TextTrimming="CharacterEllipsis" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </Grid>
+
+            <Separator Margin="0 6" />
+
             <!-- Window Layout -->
             <TextBlock Text="Window Layout"
                        FontSize="11"

@@ -46,6 +46,10 @@ namespace FluentPassFinder.ViewModels
         [ObservableProperty] private decimal? preserveLastSearchTimeoutSeconds;
         [ObservableProperty] private bool escAlwaysClosesWindow;
 
+        [ObservableProperty] private ObservableCollection<GroupDto> availableGroups = new();
+        [ObservableProperty] private GroupDto selectedGroup;
+        private string configuredGroupUuid;
+
         [ObservableProperty] private decimal? windowWidth;
         [ObservableProperty] private decimal? windowHeight;
         [ObservableProperty] private WindowAnchor windowAnchor;
@@ -165,6 +169,10 @@ namespace FluentPassFinder.ViewModels
                     PreserveLastSearchTimeoutMilliseconds = (int)(PreserveLastSearchTimeoutSeconds ?? 30) * 1000,
                     EscAlwaysClosesWindow = EscAlwaysClosesWindow,
                 },
+                EntryCreation = new EntryCreationOptions
+                {
+                    NewEntryGroupUuid = SelectedGroup?.Uuid ?? Consts.DefaultNewEntryGroupUuid,
+                },
                 Window = new WindowOptions
                 {
                     Width = (int)(WindowWidth ?? defaults.Window.Width),
@@ -228,6 +236,34 @@ namespace FluentPassFinder.ViewModels
             LoadFromSettings(Settings.CreateDefault());
         }
 
+        /// <summary>
+        /// Refreshes the list of target groups from the active database. Keeps the current
+        /// selection if still present; otherwise ensures the configured group is selectable
+        /// (the default "New entries" group does not exist until the first entry is created).
+        /// </summary>
+        public void ReloadGroups()
+        {
+            var targetUuid = SelectedGroup?.Uuid ?? configuredGroupUuid;
+            var groups = (pluginProxy.GetGroups() ?? Array.Empty<GroupDto>()).ToList();
+
+            if (!string.IsNullOrEmpty(targetUuid) &&
+                groups.All(g => !string.Equals(g.Uuid, targetUuid, StringComparison.OrdinalIgnoreCase)))
+            {
+                var isDefault = string.Equals(targetUuid, Consts.DefaultNewEntryGroupUuid, StringComparison.OrdinalIgnoreCase);
+                groups.Insert(0, new GroupDto
+                {
+                    Uuid = targetUuid,
+                    Name = Consts.DefaultNewEntryGroupName,
+                    Path = Consts.DefaultNewEntryGroupName +
+                           (isDefault ? " (created automatically)" : " (will be created)"),
+                });
+            }
+
+            AvailableGroups = new ObservableCollection<GroupDto>(groups);
+            SelectedGroup = AvailableGroups.FirstOrDefault(g => string.Equals(g.Uuid, targetUuid, StringComparison.OrdinalIgnoreCase))
+                            ?? AvailableGroups.FirstOrDefault();
+        }
+
         private void LoadFromSettings(Settings s)
         {
             Theme = s.Theme.ToString();
@@ -268,6 +304,10 @@ namespace FluentPassFinder.ViewModels
             PreserveLastSearch = s.Behavior.PreserveLastSearch;
             PreserveLastSearchTimeoutSeconds = s.Behavior.PreserveLastSearchTimeoutMilliseconds / 1000;
             EscAlwaysClosesWindow = s.Behavior.EscAlwaysClosesWindow;
+
+            configuredGroupUuid = s.EntryCreation?.NewEntryGroupUuid ?? Consts.DefaultNewEntryGroupUuid;
+            SelectedGroup = null; // force selection back to the configured group on (re)load / reset
+            ReloadGroups();
 
             var defaults = Settings.CreateDefault();
             WindowWidth = s.Window.Width > 0 ? s.Window.Width : defaults.Window.Width;

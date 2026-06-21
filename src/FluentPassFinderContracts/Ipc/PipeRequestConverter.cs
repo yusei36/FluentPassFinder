@@ -31,6 +31,7 @@ namespace FluentPassFinder.Contracts.Public.Ipc
                 case PipeRequestTypes.SelectEntry:               target = new SelectEntryRequest();              break;
                 case PipeRequestTypes.SaveSettings:              target = new SaveSettingsRequest();             break;
                 case PipeRequestTypes.GetTemplates:              target = new GetTemplatesRequest();             break;
+                case PipeRequestTypes.GetGroups:                 target = new GetGroupsRequest();                break;
                 case PipeRequestTypes.CreateEntry:               target = new CreateEntryRequest();              break;
                 case PipeRequestTypes.GeneratePassword:          target = new GeneratePasswordRequest();         break;
                 default: return null;

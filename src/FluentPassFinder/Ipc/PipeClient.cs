@@ -117,6 +117,12 @@ namespace FluentPassFinder.Ipc
             return response?.Templates ?? Array.Empty<TemplateDto>();
         }
 
+        public GroupDto[] GetGroups()
+        {
+            var response = Send<GetGroupsRequest, GetGroupsResponse>(new GetGroupsRequest());
+            return response?.Groups ?? Array.Empty<GroupDto>();
+        }
+
         public string CreateEntry(string templateUuid, IDictionary<string, string> fields)
         {
             var response = Send<CreateEntryRequest, CreateEntryResponse>(new CreateEntryRequest

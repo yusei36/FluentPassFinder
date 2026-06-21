@@ -85,6 +85,11 @@ namespace FluentPassFinder.Contracts.Public.Ipc
         public override string Type => PipeRequestTypes.GetTemplates;
     }
 
+    public class GetGroupsRequest : PipeRequest
+    {
+        public override string Type => PipeRequestTypes.GetGroups;
+    }
+
     public class CreateEntryRequest : PipeRequest
     {
         public override string Type => PipeRequestTypes.CreateEntry;
