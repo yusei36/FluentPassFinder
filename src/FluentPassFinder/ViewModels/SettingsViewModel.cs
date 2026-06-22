@@ -237,6 +237,16 @@ namespace FluentPassFinder.ViewModels
         }
 
         /// <summary>
+        /// Reverts all editable properties back to the persisted settings, discarding any
+        /// unsaved edits. The view model is a singleton, so its state would otherwise survive
+        /// across open/close cycles and reappear (or be saved) the next time settings is opened.
+        /// </summary>
+        public void Discard()
+        {
+            LoadFromSettings(pluginProxy.Settings);
+        }
+
+        /// <summary>
         /// Refreshes the list of target groups from the active database. Keeps the current
         /// selection if still present; otherwise ensures the configured group is selectable
         /// (the default "New entries" group does not exist until the first entry is created).

@@ -184,6 +184,7 @@ namespace FluentPassFinder.ViewModels
         {
             if (IsSettingsOpen)
             {
+                settingsViewModel.Discard();
                 IsSettingsOpen = false;
                 searchWindowInteractionService.FocusSearchBox();
             }
