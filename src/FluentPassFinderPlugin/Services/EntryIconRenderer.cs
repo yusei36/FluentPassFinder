@@ -35,6 +35,18 @@ namespace FluentPassFinder.Services
             return GetBuiltInIconCached((int)entry.IconId);
         }
 
+        public byte[] GetGroupIconBytes(PwGroup group, PwDatabase db)
+        {
+            if (!group.CustomIconUuid.Equals(PwUuid.Zero))
+            {
+                var customImage = db.GetCustomIcon(group.CustomIconUuid, 24, 24);
+                if (customImage != null)
+                    return ImageToBytes(customImage);
+            }
+
+            return GetBuiltInIconCached((int)group.IconId);
+        }
+
         private byte[] GetBuiltInIconCached(int iconId)
         {
             if (!builtInIconCache.TryGetValue(iconId, out var bytes))

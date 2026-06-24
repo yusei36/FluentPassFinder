@@ -58,6 +58,7 @@ namespace FluentPassFinder.Services
                     Uuid = root.Uuid.ToHexString(),
                     Name = root.Name,
                     Path = root.Name + " (Root)",
+                    Icon = iconRenderer.GetGroupIconBytes(root, db),
                 });
 
                 foreach (var sub in root.GetGroups(false))
@@ -69,7 +70,7 @@ namespace FluentPassFinder.Services
             return new GetGroupsResponse { Success = true, Groups = groups.ToArray() };
         }
 
-        private static void CollectGroups(PwGroup group, string parentPath, List<GroupDto> list, PwDatabase db)
+        private void CollectGroups(PwGroup group, string parentPath, List<GroupDto> list, PwDatabase db)
         {
             // Skip the recycle bin (and its descendants) as a target.
             if (db.RecycleBinEnabled && !db.RecycleBinUuid.Equals(PwUuid.Zero) && group.Uuid.Equals(db.RecycleBinUuid))
@@ -81,6 +82,7 @@ namespace FluentPassFinder.Services
                 Uuid = group.Uuid.ToHexString(),
                 Name = group.Name,
                 Path = path,
+                Icon = iconRenderer.GetGroupIconBytes(group, db),
             });
 
             foreach (var sub in group.GetGroups(false))

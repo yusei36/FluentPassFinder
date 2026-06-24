@@ -46,8 +46,8 @@ namespace FluentPassFinder.ViewModels
         [ObservableProperty] private decimal? preserveLastSearchTimeoutSeconds;
         [ObservableProperty] private bool escAlwaysClosesWindow;
 
-        [ObservableProperty] private ObservableCollection<GroupDto> availableGroups = new();
-        [ObservableProperty] private GroupDto selectedGroup;
+        [ObservableProperty] private ObservableCollection<GroupViewModel> availableGroups = new();
+        [ObservableProperty] private GroupViewModel selectedGroup;
         private string configuredGroupUuid;
 
         [ObservableProperty] private decimal? windowWidth;

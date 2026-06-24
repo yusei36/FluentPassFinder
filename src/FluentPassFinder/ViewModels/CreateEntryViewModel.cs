@@ -40,8 +40,8 @@ namespace FluentPassFinder.ViewModels
         [ObservableProperty] private ObservableCollection<TemplateChoiceViewModel> templates = new();
         [ObservableProperty] private TemplateChoiceViewModel selectedTemplate;
         [ObservableProperty] private ObservableCollection<DynamicFieldViewModel> fields = new();
-        [ObservableProperty] private ObservableCollection<GroupDto> groups = new();
-        [ObservableProperty] private GroupDto selectedGroup;
+        [ObservableProperty] private ObservableCollection<GroupViewModel> groups = new();
+        [ObservableProperty] private GroupViewModel selectedGroup;
         [ObservableProperty] private string errorMessage;
 
         public CreateEntryViewModel(IPluginProxy pluginProxy, Lazy<SearchWindowViewModel> lazySearchWindowViewModel)

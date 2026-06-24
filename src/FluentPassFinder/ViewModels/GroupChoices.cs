@@ -16,7 +16,7 @@ namespace FluentPassFinder.ViewModels
     /// </summary>
     internal static class GroupChoices
     {
-        public static ObservableCollection<GroupDto> Build(IEnumerable<GroupDto> groups, string defaultUuid)
+        public static ObservableCollection<GroupViewModel> Build(IEnumerable<GroupDto> groups, string defaultUuid)
         {
             var list = (groups ?? Array.Empty<GroupDto>()).ToList();
 
@@ -34,14 +34,18 @@ namespace FluentPassFinder.ViewModels
             }
 
             // Mark the default target group in its displayed path.
-            var defaultGroup = list.FirstOrDefault(g => string.Equals(g.Uuid, defaultUuid, StringComparison.OrdinalIgnoreCase));
-            if (defaultGroup != null)
-                defaultGroup.Path += " (Default)";
+            var choices = list.Select(g =>
+            {
+                var path = string.Equals(g.Uuid, defaultUuid, StringComparison.OrdinalIgnoreCase)
+                    ? g.Path + " (Default)"
+                    : g.Path;
+                return new GroupViewModel(g, path);
+            });
 
-            return new ObservableCollection<GroupDto>(list);
+            return new ObservableCollection<GroupViewModel>(choices);
         }
 
-        public static GroupDto Select(IEnumerable<GroupDto> list, string uuid) =>
+        public static GroupViewModel Select(IEnumerable<GroupViewModel> list, string uuid) =>
             list.FirstOrDefault(g => string.Equals(g.Uuid, uuid, StringComparison.OrdinalIgnoreCase))
             ?? list.FirstOrDefault();
     }

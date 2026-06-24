@@ -12,5 +12,8 @@ namespace FluentPassFinder.Contracts.Public
 
         /// <summary>Full path from the root group, for display (e.g. "Database / Folder / Sub").</summary>
         public string Path { get; set; }
+
+        /// <summary>Pre-rendered 24x24 icon as PNG bytes.</summary>
+        public byte[] Icon { get; set; }
     }
 }
