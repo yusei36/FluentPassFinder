@@ -102,9 +102,11 @@
                                                  Text="{Binding TextValue}"
                                                  PasswordChar="●"
                                                  RevealPassword="{Binding RevealValue}"
+                                                 LostFocus="OnProtectedFieldLostFocus"
                                                  FontSize="13">
                                             <TextBox.InnerRightContent>
                                                 <ToggleButton IsChecked="{Binding RevealValue}"
+                                                              Focusable="False"
                                                               Width="28" Height="28" Padding="0"
                                                               Margin="0 0 2 0"
                                                               Background="Transparent" BorderThickness="0"

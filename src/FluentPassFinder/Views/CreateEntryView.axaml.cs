@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: Copyright (C) 2026 Uwe Koegel
 // SPDX-License-Identifier: GPL-3.0-or-later
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using Avalonia.Threading;
 using FluentPassFinder.ViewModels;
 
@@ -23,5 +24,13 @@ namespace FluentPassFinder.Views
         /// <summary>Focuses the Title field. Called by the host window when the overlay opens.</summary>
         public void FocusFirstField() =>
             Dispatcher.UIThread.Post(() => TitleBox.Focus(), DispatcherPriority.Background);
+
+        /// <summary>Re-masks a protected field when it loses focus, so a revealed value
+        /// is never left exposed after the user moves on.</summary>
+        private void OnProtectedFieldLostFocus(object sender, RoutedEventArgs e)
+        {
+            if (sender is Control { DataContext: DynamicFieldViewModel field })
+                field.RevealValue = false;
+        }
     }
 }
