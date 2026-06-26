@@ -3,6 +3,7 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.Platform;
 using FluentPassFinder.Contracts;
 using FluentPassFinder.Contracts.Public;
@@ -28,6 +29,15 @@ namespace FluentPassFinder.Views
         private bool _isBottomAnchor;
         private int _targetHeaderTopY;
         private double _anchorScaling = 1.0;
+
+        // Ctrl+drag window move. Armed on a Ctrl+left press, promoted to an actual
+        // move once the cursor passes a small threshold so a plain Ctrl+click still
+        // falls through to the list/action handlers.
+        private const double DragThreshold = 4.0;
+        private bool _dragArmed;
+        private bool _dragging;
+        private PixelPoint _dragStartCursor;
+        private PixelPoint _dragStartWindow;
 
         private readonly IPlatformServices _platform;
 
@@ -61,6 +71,12 @@ namespace FluentPassFinder.Views
 
             Deactivated += (_, _) => { if (!_isWarmingUp && !ViewModel.IsPinned) HideSearchWindow(); };
             SizeChanged += OnWindowSizeChanged;
+
+            // Tunnel so we observe the gesture before child controls, without consuming
+            // the press (children still react to plain Ctrl+clicks).
+            AddHandler(PointerPressedEvent, OnDragPointerPressed, RoutingStrategies.Tunnel);
+            AddHandler(PointerMovedEvent, OnDragPointerMoved, RoutingStrategies.Tunnel);
+            AddHandler(PointerReleasedEvent, OnDragPointerReleased, RoutingStrategies.Tunnel);
         }
 
         public void FocusSearchBox() => SearchBox.Focus();
@@ -334,6 +350,61 @@ namespace FluentPassFinder.Views
         {
             if (e.InitialPressMouseButton == MouseButton.Left)
                 ViewModel.RunActionCommand.Execute(((sender as Control)?.DataContext as IAction)?.ActionType);
+        }
+
+        private void OnDragPointerPressed(object sender, PointerPressedEventArgs e)
+        {
+            var point = e.GetCurrentPoint(this);
+            if (!point.Properties.IsLeftButtonPressed || !e.KeyModifiers.HasFlag(KeyModifiers.Control))
+            {
+                _dragArmed = false;
+                return;
+            }
+
+            _dragArmed = true;
+            _dragging = false;
+            _dragStartCursor = _platform.GetCursorPosition();
+            _dragStartWindow = Position;
+        }
+
+        private void OnDragPointerMoved(object sender, PointerEventArgs e)
+        {
+            if (!_dragArmed) return;
+
+            // Bail if the button was released outside our handlers or Ctrl was let go.
+            if (!e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
+            {
+                _dragArmed = false;
+                _dragging = false;
+                return;
+            }
+
+            var cursor = _platform.GetCursorPosition();
+            int dx = cursor.X - _dragStartCursor.X;
+            int dy = cursor.Y - _dragStartCursor.Y;
+
+            if (!_dragging && Math.Abs(dx) < DragThreshold && Math.Abs(dy) < DragThreshold)
+                return;
+
+            _dragging = true;
+            int newY = _dragStartWindow.Y + dy;
+            Position = new PixelPoint(_dragStartWindow.X + dx, newY);
+
+            // Keep the bottom-anchor reference in sync so a later auto-resize doesn't
+            // snap the window back to its computed anchor position.
+            if (_isBottomAnchor)
+                _targetHeaderTopY = newY + (int)((Bounds.Height - HeaderSize) * _anchorScaling);
+
+            e.Handled = true;
+        }
+
+        private void OnDragPointerReleased(object sender, PointerReleasedEventArgs e)
+        {
+            // Suppress the click that would otherwise trigger a list/action handler,
+            // but only when we actually moved the window.
+            if (_dragging) e.Handled = true;
+            _dragArmed = false;
+            _dragging = false;
         }
     }
 }
