@@ -9,19 +9,28 @@ namespace FluentPassFinder.Ipc
     public class PipeClient : IPluginProxy, IDisposable
     {
         private readonly string pipeName;
+        private readonly int? expectedHostPid;
         private NamedPipeClientStream clientStream;
         private readonly object syncLock = new object();
         private Settings cachedSettings;
 
-        public PipeClient(string pipeName)
+        public PipeClient(string pipeName, int? expectedHostPid = null)
         {
             this.pipeName = pipeName;
+            this.expectedHostPid = expectedHostPid;
         }
 
         public void Connect()
         {
             clientStream = new NamedPipeClientStream(".", pipeName, PipeDirection.InOut);
             clientStream.Connect(10000);
+
+            // Reject a squatter before sending any secret-bearing request.
+            if (!ServerVerifier.VerifyServer(clientStream.SafePipeHandle, expectedHostPid, out var reason))
+            {
+                clientStream.Dispose();
+                throw new InvalidOperationException($"Pipe server verification failed: {reason}");
+            }
 
             cachedSettings = Send<GetSettingsRequest, GetSettingsResponse>(new GetSettingsRequest())?.Settings;
         }

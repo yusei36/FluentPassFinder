@@ -41,9 +41,11 @@ namespace FluentPassFinder
                     return;
                 }
 
+                int? hostPid = args.Length >= 2 && int.TryParse(args[1], out var pid) ? pid : (int?)null;
+
                 try
                 {
-                    Init(args[0], desktop);
+                    Init(args[0], hostPid, desktop);
                 }
                 catch (Exception ex)
                 {
@@ -52,14 +54,14 @@ namespace FluentPassFinder
                     return;
                 }
 
-                if (args.Length >= 2 && int.TryParse(args[1], out var hostPid))
-                    WatchHostProcess(hostPid);
+                if (hostPid.HasValue)
+                    WatchHostProcess(hostPid.Value);
             }
 
             base.OnFrameworkInitializationCompleted();
         }
 
-        private void Init(string pipeName, IClassicDesktopStyleApplicationLifetime desktop)
+        private void Init(string pipeName, int? hostPid, IClassicDesktopStyleApplicationLifetime desktop)
         {
             _instance = this;
 
@@ -68,7 +70,7 @@ namespace FluentPassFinder
             // porting (see docs/CrossPlatform.md).
             _platform = new WindowsPlatformServices();
 
-            var pipeClient = new PipeClient(pipeName);
+            var pipeClient = new PipeClient(pipeName, hostPid);
             pipeClient.Connect();
 
             var services = new ServiceCollection();

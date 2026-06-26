@@ -4,6 +4,8 @@ using FluentPassFinder.Contracts.Public.Ipc;
 using System;
 using System.IO.Pipes;
 using System.Runtime.InteropServices;
+using System.Security.AccessControl;
+using System.Security.Principal;
 using System.Text;
 using System.Threading;
 
@@ -42,41 +44,96 @@ namespace FluentPassFinder.Ipc
         public void Start()
         {
             running = true;
-            serverStream = new NamedPipeServerStream(
-                pipeName,
-                PipeDirection.InOut,
-                maxNumberOfServerInstances: 1,
-                PipeTransmissionMode.Byte,
-                PipeOptions.None);
+            serverStream = CreateServerStream();
 
             readerThread = new Thread(ReadLoop) { IsBackground = true, Name = "FluentPassFinder.PipeServer" };
             readerThread.Start();
         }
 
-        private void ReadLoop()
+        private NamedPipeServerStream CreateServerStream()
+        {
+            // Most restrictive option the OS accepts wins; fallbacks keep the plugin loading.
+            foreach (var security in new[] { BuildPipeSecurity(withLabel: true), BuildPipeSecurity(withLabel: false), null })
+            {
+                try
+                {
+                    return security != null
+                        ? new NamedPipeServerStream(
+                            pipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Byte,
+                            PipeOptions.None, 0, 0, security)
+                        : new NamedPipeServerStream(
+                            pipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Byte, PipeOptions.None);
+                }
+                catch (Exception) { }
+            }
+
+            return new NamedPipeServerStream(
+                pipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Byte, PipeOptions.None);
+        }
+
+        // Current user + SYSTEM only; withLabel also blocks lower-integrity same-user processes.
+        private static PipeSecurity BuildPipeSecurity(bool withLabel)
         {
             try
             {
-                serverStream.WaitForConnection();
+                var userSid = WindowsIdentity.GetCurrent().User.Value;
+                var sddl = withLabel
+                    ? $"D:(A;;GA;;;{userSid})(A;;GA;;;SY)S:(ML;;NRNW;;;ME)"
+                    : $"D:(A;;GA;;;{userSid})(A;;GA;;;SY)";
 
-                if (!IsClientAuthorized())
-                {
-                    serverStream.Disconnect();
-                    return;
-                }
+                var rsd = new RawSecurityDescriptor(sddl);
+                var bytes = new byte[rsd.BinaryLength];
+                rsd.GetBinaryForm(bytes, 0);
 
-                while (running && serverStream.IsConnected)
-                {
-                    var request = PipeProtocol.ReadRequest(serverStream);
-                    if (request == null) break;
-
-                    var response = handler.Handle(request);
-                    PipeProtocol.WriteResponse(serverStream, response);
-                }
+                var security = new PipeSecurity();
+                security.SetSecurityDescriptorBinaryForm(bytes, AccessControlSections.All);
+                return security;
             }
             catch (Exception)
             {
-                // Connection closed or plugin shutting down. Exit silently
+                return null;
+            }
+        }
+
+        private void ReadLoop()
+        {
+            while (running)
+            {
+                try
+                {
+                    serverStream.WaitForConnection();
+                }
+                catch (Exception)
+                {
+                    break; // stream disposed on shutdown
+                }
+
+                if (!running) break;
+
+                try
+                {
+                    // Drop unauthorized clients and re-accept, so a rogue process winning the
+                    // connect race cannot permanently deny service to the real app.
+                    if (IsClientAuthorized())
+                    {
+                        while (running && serverStream.IsConnected)
+                        {
+                            var request = PipeProtocol.ReadRequest(serverStream);
+                            if (request == null) break;
+
+                            var response = handler.Handle(request);
+                            PipeProtocol.WriteResponse(serverStream, response);
+                        }
+                    }
+                }
+                catch (Exception) { }
+
+                try
+                {
+                    if (serverStream.IsConnected)
+                        serverStream.Disconnect();
+                }
+                catch (Exception) { }
             }
         }
 

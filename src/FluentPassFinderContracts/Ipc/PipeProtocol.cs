@@ -9,6 +9,9 @@ namespace FluentPassFinder.Contracts.Public.Ipc
 {
     public static class PipeProtocol
     {
+        // Bounds the length prefix so a hostile/corrupt peer cannot force a huge allocation.
+        private const int MaxFrameBytes = 32 * 1024 * 1024;
+
         private static readonly JsonSerializerSettings SerializerSettings = new JsonSerializerSettings
         {
             NullValueHandling = NullValueHandling.Ignore,
@@ -60,8 +63,12 @@ namespace FluentPassFinder.Contracts.Public.Ipc
                 return null;
 
             var length = System.BitConverter.ToInt32(lengthBytes, 0);
+            if (length < 0 || length > MaxFrameBytes)
+                return null;
+
             var data = new byte[length];
-            ReadExact(stream, data, length);
+            if (ReadExact(stream, data, length) != length)
+                return null;
             return Encoding.UTF8.GetString(data);
         }
 
