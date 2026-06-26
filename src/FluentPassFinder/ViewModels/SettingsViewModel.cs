@@ -104,6 +104,18 @@ namespace FluentPassFinder.ViewModels
             LoadFromSettings(pluginProxy.Settings);
         }
 
+        /// <summary>
+        /// Offsets are relative to the anchor, so picking a different anchor invalidates them.
+        /// Reset to 0 so the window snaps to the new anchor's base position. During
+        /// <see cref="LoadFromSettings"/> the anchor is assigned before the offsets, so the
+        /// persisted offsets still win on (re)load.
+        /// </summary>
+        partial void OnWindowAnchorChanged(WindowAnchor value)
+        {
+            WindowOffsetX = 0;
+            WindowOffsetY = 0;
+        }
+
         [RelayCommand]
         private void OpenUrl(string url) =>
             System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
