@@ -143,6 +143,33 @@
 						<!--Margin-Right: 3 is to align with the buttons in settings-->
                         <StackPanel Orientation="Horizontal" Margin="0 0 3 0">
 							
+                            <Button Command="{Binding ViewModel.OpenCreateEntryCommand}"
+                                    IsVisible="{Binding ViewModel.SearchText, Converter={StaticResource StringEmptyConverter}}"
+                                    Width="28"
+                                    Height="28"
+                                    Padding="0"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    VerticalAlignment="Center"
+                                    ToolTip.Tip="New entry (Ctrl+N)">
+                                <ui:FontIcon FontSize="16"
+                                             FontFamily="{StaticResource SymbolFontFamily}"
+                                             Glyph="{x:Static icons:Icons.Add}" />
+                            </Button>
+                            <local:PinButton IsVisible="{Binding ViewModel.SearchText, Converter={StaticResource StringEmptyConverter}}" />
+                            <Button Command="{Binding ViewModel.ToggleSettingsCommand}"
+                                    IsVisible="{Binding ViewModel.SearchText, Converter={StaticResource StringEmptyConverter}}"
+                                    Width="28"
+                                    Height="28"
+                                    Padding="0"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    VerticalAlignment="Center"
+                                    ToolTip.Tip="Settings">
+                                <ui:FontIcon FontSize="16"
+                                             FontFamily="{StaticResource SymbolFontFamily}"
+                                             Glyph="{x:Static icons:Icons.Settings}" />
+                            </Button>
                             <Button Command="{Binding ViewModel.ClearSearchCommand}"
                                     Click="ClearSearchButton_Click"
                                     IsVisible="{Binding ViewModel.SearchText, Converter={StaticResource StringEmptyConverter}, ConverterParameter=Invert}"
@@ -157,40 +184,14 @@
                                              FontFamily="{StaticResource SymbolFontFamily}"
                                              Glyph="{x:Static icons:Icons.Close}" />
                             </Button>
-                            <Button Command="{Binding ViewModel.OpenCreateEntryCommand}"
-                                    IsVisible="{Binding ViewModel.SearchText, Converter={StaticResource StringEmptyConverter}}"
-                                    Width="28"
-                                    Height="28"
-                                    Padding="0"
-                                    Background="Transparent"
-                                    BorderThickness="0"
-                                    VerticalAlignment="Center"
-                                    ToolTip.Tip="New entry (Ctrl+N)">
-                                <ui:FontIcon FontSize="16"
-                                             FontFamily="{StaticResource SymbolFontFamily}"
-                                             Glyph="{x:Static icons:Icons.Add}" />
-                            </Button>
-                            <Button Command="{Binding ViewModel.ToggleSettingsCommand}"
-                                    IsVisible="{Binding ViewModel.SearchText, Converter={StaticResource StringEmptyConverter}}"
-                                    Width="28"
-                                    Height="28"
-                                    Padding="0"
-                                    Background="Transparent"
-                                    BorderThickness="0"
-                                    VerticalAlignment="Center"
-                                    ToolTip.Tip="Settings">
-                                <ui:FontIcon FontSize="16"
-                                             FontFamily="{StaticResource SymbolFontFamily}"
-                                             Glyph="{x:Static icons:Icons.Settings}" />
-                            </Button>
                         </StackPanel>
                     </TextBox.InnerRightContent>
                 </TextBox>
 
-                <!-- Context menu header: selected entry icon + title -->
+                <!-- Context menu header: selected entry icon + title + Pin / Back buttons -->
                 <Grid IsVisible="{Binding ViewModel.IsContextMenuOpen}"
-                      ColumnDefinitions="Auto,*"
-                      Margin="12 0">
+                      ColumnDefinitions="Auto,*,Auto,Auto"
+                      Margin="12 0 4 0">
                     <Image Grid.Column="0"
                            Source="{Binding ViewModel.SelectedEntry.Icon}"
                            Width="20"
@@ -203,11 +204,25 @@
                                FontWeight="SemiBold"
                                VerticalAlignment="Center"
                                TextTrimming="CharacterEllipsis" />
+                    <local:PinButton Grid.Column="2" />
+                    <Button Grid.Column="3"
+                            Command="{Binding ViewModel.CloseContextMenuCommand}"
+                            Width="28"
+                            Height="28"
+                            Padding="0"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            VerticalAlignment="Center"
+                            ToolTip.Tip="Go back">
+                        <ui:FontIcon FontSize="16"
+                                     FontFamily="{StaticResource SymbolFontFamily}"
+                                     Glyph="{x:Static icons:Icons.Back}" />
+                    </Button>
                 </Grid>
 
-                <!-- Settings header: title + Save / Reset buttons -->
+                <!-- Settings header: title + Reset / Save / Pin / Discard buttons -->
                 <Grid IsVisible="{Binding ViewModel.IsSettingsOpen}"
-                      ColumnDefinitions="*,Auto,Auto,Auto"
+                      ColumnDefinitions="*,Auto,Auto,Auto,Auto"
                       Margin="12 0 4 0">
                     <TextBlock Grid.Column="0"
                                Text="Settings"
@@ -240,7 +255,8 @@
                                      FontFamily="{StaticResource SymbolFontFamily}"
                                      Glyph="{x:Static icons:Icons.Save}" />
                     </Button>
-                    <Button Grid.Column="3"
+                    <local:PinButton Grid.Column="3" />
+                    <Button Grid.Column="4"
                             Command="{Binding ViewModel.NavigateBackCommand}"
                             Width="28"
                             Height="28"
@@ -255,9 +271,9 @@
                     </Button>
                 </Grid>
 
-                <!-- Create entry header: title + Create / Cancel buttons -->
+                <!-- Create entry header: title + Create / Pin / Cancel buttons -->
                 <Grid IsVisible="{Binding ViewModel.IsCreateEntryOpen}"
-                      ColumnDefinitions="*,Auto,Auto"
+                      ColumnDefinitions="*,Auto,Auto,Auto"
                       Margin="12 0 4 0">
                     <TextBlock Grid.Column="0"
                                Text="New entry"
@@ -278,7 +294,8 @@
                                      FontFamily="{StaticResource SymbolFontFamily}"
                                      Glyph="{x:Static icons:Icons.Save}" />
                     </Button>
-                    <Button Grid.Column="2"
+                    <local:PinButton Grid.Column="2" />
+                    <Button Grid.Column="3"
                             Command="{Binding CreateEntryView.ViewModel.CancelCommand}"
                             IsEnabled="{Binding CreateEntryView.ViewModel.IsEditable}"
                             Width="28"

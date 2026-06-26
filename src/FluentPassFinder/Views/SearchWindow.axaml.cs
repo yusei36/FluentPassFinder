@@ -59,7 +59,7 @@ namespace FluentPassFinder.Views
                     CreateEntryView.FocusFirstField();
             };
 
-            Deactivated += (_, _) => { if (!_isWarmingUp) HideSearchWindow(); };
+            Deactivated += (_, _) => { if (!_isWarmingUp && !ViewModel.IsPinned) HideSearchWindow(); };
             SizeChanged += OnWindowSizeChanged;
         }
 
@@ -149,6 +149,7 @@ namespace FluentPassFinder.Views
 
             _pendingHide = false; // cancel any deferred hide
             _isOpening = true;
+            ViewModel.IsPinned = false; // each fresh show starts unpinned
 
             ViewModel.IsSettingsOpen = false;
             ViewModel.IsCreateEntryOpen = false;
@@ -198,7 +199,7 @@ namespace FluentPassFinder.Views
         {
             _platform.StartForegroundWatch(() =>
             {
-                if (!IsVisible || _isWarmingUp || _isOpening || _isClosing) return;
+                if (!IsVisible || _isWarmingUp || _isOpening || _isClosing || ViewModel.IsPinned) return;
                 HideSearchWindow();
             });
         }

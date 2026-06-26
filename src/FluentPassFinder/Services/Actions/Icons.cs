@@ -11,10 +11,13 @@ namespace FluentPassFinder.Services.Actions
     {
         // Search window UI
         public const string Close = "\uE6CB";      // dismiss
+        public const string Back = "\uE113";       // arrow_left (go back)
         public const string Search = "\uEF9B";     // search
         public const string Save = "\uEF5D";       // save
         public const string Reset = "\uE0C7";      // arrow_counterclockwise_dashes
         public const string Add = "\uE00D";        // add
+        public const string Pin = "\uEE3F";        // pin (unpinned)
+        public const string PinFilled = "\uEE3E";  // pin (pinned)
         public const string Eye = "\uE87A";        // eye (reveal password)
         public const string EyeOff = "\uE880";     // eye_off (hide password)
 

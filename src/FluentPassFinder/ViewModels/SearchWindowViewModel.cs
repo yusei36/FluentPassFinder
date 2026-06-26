@@ -41,6 +41,9 @@ namespace FluentPassFinder.ViewModels
         [ObservableProperty]
         private bool isCreateEntryOpen = false;
 
+        [ObservableProperty]
+        private bool isPinned = false;
+
         public bool IsSearchBarVisible => !IsContextMenuOpen && !IsSettingsOpen && !IsCreateEntryOpen;
         public bool IsResultsVisible => !IsSettingsOpen && !IsCreateEntryOpen;
 
@@ -139,6 +142,12 @@ namespace FluentPassFinder.ViewModels
         private void ClearSearch()
         {
             SearchText = string.Empty;
+        }
+
+        [RelayCommand]
+        private void TogglePin()
+        {
+            IsPinned = !IsPinned;
         }
 
         [RelayCommand]

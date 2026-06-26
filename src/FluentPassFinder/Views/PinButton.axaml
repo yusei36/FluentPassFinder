@@ -1,0 +1,37 @@
+<!-- SPDX-FileCopyrightText: Copyright (C) 2026 Uwe Koegel -->
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<!-- Reusable pin toggle shown in every header. Inherits the SearchWindow DataContext,
+     so it binds straight to the shared pin command/state. -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:FluentPassFinder.Views"
+             xmlns:converters="clr-namespace:FluentPassFinder.Converters"
+             xmlns:icons="clr-namespace:FluentPassFinder.Services.Actions"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             x:Class="FluentPassFinder.Views.PinButton"
+             x:ClassModifier="internal"
+             x:DataType="local:SearchWindow">
+    <UserControl.Resources>
+        <converters:InvertBoolConverter x:Key="InvertBoolConverter" />
+    </UserControl.Resources>
+    <Button Command="{Binding ViewModel.TogglePinCommand}"
+            Width="28"
+            Height="28"
+            Padding="0"
+            Background="Transparent"
+            BorderThickness="0"
+            VerticalAlignment="Center"
+            ToolTip.Tip="Keep window open">
+        <Panel>
+            <ui:FontIcon FontSize="16"
+                         FontFamily="{StaticResource SymbolFontFamily}"
+                         Glyph="{x:Static icons:Icons.Pin}"
+                         IsVisible="{Binding ViewModel.IsPinned, Converter={StaticResource InvertBoolConverter}}" />
+            <ui:FontIcon FontSize="16"
+                         FontFamily="{StaticResource SymbolFontFamily}"
+                         Glyph="{x:Static icons:Icons.PinFilled}"
+                         Foreground="{DynamicResource AccentTextFillColorPrimaryBrush}"
+                         IsVisible="{Binding ViewModel.IsPinned}" />
+        </Panel>
+    </Button>
+</UserControl>
