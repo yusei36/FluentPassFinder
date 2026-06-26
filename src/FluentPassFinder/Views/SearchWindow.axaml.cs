@@ -395,7 +395,40 @@ namespace FluentPassFinder.Views
             if (_isBottomAnchor)
                 _targetHeaderTopY = newY + (int)((Bounds.Height - HeaderSize) * _anchorScaling);
 
+            // While settings is open, dragging edits the persisted offset (live preview)
+            // instead of a throwaway move. Saving settings then keeps the new placement.
+            if (ViewModel.IsSettingsOpen)
+                UpdateSettingsOffsetFromPosition();
+
             e.Handled = true;
+        }
+
+        /// <summary>
+        /// Inverts <see cref="SetWindowPosition"/> to derive the X/Y offset of the current
+        /// window position from its anchor on the current screen, writing the result into the
+        /// settings view model so a Ctrl+drag updates (and can persist) the placement.
+        /// </summary>
+        private void UpdateSettingsOffsetFromPosition()
+        {
+            var screen = Screens.ScreenFromPoint(Position) ?? Screens.Primary;
+            if (screen == null) return;
+
+            // Compute the offset relative to the anchor currently selected in the settings
+            // dropdown so the saved (anchor + offset) pair reproduces this dragged position.
+            var anchor = SettingsView.ViewModel.WindowAnchor;
+            var (hFrac, vFrac) = ParseAnchor(anchor);
+            var wa = screen.WorkingArea;
+            double scaling = screen.Scaling;
+
+            int baseX = wa.X + (int)(hFrac * (wa.Width - Width * scaling));
+            int baseY = wa.Y + (int)(vFrac * (wa.Height - HeaderSize * scaling));
+
+            // For bottom anchors the offset is measured from the header-top reference, not
+            // the (body-extended) window top.
+            int headerTopY = _isBottomAnchor ? _targetHeaderTopY : Position.Y;
+
+            SettingsView.ViewModel.WindowOffsetX = Position.X - baseX;
+            SettingsView.ViewModel.WindowOffsetY = headerTopY - baseY;
         }
 
         private void OnDragPointerReleased(object sender, PointerReleasedEventArgs e)

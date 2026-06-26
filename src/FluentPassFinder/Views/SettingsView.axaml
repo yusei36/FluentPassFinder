@@ -224,6 +224,12 @@
                                FontSize="13" />
             </Grid>
 
+            <TextBlock Text="Tip: hold Ctrl and drag the window to set the offset."
+                       FontSize="11"
+                       Opacity="0.6"
+                       TextWrapping="Wrap"
+                       Margin="0 2 0 0" />
+
             <Separator Margin="0 6" />
 
             <!-- Search Behavior -->
