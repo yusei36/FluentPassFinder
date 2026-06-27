@@ -33,11 +33,22 @@ namespace FluentPassFinder.Views
         // Ctrl+drag window move. Armed on a Ctrl+left press, promoted to an actual
         // move once the cursor passes a small threshold so a plain Ctrl+click still
         // falls through to the list/action handlers.
+        // Ctrl+drag that starts near the right/bottom edge resizes instead of moving,
+        // syncing Width / results-area Height back into the settings view model.
         private const double DragThreshold = 4.0;
+        private const double ResizeEdgeMargin = 16.0;
+        private const double MinWindowWidth = 200, MaxWindowWidth = 4000;
+        private const double MinResultsHeight = 50, MaxResultsHeight = 4000;
         private bool _dragArmed;
         private bool _dragging;
         private PixelPoint _dragStartCursor;
         private PixelPoint _dragStartWindow;
+
+        private bool _resizing;
+        private bool _resizeRight;
+        private bool _resizeBottom;
+        private double _resizeStartWidth;
+        private double _resizeStartResultsHeight;
 
         private readonly IPlatformServices _platform;
 
@@ -365,6 +376,16 @@ namespace FluentPassFinder.Views
             _dragging = false;
             _dragStartCursor = _platform.GetCursorPosition();
             _dragStartWindow = Position;
+
+            // Decide move vs. resize from where the press lands. Resizing is only offered
+            var local = point.Position;
+            _resizeRight = local.X >= Bounds.Width - ResizeEdgeMargin;
+            _resizeBottom = local.Y >= Bounds.Height - ResizeEdgeMargin;
+            _resizing = _resizeRight || _resizeBottom;
+            _resizeStartWidth = Width;
+            _resizeStartResultsHeight = SettingsView.ViewModel.WindowHeight is decimal h
+                ? (double)h
+                : MaxHeight - HeaderSize;
         }
 
         private void OnDragPointerMoved(object sender, PointerEventArgs e)
@@ -387,6 +408,17 @@ namespace FluentPassFinder.Views
                 return;
 
             _dragging = true;
+
+            if (_resizing)
+                ApplyResize(dx, dy);
+            else
+                ApplyMove(dx, dy);
+
+            e.Handled = true;
+        }
+
+        private void ApplyMove(int dx, int dy)
+        {
             int newY = _dragStartWindow.Y + dy;
             Position = new PixelPoint(_dragStartWindow.X + dx, newY);
 
@@ -399,8 +431,31 @@ namespace FluentPassFinder.Views
             // instead of a throwaway move. Saving settings then keeps the new placement.
             if (ViewModel.IsSettingsOpen)
                 UpdateSettingsOffsetFromPosition();
+        }
 
-            e.Handled = true;
+        /// <summary>
+        /// Live-resizes the window from its right/bottom edge and mirrors the new dimensions
+        /// into the settings view model. Width maps to <see cref="Window.Width"/>; height maps
+        /// to the results-area max height (<see cref="MaxHeight"/> minus the header), matching
+        /// how <c>ApplyWindowSize</c> applies the persisted settings.
+        /// </summary>
+        private void ApplyResize(int dx, int dy)
+        {
+            double scale = RenderScaling <= 0 ? 1.0 : RenderScaling;
+
+            if (_resizeRight)
+            {
+                double width = Math.Clamp(_resizeStartWidth + dx / scale, MinWindowWidth, MaxWindowWidth);
+                Width = width;
+                SettingsView.ViewModel.WindowWidth = (int)width;
+            }
+
+            if (_resizeBottom)
+            {
+                double height = Math.Clamp(_resizeStartResultsHeight + dy / scale, MinResultsHeight, MaxResultsHeight);
+                MaxHeight = HeaderSize + height;
+                SettingsView.ViewModel.WindowHeight = (int)height;
+            }
         }
 
         /// <summary>
@@ -434,10 +489,13 @@ namespace FluentPassFinder.Views
         private void OnDragPointerReleased(object sender, PointerReleasedEventArgs e)
         {
             // Suppress the click that would otherwise trigger a list/action handler,
-            // but only when we actually moved the window.
+            // but only when we actually moved or resized the window.
             if (_dragging) e.Handled = true;
             _dragArmed = false;
             _dragging = false;
+            _resizing = false;
+            _resizeRight = false;
+            _resizeBottom = false;
         }
     }
 }

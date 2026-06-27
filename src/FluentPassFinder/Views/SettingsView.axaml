@@ -224,7 +224,7 @@
                                FontSize="13" />
             </Grid>
 
-            <TextBlock Text="Tip: hold Ctrl and drag the window to set the offset."
+            <TextBlock Text="Tip: hold Ctrl and drag the window to set the offset, or drag its right/bottom edge to resize."
                        FontSize="11"
                        Opacity="0.6"
                        TextWrapping="Wrap"
