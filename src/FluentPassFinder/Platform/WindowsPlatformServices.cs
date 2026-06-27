@@ -113,6 +113,20 @@ namespace FluentPassFinder.Platform
             _onForegroundChangedToOtherProcess?.Invoke();
         }
 
+        public void ShowError(string message)
+        {
+            MessageBox(IntPtr.Zero, message, "FluentPassFinder",
+                MB_OK | MB_ICONERROR | MB_SETFOREGROUND | MB_TOPMOST);
+        }
+
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        private static extern int MessageBox(IntPtr hWnd, string text, string caption, uint type);
+
+        private const uint MB_OK = 0x00000000;
+        private const uint MB_ICONERROR = 0x00000010;
+        private const uint MB_SETFOREGROUND = 0x00010000;
+        private const uint MB_TOPMOST = 0x00040000;
+
         [DllImport("dwmapi.dll")]
         private static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int attrValue, int attrSize);
 

@@ -44,5 +44,8 @@ namespace FluentPassFinder.Platform
         /// does. Idempotent; the watch lives for the process lifetime.
         /// </summary>
         void StartForegroundWatch(Action onForegroundChangedToOtherProcess);
+
+        /// <summary>Show a modal native message box (used for startup failures).</summary>
+        void ShowError(string message);
     }
 }

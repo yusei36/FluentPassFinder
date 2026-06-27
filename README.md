@@ -65,6 +65,19 @@ With an entry selected in the list:
 
 `Shift+Enter` / `Ctrl+Enter` / `Alt+Enter` are the defaults and can be reassigned in the settings panel.
 
+### Command-line activation
+
+Running `FluentPassFinder.exe` directly (e.g. from a desktop shortcut, the Start menu, or a stream-deck/macro tool) drives the already-running instance that KeePass started, so you can trigger it from launchers that can't bind a global hotkey. Each flag mirrors one of the global hotkeys:
+
+| Command | Action |
+|---|---|
+| `FluentPassFinder.exe` | Open on current screen (default) |
+| `FluentPassFinder.exe --current` | Open on current screen |
+| `FluentPassFinder.exe --primary` | Open on primary screen |
+| `FluentPassFinder.exe --new-entry` | Open with the new-entry form |
+
+If KeePass (and therefore FluentPassFinder) isn't running, a message box explains that it must be started from KeePass first.
+
 
 ## Screenshots
 ### Search Window

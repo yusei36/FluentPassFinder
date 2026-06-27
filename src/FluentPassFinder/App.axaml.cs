@@ -34,9 +34,22 @@ namespace FluentPassFinder
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
+                // Created up front so the startup-failure paths below can show a message box.
+                _platform = new WindowsPlatformServices();
+
                 var args = desktop.Args;
-                if (args == null || args.Length == 0 || string.IsNullOrEmpty(args[0]))
+                if (SingleInstance.TryParseActivationAction(args, out var action))
                 {
+                    if (SingleInstance.TrySignalRunningInstance(action))
+                    {
+                        desktop.Shutdown(0);
+                        return;
+                    }
+
+                    _platform.ShowError(
+                        "FluentPassFinder is started automatically by the KeePass plugin and "
+                        + "cannot run on its own.\n\nOpen KeePass and use the configured hotkey "
+                        + "to show the search window.");
                     desktop.Shutdown(1);
                     return;
                 }
@@ -50,6 +63,7 @@ namespace FluentPassFinder
                 catch (Exception ex)
                 {
                     Program.WriteLog("InitException", ex.ToString());
+                    _platform.ShowError($"FluentPassFinder failed to start:\n\n{ex.Message}");
                     desktop.Shutdown(1);
                     return;
                 }
@@ -64,11 +78,6 @@ namespace FluentPassFinder
         private void Init(string pipeName, int? hostPid, IClassicDesktopStyleApplicationLifetime desktop)
         {
             _instance = this;
-
-            // Platform-specific services (global hotkeys, foreground-window handling).
-            // Only Windows is implemented today; add IsLinux/IsMacOS branches here when
-            // porting (see docs/CrossPlatform.md).
-            _platform = new WindowsPlatformServices();
 
             var pipeClient = new PipeClient(pipeName, hostPid);
             pipeClient.Connect();
@@ -112,6 +121,25 @@ namespace FluentPassFinder
             // Render the window once off-screen so the first hotkey press shows a
             // fully composited window instead of an unrendered "skeleton" frame.
             _searchWindow.WarmUp();
+
+            SingleInstance.StartActivationListener(action =>
+                Avalonia.Threading.Dispatcher.UIThread.Post(() => Activate(action)));
+        }
+
+        private void Activate(ActivationAction action)
+        {
+            switch (action)
+            {
+                case ActivationAction.ShowPrimary:
+                    _searchWindow?.ShowSearchWindow(true);
+                    break;
+                case ActivationAction.NewEntry:
+                    _searchWindow?.ShowSearchWindow(false, openCreateEntry: true);
+                    break;
+                default:
+                    _searchWindow?.ShowSearchWindow(false);
+                    break;
+            }
         }
 
         internal static async Task CopyToClipboardAsync(string text)
