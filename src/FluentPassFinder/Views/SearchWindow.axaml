@@ -95,7 +95,7 @@
         <KeyBinding Gesture="Down"         Command="{Binding ViewModel.NavigateListDownCommand}" />
         <KeyBinding Gesture="Up"           Command="{Binding ViewModel.NavigateListUpCommand}" />
         <KeyBinding Gesture="Ctrl+N"       Command="{Binding ViewModel.OpenCreateEntryCommand}" />
-        <KeyBinding Gesture="Ctrl+S"       Command="{Binding ViewModel.SaveCreateEntryCommand}" />
+        <KeyBinding Gesture="Ctrl+S"       Command="{Binding ViewModel.SaveCommand}" />
     </Window.KeyBindings>
 
     <Border CornerRadius="8"

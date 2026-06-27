@@ -182,10 +182,12 @@ namespace FluentPassFinder.ViewModels
         }
 
         [RelayCommand]
-        private void SaveCreateEntry()
+        private void Save()
         {
             if (IsCreateEntryOpen)
                 createEntryViewModel.CreateCommand.Execute(null);
+            else if (IsSettingsOpen)
+                SaveSettingsAndCloseCommand.Execute(null);
         }
 
         [RelayCommand]
