@@ -4,7 +4,7 @@
 
 **[Download](https://github.com/yusei36/FluentPassFinder/releases/latest)** | **[Installation](#installation)** | **[How to use](#how-to-use)** | **[Configuration](#configuration)**
 
-A KeePass plugin with a Fluent Design search window to quickly find entries and autotype or copy passwords and other fields. A global shortcut opens the search window from anywhere.
+A KeePass plugin with a Fluent Design search window to quickly find entries and autotype or copy passwords and other fields. A global shortcut opens the search window from anywhere, and you can create new entries without switching back to KeePass.
 
 ![Search window](docs/images/search_field.png)
 
@@ -37,18 +37,33 @@ The search window runs as a **separate process** from KeePass, built with [Avalo
 
 ## How to use
 
-### General shortcuts:
-- Open FluentPassFinder on current screen: `Ctrl+Alt+S` (or `Alt Gr+S`)
-- Open FluentPassFinder on main screen: `Ctrl+Alt+F` (or `Alt Gr+F`)
-- Navigate up in list: `Arrow Up`
-- Navigate down in list: `Arrow Down`
+### Global hotkeys
 
-### Entry shortcuts
+These work system-wide, from any application (configurable in the settings panel):
+
+- Open on current screen: `Ctrl+Alt+S` (or `Alt Gr+S`)
+- Open on primary screen: `Ctrl+Alt+F` (or `Alt Gr+F`)
+- Open with new-entry form: `Ctrl+Alt+N` (or `Alt Gr+N`)
+
+### In the search window
+
+- Navigate result list: `Arrow Up` / `Arrow Down`
+- Open new-entry form: `Ctrl+N`
+- Save changes (settings or a new entry): `Ctrl+S`
+- Close (or step back from a context menu / panel): `Esc`
+- Move window: hold `Ctrl` and drag it
+- Resize window: hold `Ctrl` and drag from its right or bottom edge
+
+### Entry actions
+
+With an entry selected in the list:
+
 - Open entry context menu: `Enter`
 - Copy user name: `Shift+Enter`
 - Copy password: `Ctrl+Enter`
 - Copy TOTP: `Alt+Enter`
-- Select action in entry context menu: `Enter`
+
+`Shift+Enter` / `Ctrl+Enter` / `Alt+Enter` are the defaults and can be reassigned in the settings panel.
 
 
 ## Screenshots
@@ -64,7 +79,22 @@ The search window runs as a **separate process** from KeePass, built with [Avalo
 
 ## Configuration
 
-Plugin settings can be changed via the built-in **settings panel** inside the FluentPassFinder window (gear icon). The settings are persisted as JSON under the `FluentPassFinder` key in `KeePass.config.xml`, which you can also edit directly if you prefer.
+Plugin settings can be changed via the built-in **settings panel** inside the FluentPassFinder window (gear icon), and are applied immediately without restarting KeePass. Press `Ctrl+S` to save. The settings are persisted as JSON under the `FluentPassFinder` key in `KeePass.config.xml`, which you can also edit directly if you prefer.
+
+The panel covers:
+
+- **Theme**: follow the system theme, or force light/dark.
+- **Search**: which entry fields are searched (title, user name, URL, notes, tags, custom fields, ...), whether expired entries and groups excluded from KeePass searching are skipped, and whether field references are resolved.
+- **Actions**: reassign the `Shift+Enter` / `Ctrl+Enter` / `Alt+Enter` shortcuts and reorder the per-entry actions.
+- **Hotkeys**: the three global hotkeys (current screen, primary screen, new entry).
+- **New entries**: which group new entries are saved into.
+- **Window**: width, results-area height, and screen anchor (e.g. center, bottom-center) plus an X/Y offset. You can also set the size and position directly by `Ctrl`-dragging the window while the settings panel is open; the new placement is mirrored into these fields so saving keeps it.
+- **Behavior**: optionally preserve the last search text for a configurable timeout, and whether `Esc` always closes the window instead of stepping back.
+- **TOTP placeholder**: see below.
+
+### New entries
+
+Press `Ctrl+Alt+N` (global) or `Ctrl+N` (in the window) to open a form that creates a new entry in the open database without leaving FluentPassFinder. New entries are saved into a dedicated group (auto-created as **"New entries"** on first use); you can change the target group in settings.
 
 ### TOTP placeholder
 
