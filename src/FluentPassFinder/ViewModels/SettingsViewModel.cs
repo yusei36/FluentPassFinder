@@ -14,6 +14,7 @@ namespace FluentPassFinder.ViewModels
         [ObservableProperty] private string theme;
         [ObservableProperty] private string globalHotkeyCurrentScreen;
         [ObservableProperty] private string globalHotkeyPrimaryScreen;
+        [ObservableProperty] private string globalHotkeyNewEntry;
         [ObservableProperty] private bool showActionsForCustomFields;
 
         [ObservableProperty] private bool includeTitleField;
@@ -144,6 +145,7 @@ namespace FluentPassFinder.ViewModels
                 {
                     CurrentScreen = GlobalHotkeyCurrentScreen,
                     PrimaryScreen = GlobalHotkeyPrimaryScreen,
+                    NewEntry = GlobalHotkeyNewEntry,
                 },
                 Search = new SearchOptions
                 {
@@ -275,6 +277,7 @@ namespace FluentPassFinder.ViewModels
             Theme = s.Theme.ToString();
             GlobalHotkeyCurrentScreen = s.Hotkeys.CurrentScreen;
             GlobalHotkeyPrimaryScreen = s.Hotkeys.PrimaryScreen;
+            GlobalHotkeyNewEntry = s.Hotkeys.NewEntry;
 
             IncludeTitleField = s.Search.IncludeTitleField;
             IncludeUserNameField = s.Search.IncludeUserNameField;

@@ -10,5 +10,8 @@ namespace FluentPassFinder.Contracts.Public
 
         /// <summary>Opens the search window on the primary screen.</summary>
         public string PrimaryScreen { get; set; } = "Ctrl+Alt+F";
+
+        /// <summary>Opens the search window (current screen) with the create-entry overlay.</summary>
+        public string NewEntry { get; set; } = "Ctrl+Alt+N";
     }
 }

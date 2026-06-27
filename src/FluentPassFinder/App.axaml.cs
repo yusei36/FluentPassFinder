@@ -145,16 +145,8 @@ namespace FluentPassFinder
                 ApplyWindowSize(settings);
             });
 
-            _instance?._platform?.UnregisterHotkey(nameof(HotkeyOptions.PrimaryScreen));
-            _instance?._platform?.UnregisterHotkey(nameof(HotkeyOptions.CurrentScreen));
-            _instance?._platform?.RegisterHotkey(
-                nameof(HotkeyOptions.PrimaryScreen),
-                settings.Hotkeys.PrimaryScreen,
-                () => Avalonia.Threading.Dispatcher.UIThread.Post(() => _instance?._searchWindow?.ShowSearchWindow(true)));
-            _instance?._platform?.RegisterHotkey(
-                nameof(HotkeyOptions.CurrentScreen),
-                settings.Hotkeys.CurrentScreen,
-                () => Avalonia.Threading.Dispatcher.UIThread.Post(() => _instance?._searchWindow?.ShowSearchWindow(false)));
+            _instance?.UnregisterHotkeys();
+            _instance?.RegisterHotkeys(settings);
         }
 
         private static void ApplyWindowSize(Settings settings)
@@ -179,6 +171,18 @@ namespace FluentPassFinder
                 nameof(HotkeyOptions.CurrentScreen),
                 settings.Hotkeys.CurrentScreen,
                 () => Avalonia.Threading.Dispatcher.UIThread.Post(() => _searchWindow?.ShowSearchWindow(false)));
+
+            _platform.RegisterHotkey(
+                nameof(HotkeyOptions.NewEntry),
+                settings.Hotkeys.NewEntry,
+                () => Avalonia.Threading.Dispatcher.UIThread.Post(() => _searchWindow?.ShowSearchWindow(false, openCreateEntry: true)));
+        }
+
+        private void UnregisterHotkeys()
+        {
+            _platform.UnregisterHotkey(nameof(HotkeyOptions.PrimaryScreen));
+            _platform.UnregisterHotkey(nameof(HotkeyOptions.CurrentScreen));
+            _platform.UnregisterHotkey(nameof(HotkeyOptions.NewEntry));
         }
 
         private void RestoreTheme(Settings settings)

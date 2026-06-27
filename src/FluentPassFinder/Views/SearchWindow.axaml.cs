@@ -170,7 +170,7 @@ namespace FluentPassFinder.Views
             }, Avalonia.Threading.DispatcherPriority.Background);
         }
 
-        public void ShowSearchWindow(bool showOnPrimaryScreen)
+        public void ShowSearchWindow(bool showOnPrimaryScreen, bool openCreateEntry = false)
         {
             if (!ViewModel.IsAnyDatabaseOpen) return;
 
@@ -192,6 +192,9 @@ namespace FluentPassFinder.Views
                 SearchBox.Text = string.Empty;
             }
 
+            if (openCreateEntry)
+                ViewModel.OpenCreateEntry();
+
             SetWindowPosition(showOnPrimaryScreen);
             Show();
             EnsureForegroundWatch();
@@ -201,7 +204,6 @@ namespace FluentPassFinder.Views
             Activate();
             SearchBox.Focus();
             _isOpening = false;
-
         }
 
         /// <summary>

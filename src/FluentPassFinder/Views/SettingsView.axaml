@@ -63,6 +63,13 @@
             </Grid>
 
             <Grid ColumnDefinitions="*,*" Margin="0 2">
+                <TextBlock Grid.Column="0" Text="Hotkey (new entry)" VerticalAlignment="Center" FontSize="13" />
+                <TextBox Grid.Column="1"
+                         Text="{Binding ViewModel.GlobalHotkeyNewEntry}"
+                         FontSize="13" />
+            </Grid>
+
+            <Grid ColumnDefinitions="*,*" Margin="0 2">
                 <TextBlock Grid.Column="0" Text="Enter" VerticalAlignment="Center" FontSize="13" />
                 <ComboBox Grid.Column="1"
                           ItemsSource="{x:Static models:SettingsViewModel.AvailableActions}"
