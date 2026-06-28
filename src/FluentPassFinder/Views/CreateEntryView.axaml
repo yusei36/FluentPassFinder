@@ -118,7 +118,7 @@
                                                               Background="Transparent" BorderThickness="0"
                                                               VerticalAlignment="Center"
                                                               ToolTip.Tip="Reveal">
-                                                    <ui:FontIcon FontSize="14"
+                                                    <ui:FAFontIcon FontSize="14"
                                                                  FontFamily="{StaticResource SymbolFontFamily}"
                                                                  Glyph="{Binding RevealGlyph}" />
                                                 </ToggleButton>
@@ -130,7 +130,7 @@
                                                 Margin="4 0 0 0" Padding="6 0"
                                                 VerticalAlignment="Stretch"
                                                 ToolTip.Tip="Generate password">
-                                            <ui:FontIcon FontSize="14"
+                                            <ui:FAFontIcon FontSize="14"
                                                          FontFamily="{StaticResource SymbolFontFamily}"
                                                          Glyph="{x:Static icons:Icons.Reset}" />
                                         </Button>
@@ -174,7 +174,7 @@
             <!-- Success confirmation (shown briefly before the window closes) -->
             <StackPanel Orientation="Horizontal" Spacing="6" Margin="0 6 0 0"
                         IsVisible="{Binding ViewModel.Saved}">
-                <ui:FontIcon FontSize="14"
+                <ui:FAFontIcon FontSize="14"
                              FontFamily="{StaticResource SymbolFontFamily}"
                              Glyph="{x:Static icons:Icons.Checkmark}"
                              Foreground="{DynamicResource SystemFillColorSuccessBrush}"

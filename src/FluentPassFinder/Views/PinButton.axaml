@@ -23,11 +23,11 @@
             VerticalAlignment="Center"
             ToolTip.Tip="Keep window open">
         <Panel>
-            <ui:FontIcon FontSize="16"
+            <ui:FAFontIcon FontSize="16"
                          FontFamily="{StaticResource SymbolFontFamily}"
                          Glyph="{x:Static icons:Icons.Pin}"
                          IsVisible="{Binding ViewModel.IsPinned, Converter={StaticResource InvertBoolConverter}}" />
-            <ui:FontIcon FontSize="16"
+            <ui:FAFontIcon FontSize="16"
                          FontFamily="{StaticResource SymbolFontFamily}"
                          Glyph="{x:Static icons:Icons.PinFilled}"
                          Foreground="{DynamicResource AccentTextFillColorPrimaryBrush}"

@@ -93,18 +93,6 @@ namespace FluentPassFinder.Views
         public void FocusSearchBox() => SearchBox.Focus();
 
         /// <summary>
-        /// Strips the OS-drawn window border so it doesn't show over our borderless
-        /// rounded surface (see <see cref="IPlatformServices.RemoveWindowBorder"/>).
-        /// </summary>
-        protected override void OnOpened(EventArgs e)
-        {
-            base.OnOpened(e);
-
-            var hWnd = TryGetPlatformHandle()?.Handle ?? IntPtr.Zero;
-            _platform?.RemoveWindowBorder(hWnd);
-        }
-
-        /// <summary>
         /// Renders the window once off-screen at startup so the first real
         /// <see cref="ShowSearchWindow"/> doesn't flash an unrendered "skeleton"
         /// (window border with no composited background). The native surface,

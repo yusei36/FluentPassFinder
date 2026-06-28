@@ -295,7 +295,7 @@
                       Margin="0 2">
                 <Expander.Header>
                     <StackPanel Orientation="Horizontal" Spacing="10">
-                        <ui:FontIcon FontSize="16" FontFamily="{StaticResource SymbolFontFamily}" Glyph="{x:Static icons:Icons.Options}" VerticalAlignment="Center" />
+                        <ui:FAFontIcon FontSize="16" FontFamily="{StaticResource SymbolFontFamily}" Glyph="{x:Static icons:Icons.Options}" VerticalAlignment="Center" />
                         <TextBlock Text="Advanced" VerticalAlignment="Center" />
                     </StackPanel>
                 </Expander.Header>
@@ -313,7 +313,7 @@
                             <TextBox Grid.Column="0"
                                      Height="32"
                                      Text="{Binding ViewModel.NewExcludeField}"
-                                     Watermark="Field name"
+                                     PlaceholderText="Field name"
                                      VerticalContentAlignment="Center"
                                      FontSize="13">
                                 <TextBox.KeyBindings>
@@ -328,7 +328,7 @@
                                     HorizontalContentAlignment="Center"
                                     VerticalContentAlignment="Center"
                                     ToolTip.Tip="Add field">
-                                <ui:FontIcon FontSize="16" FontFamily="{StaticResource SymbolFontFamily}" Glyph="{x:Static icons:Icons.Add}" />
+                                <ui:FAFontIcon FontSize="16" FontFamily="{StaticResource SymbolFontFamily}" Glyph="{x:Static icons:Icons.Add}" />
                             </Button>
                         </Grid>
                         <ItemsControl ItemsSource="{Binding ViewModel.ExcludeFields}">
@@ -363,7 +363,7 @@
                                                     Background="Transparent"
                                                     BorderThickness="0"
                                                     ToolTip.Tip="Remove">
-                                                <ui:FontIcon FontSize="14" FontFamily="{StaticResource SymbolFontFamily}" Glyph="{x:Static icons:Icons.Close}" />
+                                                <ui:FAFontIcon FontSize="14" FontFamily="{StaticResource SymbolFontFamily}" Glyph="{x:Static icons:Icons.Close}" />
                                             </Button>
                                         </Grid>
                                     </Border>
@@ -399,7 +399,7 @@
                                              Text="{Binding ViewModel.NewSortingAction}"
                                              ItemsSource="{x:Static models:SettingsViewModel.AvailableActions}"
                                              FilterMode="Contains"
-                                             Watermark="Action name"
+                                             PlaceholderText="Action name"
                                              FontSize="13">
                                 <AutoCompleteBox.KeyBindings>
                                     <KeyBinding Gesture="Return" Command="{Binding ViewModel.AddSortingActionCommand}" />
@@ -413,7 +413,7 @@
                                     HorizontalContentAlignment="Center"
                                     VerticalContentAlignment="Center"
                                     ToolTip.Tip="Add action">
-                                <ui:FontIcon FontSize="16" FontFamily="{StaticResource SymbolFontFamily}" Glyph="{x:Static icons:Icons.Add}" />
+                                <ui:FAFontIcon FontSize="16" FontFamily="{StaticResource SymbolFontFamily}" Glyph="{x:Static icons:Icons.Add}" />
                             </Button>
                         </Grid>
                         <ItemsControl ItemsSource="{Binding ViewModel.SortingActions}">
@@ -458,7 +458,7 @@
                                                     Background="Transparent"
                                                     BorderThickness="0"
                                                     ToolTip.Tip="Remove">
-                                                <ui:FontIcon FontSize="14" FontFamily="{StaticResource SymbolFontFamily}" Glyph="{x:Static icons:Icons.Close}" />
+                                                <ui:FAFontIcon FontSize="14" FontFamily="{StaticResource SymbolFontFamily}" Glyph="{x:Static icons:Icons.Close}" />
                                             </Button>
                                         </Grid>
                                     </Border>
@@ -474,7 +474,7 @@
                       Margin="0 2">
                 <Expander.Header>
                     <StackPanel Orientation="Horizontal" Spacing="10">
-                        <ui:FontIcon FontSize="16" FontFamily="{StaticResource SymbolFontFamily}" Glyph="{x:Static icons:Icons.Info}" VerticalAlignment="Center" />
+                        <ui:FAFontIcon FontSize="16" FontFamily="{StaticResource SymbolFontFamily}" Glyph="{x:Static icons:Icons.Info}" VerticalAlignment="Center" />
                         <TextBlock Text="About" VerticalAlignment="Center" />
                     </StackPanel>
                 </Expander.Header>
@@ -503,7 +503,7 @@
                                 HorizontalContentAlignment="Center"
                                 VerticalContentAlignment="Center"
                                 ToolTip.Tip="Copy version">
-                            <ui:FontIcon FontSize="14" FontFamily="{StaticResource SymbolFontFamily}" Glyph="{x:Static icons:Icons.Copy}" />
+                            <ui:FAFontIcon FontSize="14" FontFamily="{StaticResource SymbolFontFamily}" Glyph="{x:Static icons:Icons.Copy}" />
                         </Button>
                     </Grid>
 
@@ -524,7 +524,7 @@
                                 HorizontalContentAlignment="Center"
                                 VerticalContentAlignment="Center"
                                 ToolTip.Tip="Open license text">
-                            <ui:FontIcon FontSize="14" FontFamily="{StaticResource SymbolFontFamily}" Glyph="{x:Static icons:Icons.Document}" />
+                            <ui:FAFontIcon FontSize="14" FontFamily="{StaticResource SymbolFontFamily}" Glyph="{x:Static icons:Icons.Document}" />
                         </Button>
                     </Grid>
 
@@ -539,7 +539,7 @@
                                 HorizontalContentAlignment="Center"
                                 VerticalContentAlignment="Center"
                                 ToolTip.Tip="Open source code on GitHub">
-                            <ui:FontIcon FontSize="14" FontFamily="{StaticResource SymbolFontFamily}" Glyph="{x:Static icons:Icons.Globe}" />
+                            <ui:FAFontIcon FontSize="14" FontFamily="{StaticResource SymbolFontFamily}" Glyph="{x:Static icons:Icons.Globe}" />
                         </Button>
                     </Grid>
 
@@ -554,7 +554,7 @@
                                 HorizontalContentAlignment="Center"
                                 VerticalContentAlignment="Center"
                                 ToolTip.Tip="Open issue tracker on GitHub">
-                            <ui:FontIcon FontSize="14" FontFamily="{StaticResource SymbolFontFamily}" Glyph="{x:Static icons:Icons.Globe}" />
+                            <ui:FAFontIcon FontSize="14" FontFamily="{StaticResource SymbolFontFamily}" Glyph="{x:Static icons:Icons.Globe}" />
                         </Button>
                     </Grid>
 

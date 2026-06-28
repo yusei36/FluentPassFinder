@@ -25,63 +25,13 @@
         Width="450"
         MinHeight="40"
         SizeToContent="Height"
-        SystemDecorations="None"
-        ExtendClientAreaToDecorationsHint="True"
-        ExtendClientAreaChromeHints="NoChrome"
+        WindowDecorations="None"
 		FontFamily="Segoe UI Variable, Segoe UI, sans-serif"
         Background="Transparent">
 
     <Window.Resources>
         <converters:InvertBoolConverter x:Key="InvertBoolConverter" />
         <converters:StringEmptyConverter x:Key="StringEmptyConverter" />
-        <ControlTheme TargetType="ListBoxItem" x:Key="{x:Type ListBoxItem}">
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="Padding" Value="6 2 2 2" />
-            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-            <Setter Property="VerticalContentAlignment" Value="Center" />
-            <Setter Property="CornerRadius" Value="{DynamicResource ControlCornerRadius}" />
-            <Setter Property="Template">
-                <ControlTemplate>
-                    <Panel>
-                        <Border Name="Root"
-                                Background="{TemplateBinding Background}"
-                                CornerRadius="{TemplateBinding CornerRadius}"
-                                Margin="2">
-                            <ContentPresenter Name="PART_ContentPresenter"
-                                              Content="{TemplateBinding Content}"
-                                              ContentTemplate="{TemplateBinding ContentTemplate}"
-                                              Padding="{TemplateBinding Padding}"
-                                              HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                              VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
-                        </Border>
-                        <!-- Grow-in transition is attached by the owning ListBox, not here. -->
-                        <Rectangle Name="SelectionIndicator"
-                                   HorizontalAlignment="Left"
-                                   VerticalAlignment="Center"
-                                   Width="3" Height="16"
-                                   Margin="2 0 0 0"
-                                   UseLayoutRounding="False"
-                                   RadiusX="2" RadiusY="2"
-                                   IsVisible="False"
-                                   RenderTransform="scaleY(0)"
-                                   Fill="{DynamicResource AccentFillColorDefaultBrush}" />
-                    </Panel>
-                </ControlTemplate>
-            </Setter>
-            <Style Selector="^:selected /template/ Border#Root">
-                <Setter Property="Background" Value="{DynamicResource ListViewItemBackgroundSelected}" />
-            </Style>
-            <Style Selector="^:selected:pointerover /template/ Border#Root">
-                <Setter Property="Background" Value="{DynamicResource ListViewItemBackgroundSelectedPointerOver}" />
-            </Style>
-            <Style Selector="^:pointerover:not(:selected) /template/ Border#Root">
-                <Setter Property="Background" Value="{DynamicResource ListViewItemBackgroundPointerOver}" />
-            </Style>
-            <Style Selector="^:selected /template/ Rectangle#SelectionIndicator">
-                <Setter Property="IsVisible" Value="True" />
-                <Setter Property="RenderTransform" Value="scaleY(1)" />
-            </Style>
-        </ControlTheme>
     </Window.Resources>
 
     <Window.KeyBindings>
@@ -112,29 +62,29 @@
                 <!-- Normal search bar -->
                 <TextBox x:Name="SearchBox"
                          IsVisible="{Binding ViewModel.IsSearchBarVisible}"
-                         Watermark="Search"
+                         PlaceholderText="Search"
                          FontSize="18"
                          Text="{Binding ViewModel.SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
 					<TextBox.Resources>
 						<ResourceDictionary>
 							<!-- Dark-theme only, scoped to this search field: near-black rest/hover
-							     surface that sinks to pure black on focus. Other TextBoxes keep the
-							     default FluentAvalonia palette. -->
+							     surface that sinks to pure black on focus. The border is blended
+							     out in every state so it never flashes. Other TextBoxes
+							     keep the default FluentAvalonia palette. -->
 							<ResourceDictionary.ThemeDictionaries>
 								<ResourceDictionary x:Key="Dark">
 									<SolidColorBrush x:Key="TextControlBackground" Color="#0A0A0A" />
 									<SolidColorBrush x:Key="TextControlBackgroundPointerOver" Color="#0A0A0A" />
 									<SolidColorBrush x:Key="TextControlBackgroundFocused" Color="#000000" />
 									<SolidColorBrush x:Key="TextControlBackgroundDisabled" Color="#000000" />
+									<SolidColorBrush x:Key="TextControlBorderBrush" Color="Transparent" />
+									<SolidColorBrush x:Key="TextControlBorderBrushPointerOver" Color="Transparent" />
+									<SolidColorBrush x:Key="TextControlBorderBrushFocused" Color="Transparent" />
+									<SolidColorBrush x:Key="TextControlBorderBrushDisabled" Color="Transparent" />
 								</ResourceDictionary>
 							</ResourceDictionary.ThemeDictionaries>
 						</ResourceDictionary>
 					</TextBox.Resources>
-					<TextBox.Styles>
-						<Style Selector="TextBox:focus-within /template/ Border#PART_BorderElement">
-							<Setter Property="BorderBrush" Value="Transparent" />
-						</Style>
-					</TextBox.Styles>
 					<TextBox.KeyBindings>
 						<KeyBinding Gesture="Down" Command="{Binding ViewModel.NavigateListDownCommand}" />
 						<KeyBinding Gesture="Up"   Command="{Binding ViewModel.NavigateListUpCommand}" />
@@ -152,7 +102,7 @@
                                     BorderThickness="0"
                                     VerticalAlignment="Center"
                                     ToolTip.Tip="New entry (Ctrl+N)">
-                                <ui:FontIcon FontSize="16"
+                                <ui:FAFontIcon FontSize="16"
                                              FontFamily="{StaticResource SymbolFontFamily}"
                                              Glyph="{x:Static icons:Icons.Add}" />
                             </Button>
@@ -166,7 +116,7 @@
                                     BorderThickness="0"
                                     VerticalAlignment="Center"
                                     ToolTip.Tip="Settings">
-                                <ui:FontIcon FontSize="16"
+                                <ui:FAFontIcon FontSize="16"
                                              FontFamily="{StaticResource SymbolFontFamily}"
                                              Glyph="{x:Static icons:Icons.Settings}" />
                             </Button>
@@ -180,7 +130,7 @@
                                     BorderThickness="0"
                                     VerticalAlignment="Center"
                                     ToolTip.Tip="Clear">
-                                <ui:FontIcon FontSize="14"
+                                <ui:FAFontIcon FontSize="14"
                                              FontFamily="{StaticResource SymbolFontFamily}"
                                              Glyph="{x:Static icons:Icons.Close}" />
                             </Button>
@@ -214,7 +164,7 @@
                             BorderThickness="0"
                             VerticalAlignment="Center"
                             ToolTip.Tip="Go back">
-                        <ui:FontIcon FontSize="16"
+                        <ui:FAFontIcon FontSize="16"
                                      FontFamily="{StaticResource SymbolFontFamily}"
                                      Glyph="{x:Static icons:Icons.Back}" />
                     </Button>
@@ -238,7 +188,7 @@
                             BorderThickness="0"
                             VerticalAlignment="Center"
                             ToolTip.Tip="Reset to defaults">
-                        <ui:FontIcon FontSize="16"
+                        <ui:FAFontIcon FontSize="16"
                                      FontFamily="{StaticResource SymbolFontFamily}"
                                      Glyph="{x:Static icons:Icons.Reset}" />
                     </Button>
@@ -251,7 +201,7 @@
                             BorderThickness="0"
                             VerticalAlignment="Center"
                             ToolTip.Tip="Save settings">
-                        <ui:FontIcon FontSize="16"
+                        <ui:FAFontIcon FontSize="16"
                                      FontFamily="{StaticResource SymbolFontFamily}"
                                      Glyph="{x:Static icons:Icons.Save}" />
                     </Button>
@@ -265,7 +215,7 @@
                             BorderThickness="0"
                             VerticalAlignment="Center"
                             ToolTip.Tip="Discard and go back">
-                        <ui:FontIcon FontSize="16"
+                        <ui:FAFontIcon FontSize="16"
                                      FontFamily="{StaticResource SymbolFontFamily}"
                                      Glyph="{x:Static icons:Icons.Close}" />
                     </Button>
@@ -290,7 +240,7 @@
                             BorderThickness="0"
                             VerticalAlignment="Center"
                             ToolTip.Tip="Create entry">
-                        <ui:FontIcon FontSize="16"
+                        <ui:FAFontIcon FontSize="16"
                                      FontFamily="{StaticResource SymbolFontFamily}"
                                      Glyph="{x:Static icons:Icons.Save}" />
                     </Button>
@@ -305,7 +255,7 @@
                             BorderThickness="0"
                             VerticalAlignment="Center"
                             ToolTip.Tip="Discard and go back">
-                        <ui:FontIcon FontSize="16"
+                        <ui:FAFontIcon FontSize="16"
                                      FontFamily="{StaticResource SymbolFontFamily}"
                                      Glyph="{x:Static icons:Icons.Close}" />
                     </Button>
@@ -330,20 +280,12 @@
             <ListBox x:Name="EntriesListBox"
                      ItemsSource="{Binding ViewModel.Entries}"
                      SelectedItem="{Binding ViewModel.SelectedEntry}"
-                     Classes.animate="{Binding ViewModel.IsEntryListUpdating, Converter={StaticResource InvertBoolConverter}}"
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                      IsVisible="{Binding ViewModel.IsContextMenuOpen, Converter={StaticResource InvertBoolConverter}}"
                      Background="{DynamicResource SolidBackgroundFillColorBaseBrush}">
                 <ListBox.Styles>
-                    <!-- Transition only while the "animate" class is set (not during a rebuild). -->
-                    <Style Selector="ListBox.animate ListBoxItem /template/ Rectangle#SelectionIndicator">
-                        <Setter Property="Transitions">
-                            <Transitions>
-                                <TransformOperationsTransition Duration="00:00:00.167"
-                                                               Property="RenderTransform"
-                                                               Easing="0,0 0,1" />
-                            </Transitions>
-                        </Setter>
+                    <Style Selector="ListBoxItem">
+                        <Setter Property="Padding" Value="4" />
                     </Style>
                 </ListBox.Styles>
                 <ListBox.ItemTemplate>
@@ -391,16 +333,6 @@
 					<Style Selector="ListBoxItem">
 						<Setter Property="Padding" Value="4" />
 					</Style>
-					<!-- Built once on open, so the transition can stay on unconditionally. -->
-					<Style Selector="ListBoxItem /template/ Rectangle#SelectionIndicator">
-						<Setter Property="Transitions">
-							<Transitions>
-								<TransformOperationsTransition Duration="00:00:00.167"
-								                               Property="RenderTransform"
-								                               Easing="0,0 0,1" />
-							</Transitions>
-						</Setter>
-					</Style>
 				</ListBox.Styles>
                 <ListBox.ItemTemplate>
                     <DataTemplate x:DataType="contracts:IAction">
@@ -414,7 +346,7 @@
                                   Width="26"
                                   Height="26"
                                   Margin="2,0">
-                                <ui:FontIcon Glyph="{Binding IconGlyph}"
+                                <ui:FAFontIcon Glyph="{Binding IconGlyph}"
                                              FontFamily="{StaticResource SymbolFontFamily}"
                                              FontSize="18"
                                              HorizontalAlignment="Left"
@@ -425,7 +357,7 @@
                                         HorizontalAlignment="Right"
                                         VerticalAlignment="Bottom"
                                         CornerRadius="2">
-                                    <ui:FontIcon Glyph="{Binding BadgeGlyph}"
+                                    <ui:FAFontIcon Glyph="{Binding BadgeGlyph}"
                                                  FontFamily="{StaticResource SymbolFontFamily}"
                                                  FontSize="10" />
                                 </Border>
